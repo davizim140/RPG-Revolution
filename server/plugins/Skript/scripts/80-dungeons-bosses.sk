@@ -1,0 +1,35 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /masmorra:
+    aliases: /dungeon
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::created} is not true:
+            send "{@prefix}&cSeu personagem não foi inicializado." to player
+            stop
+        if {rpg::%{_id}%::level} < 5:
+            send "{@prefix}&cVocê precisa alcançar o nível 5 para enfrentar a masmorra." to player
+            stop
+        if {rpg::dungeon::%{_id}%::active} is true:
+            send "{@prefix}&cVocê já iniciou um encontro. Derrote o chefe antes de iniciar outro." to player
+            stop
+        spawn zombie at location of player
+        set name of last spawned entity to "&4Chefe da Masmorra"
+        set max health of last spawned entity to 60
+        set health of last spawned entity to 60
+        set {rpg::dungeon::%{_id}%::active} to true
+        set {rpg::dungeon::%{_id}%::boss} to "%uuid of last spawned entity%"
+        send "{@prefix}&4&lCHEFE DA MASMORRA! &cDerrote-o para receber 250 moedas e 150 XP." to player
+
+on death of living entity:
+    if name of victim is "&4Chefe da Masmorra":
+        loop all players:
+            set {_id} to "%uuid of loop-player%"
+            if {rpg::dungeon::%{_id}%::active} is true:
+                if {rpg::dungeon::%{_id}%::boss} is "%uuid of victim%":
+                    set {rpg::dungeon::%{_id}%::active} to false
+                    delete {rpg::dungeon::%{_id}%::boss}
+                    add 250 to {rpg::%{_id}%::coins}
+                    rpg_add_xp(loop-player, 150)
+                    send "{@prefix}&6Chefe derrotado! &aRecompensa: 250 moedas e 150 XP." to loop-player
