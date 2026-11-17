@@ -1,36 +1,34 @@
 # RPG Revolution
 
-RPG de mundo aberto para Minecraft Java **26.3**, com lógica de jogo em Skript puro.
+RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skript puro.
 
 ## Stack
 - Minecraft Java 26.3 como versão-base pretendida.
 - Paper 26.3 como servidor recomendado.
 - Skript em versão explicitamente compatível com a versão-base.
-- ViaVersion para compatibilidade de clientes, dentro da matriz suportada pelo ViaVersion.
+- ViaVersion como plugin separado para clientes de outras versões, dentro da matriz suportada.
 - Nenhum addon de Skript.
 
-ViaVersion é um plugin separado: não altera a versão-base do servidor nem garante compatibilidade universal.
-
-## Sistemas incluídos
-- Personagens, níveis, XP, atributos, economia e missão inicial.
-- Quatro classes, mana, habilidades e especializações.
-- Armas exclusivas fabricáveis por classe: Cajado Arcano (Mago), Adaga Sombria (Assassino) e Arco do Batedor (Arqueiro).
-- Espada do Aprendiz e Couraça do Guardião com bônus de combate e aprimoramentos até +3.
+## Sistemas implementados
+- Personagens, níveis, XP, atributos, economia e progressão.
+- Quatro classes, habilidades, mana e especializações.
+- Armas de classe: Cajado Arcano, Adaga Sombria e Arco do Batedor.
+- Armaduras de classe com quatro peças e bônus de conjunto.
+- Espada do Aprendiz e Couraça do Guardião aprimoráveis até +3.
+- Loja, receitas, itens nomeados e raridades visuais.
+- Missão inicial, linha de história e contrato diário de caça a esqueletos.
 - Regiões informativas por mundo.
-- Loja e receitas próprias de equipamentos.
-- Chefe de masmorra repetível.
-- Guildas com criação e convites.
-- Recompensa diária.
-- Três personagens de história por diálogos via comandos.
-- Linha de missões: recolher 8 troncos de carvalho e derrotar 5 zumbis, com progresso salvo e recompensas.
+- Masmorra com chefe.
+- Guildas com convite, transferência de liderança, expulsão, chat e banco.
+- Recompensas diárias.
 
 ## Instalação
 1. Faça backup do servidor.
 2. Instale Paper 26.3 e uma versão do Skript compatível com ela.
-3. Instale ViaVersion se quiser aceitar clientes de outras versões.
-4. Copie a pasta server/plugins/Skript/scripts/ para plugins/Skript/scripts/ no servidor.
-5. Execute /sk reload all e confira o console.
-6. Teste em um servidor separado antes de usar em produção.
+3. Opcionalmente instale ViaVersion.
+4. Copie server/plugins/Skript/scripts/ para plugins/Skript/scripts/.
+5. Execute /sk reload all e examine o console.
+6. Teste em servidor separado antes de produção.
 
 ## Comandos principais
 - /rpgajuda, /perfil, /atributos, /upar <forca|defesa|agilidade|inteligencia>
@@ -41,24 +39,28 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 - /missaoaceitar <madeira|zumbis>, /minhasmissoes, /missaoentregar
 - /rpgloja, /comprar <espada|armadura|arco|comida>
 - /rpgcraft, /fabricar <espada|armadura|arco>
-- /fabricarclasse <cajado|adaga|arco> (exige a classe correspondente)
-- /equipamento, /aprimorar (segure a espada ou couraça especial)
+- /fabricarclasse <cajado|adaga|arco>
+- /fabricararmadura <capacete|peitoral|calcas|botas>
+- /equipamento, /aprimorar
+- /contrato, /contrato aceitar, /contrato entregar
 - /masmorra
-- /guilda, /guildacriar <nome>, /guildaconvidar <jogador>, /guildaaceitar, /guildainfo, /guildasair
-- /regiao, /rpgmundos, /rpgregiao definir <nome> <nivel-minimo>
-- /rpgxp <jogador> <quantidade> e /rpgmoedas <jogador> <saldo>
+- /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
+- /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo
+- /regiao, /rpgmundos, /rpgregiao definir
+- /rpgxp, /rpgmoedas
 
 Permissão administrativa: rpg.admin.
 
-## Limites conhecidos
-- A identificação dos equipamentos especiais usa o nome do item; renomeá-los em bigorna pode afetar o reconhecimento. Ainda não há identificador persistente próprio nem atributos NBT/PDC.
-- O Cajado Arcano e a Adaga Sombria dão bônus no combate corpo a corpo; o Arco do Batedor depende do evento de dano do arco e precisa ser confirmado em teste real com flechas.
-- A espada especial e a couraça especial têm bônus; os demais itens vanilla não recebem atributos próprios.
-- Os NPCs são personagens de diálogo acionados por comando, não entidades com skin ou interação física.
-- Regiões exibem nível recomendado, mas ainda não bloqueiam entrada por nível.
-- O chefe é um zumbi vanilla com vida aumentada; não há arena instanciada nem mecânicas especiais.
-- Guildas ainda não têm transferência de liderança, chat próprio, banco ou guerras.
-- HUD customizada, eventos mundiais e grupos de dungeon ainda não estão implementados.
+## Limitações conhecidas
+- Itens especiais são identificados pelo nome; bigorna ou renomeação pode afetar os bônus. Ainda não há identificador persistente NBT/PDC.
+- As raridades são visuais, exceto os bônus programados nos itens descritos.
+- Bônus do arco de classe dependem do evento de dano e precisam ser validados com flechas no servidor.
+- Armaduras de classe são identificadas por nome; conjunto Guerreiro reduz dano, Mago e Assassino aumentam dano corpo a corpo, Arqueiro recebe velocidade.
+- NPCs da história são diálogos por comando, não entidades físicas com skin.
+- Regiões ainda não bloqueiam entrada por nível.
+- A masmorra ainda é um encontro simples com criatura vanilla, sem arena instanciada ou mecânicas complexas.
+- Guildas ainda não têm guerras, cargos ou sistema de níveis.
+- Não há HUD customizada, mapa próprio ou eventos mundiais.
 
 ## Validação
-O GitHub Actions verifica a estrutura, procura marcadores de placeholder e empacota a distribuição. Isso **não valida a sintaxe do Skript nem substitui o teste real** de carregamento e jogabilidade em Paper 26.3. Antes de produção, teste /sk reload all e os comandos em um servidor de homologação.
+O GitHub Actions faz verificações estruturais e empacota ZIP. Isso não comprova sintaxe Skript nem execução em Paper 26.3. É obrigatório testar /sk reload all e os sistemas em um servidor de homologação antes de produção.
