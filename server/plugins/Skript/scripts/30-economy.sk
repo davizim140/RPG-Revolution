@@ -1,0 +1,43 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /saldo:
+    aliases: /money, /coins
+    trigger:
+        set {_id} to "%uuid of player%"
+        send "{@prefix}&eSaldo: &6%{rpg::%{_id}%::coins}% moedas&e." to player
+
+command /pagar <player> <integer>:
+    trigger:
+        if arg-1 is player:
+            send "{@prefix}&cVocê não pode transferir moedas para si mesmo." to player
+            stop
+        if arg-2 <= 0:
+            send "{@prefix}&cO valor precisa ser maior que zero." to player
+            stop
+        set {_id} to "%uuid of player%"
+        set {_target} to "%uuid of arg-1%"
+        if {rpg::%{_id}%::coins} < arg-2:
+            send "{@prefix}&cSaldo insuficiente." to player
+            stop
+        if {rpg::%{_target}%::created} is not set:
+            send "{@prefix}&cO destinatário ainda não possui personagem." to player
+            stop
+        remove arg-2 from {rpg::%{_id}%::coins}
+        add arg-2 to {rpg::%{_target}%::coins}
+        send "{@prefix}&aVocê enviou &6%arg-2% moedas &apara %arg-1%." to player
+        send "{@prefix}&aVocê recebeu &6%arg-2% moedas &ade %player%." to arg-1
+
+command /rpgmoedas <player> <integer>:
+    permission: rpg.admin
+    permission message: &cVocê não tem permissão.
+    trigger:
+        if arg-2 < 0:
+            send "{@prefix}&cO saldo não pode ser negativo." to sender
+            stop
+        set {_id} to "%uuid of arg-1%"
+        if {rpg::%{_id}%::created} is not set:
+            send "{@prefix}&cEsse jogador ainda não possui personagem." to sender
+            stop
+        set {rpg::%{_id}%::coins} to arg-2
+        send "{@prefix}&aSaldo de %arg-1% definido para &6%arg-2% moedas&a." to sender
