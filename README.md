@@ -16,6 +16,7 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 - Quatro classes, mana, habilidades e especializações.
 - Regiões informativas por mundo.
 - Loja de equipamentos básicos.
+- Receitas próprias para espada incomum, couraça épica e arco épico, consumindo materiais e moedas.
 - Chefe de masmorra repetível.
 - Guildas com criação e convites.
 - Recompensa diária.
@@ -38,6 +39,7 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 - /npc <guia|ferreiro|explorador>
 - /missaoaceitar <madeira|zumbis>, /minhasmissoes, /missaoentregar
 - /rpgloja, /comprar <espada|armadura|arco|comida>
+- /rpgcraft, /fabricar <espada|armadura|arco>
 - /masmorra
 - /guilda, /guildacriar <nome>, /guildaconvidar <jogador>, /guildaaceitar, /guildainfo, /guildasair
 - /regiao, /rpgmundos, /rpgregiao definir <nome> <nivel-minimo>
@@ -46,12 +48,13 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 Permissão administrativa: rpg.admin.
 
 ## Limites conhecidos
+- As raridades são etiquetas visuais em nome/lore; ainda não aplicam atributos próprios nem identificadores persistentes de item.
 - Os NPCs desta etapa são personagens de diálogo acionados por comando, não entidades com skin ou interação física.
 - Regiões exibem nível recomendado, mas ainda não bloqueiam entrada por nível.
-- Loja entrega itens vanilla nomeados; raridades e atributos próprios ainda não existem.
+- Loja entrega itens vanilla nomeados; não há atributos extras.
 - O chefe é um zumbi vanilla com vida aumentada; não há arena instanciada nem mecânicas especiais.
 - Guildas ainda não têm transferência de liderança, chat próprio, banco ou guerras.
-- HUD customizada, crafting próprio, eventos mundiais e grupos de dungeon ainda não estão implementados.
+- HUD customizada, eventos mundiais e grupos de dungeon ainda não estão implementados.
 
 ## Validação
 O GitHub Actions verifica a estrutura, procura marcadores de placeholder e empacota a distribuição. Isso **não valida a sintaxe do Skript nem substitui o teste real** de carregamento e jogabilidade em Paper 26.3. Antes de produção, teste /sk reload all e os comandos em um servidor de homologação.
