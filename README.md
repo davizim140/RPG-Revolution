@@ -16,7 +16,9 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 - Quatro classes, mana, habilidades e especializações.
 - Regiões informativas por mundo.
 - Loja de equipamentos básicos.
-- Receitas próprias para espada incomum, couraça épica e arco épico, consumindo materiais e moedas.
+- Receitas próprias para espada incomum, couraça épica e arco épico.
+- Bônus de dano da espada especial e redução de dano da couraça especial.
+- Aprimoramento de espada e couraça até +3, consumindo diamantes e moedas.
 - Chefe de masmorra repetível.
 - Guildas com criação e convites.
 - Recompensa diária.
@@ -40,6 +42,7 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 - /missaoaceitar <madeira|zumbis>, /minhasmissoes, /missaoentregar
 - /rpgloja, /comprar <espada|armadura|arco|comida>
 - /rpgcraft, /fabricar <espada|armadura|arco>
+- /equipamento, /aprimorar (segure a espada ou couraça especial)
 - /masmorra
 - /guilda, /guildacriar <nome>, /guildaconvidar <jogador>, /guildaaceitar, /guildainfo, /guildasair
 - /regiao, /rpgmundos, /rpgregiao definir <nome> <nivel-minimo>
@@ -48,8 +51,9 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 Permissão administrativa: rpg.admin.
 
 ## Limites conhecidos
-- As raridades são etiquetas visuais em nome/lore; ainda não aplicam atributos próprios nem identificadores persistentes de item.
-- Os NPCs desta etapa são personagens de diálogo acionados por comando, não entidades com skin ou interação física.
+- A identificação dos equipamentos especiais usa o nome do item; renomeá-los em bigorna pode afetar o reconhecimento. Ainda não há identificador persistente próprio nem atributos NBT/PDC.
+- O bônus especial de combate é aplicado à espada fabricada; o arco mantém dano vanilla.
+- Os NPCs são personagens de diálogo acionados por comando, não entidades com skin ou interação física.
 - Regiões exibem nível recomendado, mas ainda não bloqueiam entrada por nível.
 - Loja entrega itens vanilla nomeados; não há atributos extras.
 - O chefe é um zumbi vanilla com vida aumentada; não há arena instanciada nem mecânicas especiais.
