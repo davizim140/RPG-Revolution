@@ -52,10 +52,10 @@ command /guildchat <text>:
         if {_guild} is not set:
             send "{@prefix}&cVocê não pertence a uma guilda." to player
             stop
-        loop {rpg::guild::%{_guild}%::members::*}:
-            loop all players:
-                if "%uuid of loop-player-2%" is loop-value:
-                    send "&8[&6Guilda %{_guild}%&8] &f%player%&7: &f%arg-1%" to loop-player-2
+        loop all players:
+            set {_member-id} to "%uuid of loop-player%"
+            if {rpg::%{_member-id}%::guild} is {_guild}:
+                send "&8[&6Guilda %{_guild}%&8] &f%player%&7: &f%arg-1%" to loop-player
 
 command /guildabanco <text> <integer>:
     trigger:
