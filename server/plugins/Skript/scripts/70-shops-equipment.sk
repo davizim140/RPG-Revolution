@@ -1,0 +1,54 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /rpgloja:
+    aliases: /loj arpg
+    trigger:
+        send "&6&lLOJA DO AVENTUREIRO" to player
+        send "&e/comprar espada &7- Espada de ferro: 150 moedas" to player
+        send "&e/comprar armadura &7- Peitoral de ferro: 200 moedas" to player
+        send "&e/comprar arco &7- Arco: 120 moedas" to player
+        send "&e/comprar comida &7- 16 bifes: 40 moedas" to player
+
+command /comprar <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::created} is not true:
+            send "{@prefix}&cSeu personagem não foi inicializado." to player
+            stop
+        if arg-1 is "espada":
+            set {_price} to 150
+            if {rpg::%{_id}%::coins} < {_price}:
+                send "{@prefix}&cVocê precisa de 150 moedas." to player
+                stop
+            remove {_price} from {rpg::%{_id}%::coins}
+            give player iron sword named "&6Espada do Aventureiro"
+            send "{@prefix}&aEspada comprada por 150 moedas." to player
+        else if arg-1 is "armadura":
+            set {_price} to 200
+            if {rpg::%{_id}%::coins} < {_price}:
+                send "{@prefix}&cVocê precisa de 200 moedas." to player
+                stop
+            remove {_price} from {rpg::%{_id}%::coins}
+            give player iron chestplate named "&6Peitoral do Aventureiro"
+            send "{@prefix}&aPeitoral comprado por 200 moedas." to player
+        else if arg-1 is "arco":
+            set {_price} to 120
+            if {rpg::%{_id}%::coins} < {_price}:
+                send "{@prefix}&cVocê precisa de 120 moedas." to player
+                stop
+            remove {_price} from {rpg::%{_id}%::coins}
+            give player bow named "&6Arco do Aventureiro"
+            send "{@prefix}&aArco comprado por 120 moedas." to player
+        else if arg-1 is "comida":
+            set {_price} to 40
+            if {rpg::%{_id}%::coins} < {_price}:
+                send "{@prefix}&cVocê precisa de 40 moedas." to player
+                stop
+            remove {_price} from {rpg::%{_id}%::coins}
+            give player 16 cooked beef
+            send "{@prefix}&aComida comprada por 40 moedas." to player
+        else:
+            send "{@prefix}&cItem inválido. Use /rpgloja." to player
+
+# Equipment purchased here is ordinary Minecraft equipment and can be used normally.
