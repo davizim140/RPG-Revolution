@@ -1,0 +1,109 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /grupo:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_party} to {rpg::%{_id}%::party}
+        if {_party} is not set:
+            send "&6&lGRUPOS" to player
+            send "&e/grupocriar" to player
+            send "&e/grupoconvidar <jogador>" to player
+            send "&e/grupoaceitar" to player
+            send "&e/gruposair" to player
+            stop
+        send "&6&lGRUPO" to player
+        send "&7Líder UUID: &f%{_party}%" to player
+        set {_count} to 0
+        loop all players:
+            set {_member-id} to "%uuid of loop-player%"
+            if {rpg::%{_member-id}%::party} is {_party}:
+                add 1 to {_count}
+                send "&f- %loop-player%" to player
+        send "&7Integrantes online: &f%{_count}%" to player
+
+command /grupocriar:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::party} is set:
+            send "{@prefix}&cVocê já está em um grupo." to player
+            stop
+        set {rpg::%{_id}%::party} to {_id}
+        set {rpg::party::%{_id}%::leader} to {_id}
+        add {_id} to {rpg::party::%{_id}%::members::*}
+        send "{@prefix}&aGrupo criado. Você é o líder." to player
+
+command /grupoconvidar <player>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_party} to {rpg::%{_id}%::party}
+        if {_party} is not set:
+            send "{@prefix}&cCrie um grupo primeiro." to player
+            stop
+        if {_party} is not {_id}:
+            send "{@prefix}&cSomente o líder pode convidar." to player
+            stop
+        set {_target} to "%uuid of arg-1%"
+        if {rpg::%{_target}%::party} is set:
+            send "{@prefix}&cEsse jogador já está em um grupo." to player
+            stop
+        set {rpg::party-invite::%{_target}%} to {_party}
+        send "{@prefix}&aConvite enviado para %arg-1%." to player
+        send "{@prefix}&eConvite de grupo recebido. Use /grupoaceitar." to arg-1
+
+command /grupoaceitar:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::party} is set:
+            send "{@prefix}&cVocê já está em um grupo." to player
+            stop
+        if {rpg::party-invite::%{_id}%} is not set:
+            send "{@prefix}&cVocê não possui convite pendente." to player
+            stop
+        set {_party} to {rpg::party-invite::%{_id}%}
+        if {rpg::party::%{_party}%::leader} is not set:
+            delete {rpg::party-invite::%{_id}%}
+            send "{@prefix}&cEsse grupo não existe mais." to player
+            stop
+        set {rpg::%{_id}%::party} to {_party}
+        add {_id} to {rpg::party::%{_party}%::members::*}
+        delete {rpg::party-invite::%{_id}%}
+        send "{@prefix}&aVocê entrou no grupo!" to player
+
+command /gruposair:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_party} to {rpg::%{_id}%::party}
+        if {_party} is not set:
+            send "{@prefix}&cVocê não está em um grupo." to player
+            stop
+        if {_party} is {_id}:
+            loop all players:
+                set {_member-id} to "%uuid of loop-player%"
+                if {rpg::%{_member-id}%::party} is {_party}:
+                    delete {rpg::%{_member-id}%::party}
+                    send "{@prefix}&cO grupo foi encerrado pelo líder." to loop-player
+            delete {rpg::party::%{_party}%::*}
+        else:
+            remove {_id} from {rpg::party::%{_party}%::members::*}
+            delete {rpg::%{_id}%::party}
+            send "{@prefix}&aVocê saiu do grupo." to player
+
+command /grupochutar <player>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_party} to {rpg::%{_id}%::party}
+        if {_party} is not {_id}:
+            send "{@prefix}&cSomente o líder pode remover integrantes." to player
+            stop
+        set {_target} to "%uuid of arg-1%"
+        if {_target} is {_id}:
+            send "{@prefix}&cUse /gruposair para encerrar o grupo." to player
+            stop
+        if {rpg::%{_target}%::party} is not {_party}:
+            send "{@prefix}&cEsse jogador não está no seu grupo." to player
+            stop
+        delete {rpg::%{_target}%::party}
+        remove {_target} from {rpg::party::%{_party}%::members::*}
+        send "{@prefix}&cVocê foi removido do grupo." to arg-1
+        send "{@prefix}&aIntegrante removido." to player
