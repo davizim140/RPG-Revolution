@@ -83,9 +83,9 @@ command /aprimorar:
         remove {_coins} from {rpg::%{_id}%::coins}
         if {_kind} is "espada":
             set name of player's tool to "&bEspada do Aprendiz +%{_next}%"
-            set lore of player's tool to "&7Raridade: &bIncomum" and "&7Aprimoramento: &f+%{_next}%" and "&7Bônus RPG: &c+%{_next + 1}% dano"
+            set lore of player's tool to "&7Raridade: &bIncomum" and "&7Aprimoramento: &f+%{_next}%" and "&7Bônus RPG: &cDano aumentado"
         else:
             set name of player's tool to "&dCouraça do Guardião +%{_next}%"
-            set lore of player's tool to "&7Raridade: &dÉpica" and "&7Aprimoramento: &f+%{_next}%" and "&7Bônus RPG: &9-%{_next + 1}% dano recebido"
+            set lore of player's tool to "&7Raridade: &dÉpica" and "&7Aprimoramento: &f+%{_next}%" and "&7Bônus RPG: &9Defesa aumentada"
         send "{@prefix}&aEquipamento aprimorado para &f+%{_next}%&a!" to player
         send "&7Custo: &f%{_cost}% diamantes &7e &6%{_coins}% moedas." to player
