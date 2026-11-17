@@ -12,6 +12,11 @@ command /guilda:
             send "&e/guildaaceitar" to player
             send "&e/guildainfo" to player
             send "&e/guildasair" to player
+            send "&e/guildatransferir <jogador>" to player
+            send "&e/guildaexpulsar <jogador>" to player
+            send "&e/guildchat <mensagem>" to player
+            send "&e/guildabanco <depositar|sacar> <valor>" to player
+            send "&e/guildasaldo" to player
             stop
         set {_guild} to {rpg::%{_id}%::guild}
         send "&6&lGUILDA &e%{_guild}%" to player
