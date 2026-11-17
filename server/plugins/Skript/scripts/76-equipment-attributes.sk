@@ -1,0 +1,91 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Bônus são calculados no evento de combate; não alteram atributos globais do item.
+# O nome do equipamento identifica os itens especiais fabricados pelo RPG.
+
+on damage of living entity:
+    attacker is a player
+    victim is not a player
+    set {_weapon} to name of attacker's tool
+    if {_weapon} contains "Espada do Aprendiz":
+        increase damage by 1
+        if {_weapon} contains "+1":
+            increase damage by 1
+        else if {_weapon} contains "+2":
+            increase damage by 2
+        else if {_weapon} contains "+3":
+            increase damage by 3
+
+on damage of player:
+    set {_armor} to name of victim's chestplate
+    set {_reduction} to 0
+    if {_armor} contains "Couraça do Guardião":
+        set {_reduction} to 1
+        if {_armor} contains "+1":
+            add 1 to {_reduction}
+        else if {_armor} contains "+2":
+            add 2 to {_reduction}
+        else if {_armor} contains "+3":
+            add 3 to {_reduction}
+    if {_reduction} > 0:
+        if damage > {_reduction}:
+            set damage to damage - {_reduction}
+        else:
+            cancel event
+
+command /equipamento:
+    trigger:
+        send "&6&lEQUIPAMENTOS RPG" to player
+        send "&bEspada do Aprendiz: &f+1 dano base." to player
+        send "&dCouraça do Guardião: &freduz 1 dano recebido." to player
+        send "&eCada aprimoramento aumenta o bônus em 1, até +3." to player
+        send "&7Arco do Caçador continua com dano vanilla nesta versão." to player
+        send "&eSegure um equipamento fabricado e use /aprimorar." to player
+
+command /aprimorar:
+    trigger:
+        set {_item} to player's tool
+        set {_itemName} to name of {_item}
+        if {_itemName} contains "Espada do Aprendiz":
+            set {_kind} to "espada"
+        else if {_itemName} contains "Couraça do Guardião":
+            set {_kind} to "armadura"
+        else:
+            send "{@prefix}&cSegure uma Espada do Aprendiz ou Couraça do Guardião fabricada." to player
+            stop
+
+        if {_itemName} contains "+3":
+            send "{@prefix}&eEste equipamento já está no nível máximo (+3)." to player
+            stop
+        if {_itemName} contains "+2":
+            set {_next} to 3
+            set {_cost} to 6
+            set {_coins} to 500
+        else if {_itemName} contains "+1":
+            set {_next} to 2
+            set {_cost} to 4
+            set {_coins} to 300
+        else:
+            set {_next} to 1
+            set {_cost} to 2
+            set {_coins} to 150
+
+        set {_id} to "%uuid of player%"
+        if player's inventory does not contain {_cost} diamonds:
+            send "{@prefix}&cVocê precisa de %{_cost}% diamantes." to player
+            stop
+        if {rpg::%{_id}%::coins} < {_coins}:
+            send "{@prefix}&cVocê precisa de %{_coins}% moedas." to player
+            stop
+
+        remove {_cost} diamonds from player's inventory
+        remove {_coins} from {rpg::%{_id}%::coins}
+        if {_kind} is "espada":
+            set name of player's tool to "&bEspada do Aprendiz +%{_next}%"
+            set lore of player's tool to "&7Raridade: &bIncomum" and "&7Aprimoramento: &f+%{_next}%" and "&7Bônus RPG: &c+%{_next + 1}% dano"
+        else:
+            set name of player's tool to "&dCouraça do Guardião +%{_next}%"
+            set lore of player's tool to "&7Raridade: &dÉpica" and "&7Aprimoramento: &f+%{_next}%" and "&7Bônus RPG: &9-%{_next + 1}% dano recebido"
+        send "{@prefix}&aEquipamento aprimorado para &f+%{_next}%&a!" to player
+        send "&7Custo: &f%{_cost}% diamantes &7e &6%{_coins}% moedas." to player
