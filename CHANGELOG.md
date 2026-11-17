@@ -1,12 +1,19 @@
 # Changelog
 
+## 0.7.0 - Equipamentos exclusivos de classe
+- Mago pode fabricar Cajado Arcano com bônus de dano corpo a corpo.
+- Assassino pode fabricar Adaga Sombria com bônus de dano.
+- Arqueiro pode fabricar Arco do Batedor com bônus de dano à distância.
+- Receitas verificam classe, materiais e moedas antes de consumir recursos.
+- /fabricarclasse e ajuda/documentação atualizadas.
+- Bônus de arco precisam de confirmação em servidor real com flechas.
+
 ## 0.6.0 - Atributos e aprimoramento de equipamentos
 - Espada do Aprendiz aplica bônus de dano em combate, escalando até +3.
 - Couraça do Guardião reduz dano recebido, escalando até +3.
 - /aprimorar consome diamantes e moedas e melhora o item segurado.
 - /equipamento explica os bônus e custos.
-- Ajuda e documentação atualizadas.
-- Identificação ainda baseada no nome do item; arco permanece com dano vanilla.
+- Identificação ainda baseada no nome do item.
 
 ## 0.5.0 - Artesanato e raridades
 - Receitas próprias para espada incomum, couraça épica e arco épico.
