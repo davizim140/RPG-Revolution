@@ -65,6 +65,7 @@ command /rpgajuda:
         send "&e/rpgloja e /comprar &7- Loja." to player
         send "&e/rpgcraft e /fabricar <espada|armadura|arco> &7- Artesanato e equipamentos raros." to player
         send "&e/equipamento e /aprimorar &7- Bônus de combate e melhoria até +3." to player
+        send "&e/fabricarclasse <cajado|adaga|arco> &7- Armas exclusivas da sua classe." to player
         send "&e/masmorra &7- Enfrentar o chefe (nível 5+)." to player
         send "&e/guilda &7- Sistema de guildas." to player
         send "&e/regiao e /rpgmundos &7- Exploração." to player
