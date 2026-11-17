@@ -1,0 +1,97 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /guildatransferir <player>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê não pertence a uma guilda." to player
+            stop
+        if {rpg::guild::%{_guild}%::leader} is not {_id}:
+            send "{@prefix}&cSomente o líder pode transferir a liderança." to player
+            stop
+        set {_target} to "%uuid of arg-1%"
+        if {rpg::%{_target}%::guild} is not {_guild}:
+            send "{@prefix}&cO jogador precisa estar na sua guilda e online." to player
+            stop
+        if {_target} is {_id}:
+            send "{@prefix}&cVocê já é o líder." to player
+            stop
+        set {rpg::guild::%{_guild}%::leader} to {_target}
+        send "{@prefix}&aLiderança transferida para %arg-1%." to player
+        send "{@prefix}&eVocê agora é o líder da guilda &6%{_guild}%&e." to arg-1
+
+command /guildaexpulsar <player>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê não pertence a uma guilda." to player
+            stop
+        if {rpg::guild::%{_guild}%::leader} is not {_id}:
+            send "{@prefix}&cSomente o líder pode expulsar integrantes." to player
+            stop
+        set {_target} to "%uuid of arg-1%"
+        if {_target} is {_id}:
+            send "{@prefix}&cUse /guildasair ou transfira a liderança." to player
+            stop
+        if {rpg::%{_target}%::guild} is not {_guild}:
+            send "{@prefix}&cEsse jogador não pertence à sua guilda." to player
+            stop
+        remove {_target} from {rpg::guild::%{_guild}%::members::*}
+        delete {rpg::%{_target}%::guild}
+        send "{@prefix}&cVocê foi removido da guilda &e%{_guild}%&c." to arg-1
+        send "{@prefix}&aIntegrante removido." to player
+
+command /guildchat <text>:
+    aliases: /gc
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê não pertence a uma guilda." to player
+            stop
+        loop {rpg::guild::%{_guild}%::members::*}:
+            loop all players:
+                if "%uuid of loop-player-2%" is loop-value:
+                    send "&8[&6Guilda %{_guild}%&8] &f%player%&7: &f%arg-1%" to loop-player-2
+
+command /guildabanco <text> <integer>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê não pertence a uma guilda." to player
+            stop
+        if arg-2 <= 0:
+            send "{@prefix}&cInforme um valor maior que zero." to player
+            stop
+        if arg-1 is "depositar":
+            if {rpg::%{_id}%::coins} < arg-2:
+                send "{@prefix}&cSaldo pessoal insuficiente." to player
+                stop
+            remove arg-2 from {rpg::%{_id}%::coins}
+            add arg-2 to {rpg::guild::%{_guild}%::bank}
+            send "{@prefix}&aVocê depositou %arg-2% moedas no banco da guilda." to player
+        else if arg-1 is "sacar":
+            if {rpg::guild::%{_guild}%::leader} is not {_id}:
+                send "{@prefix}&cSomente o líder pode sacar do banco." to player
+                stop
+            if {rpg::guild::%{_guild}%::bank} < arg-2:
+                send "{@prefix}&cA guilda não possui esse saldo." to player
+                stop
+            remove arg-2 from {rpg::guild::%{_guild}%::bank}
+            add arg-2 to {rpg::%{_id}%::coins}
+            send "{@prefix}&aVocê sacou %arg-2% moedas do banco." to player
+        else:
+            send "{@prefix}&cUse /guildabanco <depositar|sacar> <valor>." to player
+
+command /guildasaldo:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê não pertence a uma guilda." to player
+            stop
+        send "{@prefix}&eBanco da guilda: &6%{rpg::guild::%{_guild}%::bank}% moedas&e." to player
