@@ -1,10 +1,17 @@
 # Changelog
 
+## 0.6.0 - Atributos e aprimoramento de equipamentos
+- Espada do Aprendiz aplica bônus de dano em combate, escalando até +3.
+- Couraça do Guardião reduz dano recebido, escalando até +3.
+- /aprimorar consome diamantes e moedas e melhora o item segurado.
+- /equipamento explica os bônus e custos.
+- Ajuda e documentação atualizadas.
+- Identificação ainda baseada no nome do item; arco permanece com dano vanilla.
+
 ## 0.5.0 - Artesanato e raridades
 - Receitas próprias para espada incomum, couraça épica e arco épico.
 - Fabricação consome materiais vanilla e moedas do personagem.
 - Comandos /rpgcraft e /fabricar.
-- Documentação e ajuda atualizadas.
 - Raridades são visuais nesta versão; sem bônus próprios de atributos.
 
 ## 0.4.0 - NPCs e linha de história
