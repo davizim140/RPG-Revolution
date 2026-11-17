@@ -1,0 +1,35 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /atributos:
+    aliases: /stats
+    trigger:
+        set {_id} to "%uuid of player%"
+        send "&6&lATRIBUTOS &8| &ePontos: &f%{rpg::%{_id}%::points}%" to player
+        send "&cForça: &f%{rpg::%{_id}%::strength}%" to player
+        send "&9Defesa: &f%{rpg::%{_id}%::defense}%" to player
+        send "&aAgilidade: &f%{rpg::%{_id}%::agility}%" to player
+        send "&5Inteligência: &f%{rpg::%{_id}%::intelligence}%" to player
+
+command /upar <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::created} is not true:
+            send "{@prefix}&cSeu personagem não foi inicializado." to player
+            stop
+        if {rpg::%{_id}%::points} <= 0:
+            send "{@prefix}&cVocê não tem pontos disponíveis." to player
+            stop
+        if arg-1 is "forca":
+            add 1 to {rpg::%{_id}%::strength}
+        else if arg-1 is "defesa":
+            add 1 to {rpg::%{_id}%::defense}
+        else if arg-1 is "agilidade":
+            add 1 to {rpg::%{_id}%::agility}
+        else if arg-1 is "inteligencia":
+            add 1 to {rpg::%{_id}%::intelligence}
+        else:
+            send "{@prefix}&cAtributo inválido. Use forca, defesa, agilidade ou inteligencia." to player
+            stop
+        remove 1 from {rpg::%{_id}%::points}
+        send "{@prefix}&aAtributo melhorado! &7Pontos restantes: &f%{rpg::%{_id}%::points}%" to player
