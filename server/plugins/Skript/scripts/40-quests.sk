@@ -1,0 +1,37 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /missoes:
+    aliases: /quests
+    trigger:
+        set {_id} to "%uuid of player%"
+        send "&6&lMISSÃO: CAÇADOR INICIANTE" to player
+        if {rpg::%{_id}%::quest::hunt::claimed} is true:
+            send "&aMissão concluída e recompensa resgatada." to player
+            stop
+        send "&eDerrote 5 criaturas." to player
+        send "&7Progresso: &f%{rpg::%{_id}%::quest::hunt::progress}%&7/5" to player
+        if {rpg::%{_id}%::quest::hunt::progress} >= 5:
+            send "&aUse /resgatar para receber a recompensa." to player
+
+command /resgatar:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::quest::hunt::claimed} is true:
+            send "{@prefix}&cVocê já resgatou esta missão." to player
+            stop
+        if {rpg::%{_id}%::quest::hunt::progress} < 5:
+            send "{@prefix}&cA missão ainda não foi concluída." to player
+            stop
+        set {rpg::%{_id}%::quest::hunt::claimed} to true
+        add 100 to {rpg::%{_id}%::coins}
+        rpg_add_xp(player, 50)
+        send "{@prefix}&aMissão concluída! Recompensa: &6100 moedas &ae &e50 XP&a." to player
+
+on death of living entity:
+    attacker is a player
+    victim is not a player
+    set {_id} to "%uuid of attacker%"
+    if {rpg::%{_id}%::created} is true:
+        if {rpg::%{_id}%::quest::hunt::claimed} is not true:
+            add 1 to {rpg::%{_id}%::quest::hunt::progress}
