@@ -1,29 +1,28 @@
 options:
     prefix: &8[&6RPG Revolution&8] &r
 
-# Configure one RPG region per Minecraft world.
+# Each Minecraft world can represent one RPG region.
 # Admin: /rpgregiao definir <nome> <nivel-minimo>
-# Player: /rpgregiao
-
-command /rpgregiao [<text>] [<integer>]:
+command /rpgregiao [<text>] [<text>] [<integer>]:
     permission: rpg.admin
     permission message: &cVocê não tem permissão para configurar regiões.
     trigger:
         if arg-1 is "definir":
-            if arg-2 is not set:
+            if arg-2 is not set or arg-3 is not set:
                 send "{@prefix}&cUse /rpgregiao definir <nome> <nivel-minimo>." to sender
                 stop
-            if arg-2 < 1:
+            if arg-3 < 1:
                 send "{@prefix}&cO nível mínimo precisa ser pelo menos 1." to sender
                 stop
-            set {rpg::world::%world of player%::name} to arg-2
-            set {rpg::world::%world of player%::min-level} to arg-2
-            send "{@prefix}&aRegião deste mundo configurada." to player
+            set {_world} to "%world of player%"
+            set {rpg::world::%{_world}%::name} to arg-2
+            set {rpg::world::%{_world}%::min-level} to arg-3
+            send "{@prefix}&aRegião %{_world}% configurada como &e%arg-2%&a. Nível recomendado: &f%arg-3%&a." to player
             stop
-        send "{@prefix}&eUso administrativo: /rpgregiao definir <nome> <nivel-minimo>" to sender
+        send "{@prefix}&eUso: /rpgregiao definir <nome> <nivel-minimo>" to sender
 
 command /regiao:
-    aliases: /regiões, /regioes
+    aliases: /regioes
     trigger:
         set {_world} to "%world of player%"
         if {rpg::world::%{_world}%::name} is set:
@@ -39,4 +38,4 @@ command /rpgmundos:
     trigger:
         send "&6&lGUIA DE EXPLORAÇÃO" to player
         send "&7Cada mundo pode receber nome e nível recomendado com /rpgregiao definir."
-        send "&7Converse com a administração antes de entrar em áreas de nível alto." to player
+        send "&7O nível recomendado é informativo; não bloqueia a entrada automaticamente." to player
