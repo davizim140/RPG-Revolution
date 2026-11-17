@@ -1,0 +1,208 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Classes are permanent once selected. Specialization unlocks at level 20.
+# No Skript addons are required.
+
+on join:
+    set {_id} to "%uuid of player%"
+    if {rpg::%{_id}%::class} is not set:
+        set {rpg::%{_id}%::class} to "nenhuma"
+    if {rpg::%{_id}%::specialization} is not set:
+        set {rpg::%{_id}%::specialization} to "nenhuma"
+    if {rpg::%{_id}%::mana} is not set:
+        set {rpg::%{_id}%::mana} to 100
+    if {rpg::%{_id}%::mana-max} is not set:
+        set {rpg::%{_id}%::mana-max} to 100
+    if {rpg::%{_id}%::skill-cooldown} is not set:
+        set {rpg::%{_id}%::skill-cooldown} to 0
+
+every 2 seconds:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        if {rpg::%{_id}%::created} is true:
+            if {rpg::%{_id}%::mana} < {rpg::%{_id}%::mana-max}:
+                add 2 to {rpg::%{_id}%::mana}
+                if {rpg::%{_id}%::mana} > {rpg::%{_id}%::mana-max}:
+                    set {rpg::%{_id}%::mana} to {rpg::%{_id}%::mana-max}
+            if {rpg::%{_id}%::skill-cooldown} > 0:
+                remove 2 from {rpg::%{_id}%::skill-cooldown}
+                if {rpg::%{_id}%::skill-cooldown} < 0:
+                    set {rpg::%{_id}%::skill-cooldown} to 0
+
+command /classe [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is not set:
+            send "&6&lSUA CLASSE" to player
+            send "&eClasse: &f%{rpg::%{_id}%::class}%" to player
+            send "&eEspecialização: &f%{rpg::%{_id}%::specialization}%" to player
+            send "&eMana: &b%{rpg::%{_id}%::mana}%&7/&b%{rpg::%{_id}%::mana-max}%" to player
+            send "&7Escolha com &f/classe <guerreiro|mago|assassino|arqueiro>&7." to player
+            stop
+        if {rpg::%{_id}%::class} is not "nenhuma":
+            send "{@prefix}&cSua classe já foi escolhida e não pode ser trocada." to player
+            stop
+        if arg-1 is "guerreiro":
+            set {rpg::%{_id}%::class} to "guerreiro"
+            send "{@prefix}&cVocê escolheu a classe GUERREIRO." to player
+        else if arg-1 is "mago":
+            set {rpg::%{_id}%::class} to "mago"
+            send "{@prefix}&5Você escolheu a classe MAGO." to player
+        else if arg-1 is "assassino":
+            set {rpg::%{_id}%::class} to "assassino"
+            send "{@prefix}&8Você escolheu a classe ASSASSINO." to player
+        else if arg-1 is "arqueiro":
+            set {rpg::%{_id}%::class} to "arqueiro"
+            send "{@prefix}&aVocê escolheu a classe ARQUEIRO." to player
+        else:
+            send "{@prefix}&cClasse inválida. Opções: guerreiro, mago, assassino, arqueiro." to player
+            stop
+        send "&7Sua escolha é permanente. Use &f/habilidades &7para conhecer sua técnica." to player
+
+command /especializar [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::level} < 20:
+            send "{@prefix}&cVocê precisa alcançar o nível 20 para se especializar." to player
+            stop
+        if {rpg::%{_id}%::class} is "nenhuma":
+            send "{@prefix}&cEscolha uma classe primeiro com /classe." to player
+            stop
+        if {rpg::%{_id}%::specialization} is not "nenhuma":
+            send "{@prefix}&cVocê já escolheu sua especialização." to player
+            stop
+        if arg-1 is not set:
+            send "&6&lESPECIALIZAÇÕES DISPONÍVEIS" to player
+            if {rpg::%{_id}%::class} is "guerreiro":
+                send "&c/ especializar guardiao &7- maior resistência." to player
+                send "&c/especializar berserker &7- maior dano." to player
+            else if {rpg::%{_id}%::class} is "mago":
+                send "&5/especializar elementalista &7- poder arcano." to player
+                send "&5/especializar arcanista &7- regeneração de mana." to player
+            else if {rpg::%{_id}%::class} is "assassino":
+                send "&8/especializar sombra &7- mobilidade e furtividade." to player
+                send "&8/especializar duelista &7- dano em combate." to player
+            else if {rpg::%{_id}%::class} is "arqueiro":
+                send "&a/especializar francoatirador &7- dano à distância." to player
+                send "&a/especializar cacador &7- sobrevivência na exploração." to player
+            stop
+        if {rpg::%{_id}%::class} is "guerreiro":
+            if arg-1 is "guardiao" or "berserker":
+                set {rpg::%{_id}%::specialization} to arg-1
+            else:
+                send "{@prefix}&cEspecialização inválida para Guerreiro." to player
+                stop
+        else if {rpg::%{_id}%::class} is "mago":
+            if arg-1 is "elementalista" or "arcanista":
+                set {rpg::%{_id}%::specialization} to arg-1
+            else:
+                send "{@prefix}&cEspecialização inválida para Mago." to player
+                stop
+        else if {rpg::%{_id}%::class} is "assassino":
+            if arg-1 is "sombra" or "duelista":
+                set {rpg::%{_id}%::specialization} to arg-1
+            else:
+                send "{@prefix}&cEspecialização inválida para Assassino." to player
+                stop
+        else if {rpg::%{_id}%::class} is "arqueiro":
+            if arg-1 is "francoatirador" or "cacador":
+                set {rpg::%{_id}%::specialization} to arg-1
+            else:
+                send "{@prefix}&cEspecialização inválida para Arqueiro." to player
+                stop
+        send "{@prefix}&6Especialização desbloqueada: &f%{rpg::%{_id}%::specialization}%&6!" to player
+
+command /habilidades:
+    aliases: /skills
+    trigger:
+        set {_id} to "%uuid of player%"
+        send "&6&lHABILIDADES DE CLASSE" to player
+        if {rpg::%{_id}%::class} is "guerreiro":
+            send "&cImpacto &7- /habilidade | 20 mana | dano em inimigos próximos." to player
+        else if {rpg::%{_id}%::class} is "mago":
+            send "&5Explosão Arcana &7- /habilidade | 30 mana | dano mágico em área." to player
+        else if {rpg::%{_id}%::class} is "assassino":
+            send "&8Passo Sombrio &7- /habilidade | 25 mana | velocidade e invisibilidade." to player
+        else if {rpg::%{_id}%::class} is "arqueiro":
+            send "&aDisparo Preciso &7- /habilidade | 15 mana | dispara uma flecha." to player
+        else:
+            send "&eEscolha uma classe usando /classe." to player
+            stop
+        send "&7Mana atual: &b%{rpg::%{_id}%::mana}%&7/&b%{rpg::%{_id}%::mana-max}%" to player
+        send "&7Recarga atual: &f%{rpg::%{_id}%::skill-cooldown}% segundos" to player
+
+command /habilidade:
+    aliases: /skill
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::class} is not set:
+            send "{@prefix}&cSeu personagem ainda não foi inicializado." to player
+            stop
+        if {rpg::%{_id}%::class} is "nenhuma":
+            send "{@prefix}&cEscolha sua classe com /classe." to player
+            stop
+        if {rpg::%{_id}%::skill-cooldown} > 0:
+            send "{@prefix}&cA habilidade recarrega em %{rpg::%{_id}%::skill-cooldown}% segundos." to player
+            stop
+
+        if {rpg::%{_id}%::class} is "guerreiro":
+            if {rpg::%{_id}%::mana} < 20:
+                send "{@prefix}&cMana insuficiente. Você precisa de 20." to player
+                stop
+            remove 20 from {rpg::%{_id}%::mana}
+            set {rpg::%{_id}%::skill-cooldown} to 8
+            loop all living entities in radius 4 around player:
+                if loop-entity is not player:
+                    if loop-entity is not an armor stand:
+                        damage loop-entity by 6
+            send "{@prefix}&cIMPACTO! &7Você atingiu os inimigos próximos." to player
+
+        else if {rpg::%{_id}%::class} is "mago":
+            if {rpg::%{_id}%::mana} < 30:
+                send "{@prefix}&cMana insuficiente. Você precisa de 30." to player
+                stop
+            remove 30 from {rpg::%{_id}%::mana}
+            set {rpg::%{_id}%::skill-cooldown} to 10
+            loop all living entities in radius 5 around player:
+                if loop-entity is not player:
+                    if loop-entity is not an armor stand:
+                        damage loop-entity by 7
+            send "{@prefix}&5EXPLOSÃO ARCANA! &7Energia mágica atingiu a área." to player
+
+        else if {rpg::%{_id}%::class} is "assassino":
+            if {rpg::%{_id}%::mana} < 25:
+                send "{@prefix}&cMana insuficiente. Você precisa de 25." to player
+                stop
+            remove 25 from {rpg::%{_id}%::mana}
+            set {rpg::%{_id}%::skill-cooldown} to 15
+            apply speed 2 to player for 5 seconds
+            apply invisibility 1 to player for 5 seconds
+            send "{@prefix}&8PASSO SOMBRIO! &7Você desapareceu por alguns instantes." to player
+
+        else if {rpg::%{_id}%::class} is "arqueiro":
+            if {rpg::%{_id}%::mana} < 15:
+                send "{@prefix}&cMana insuficiente. Você precisa de 15." to player
+                stop
+            remove 15 from {rpg::%{_id}%::mana}
+            set {rpg::%{_id}%::skill-cooldown} to 5
+            shoot an arrow from player
+            send "{@prefix}&aDISPARO PRECISO! &7Flecha lançada." to player
+
+on damage:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    if {rpg::%{_id}%::class} is "guerreiro":
+        increase damage by 1
+    if {rpg::%{_id}%::specialization} is "berserker":
+        increase damage by 1
+    if {rpg::%{_id}%::specialization} is "duelista":
+        increase damage by 0.5
+
+on damage:
+    victim is a player
+    set {_id} to "%uuid of victim%"
+    if {rpg::%{_id}%::specialization} is "guardiao":
+        decrease damage by 1
+    if {rpg::%{_id}%::specialization} is "cacador":
+        decrease damage by 0.5
