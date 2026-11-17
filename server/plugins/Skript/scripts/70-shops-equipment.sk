@@ -2,7 +2,6 @@ options:
     prefix: &8[&6RPG Revolution&8] &r
 
 command /rpgloja:
-    aliases: /loj arpg
     trigger:
         send "&6&lLOJA DO AVENTUREIRO" to player
         send "&e/comprar espada &7- Espada de ferro: 150 moedas" to player
@@ -50,5 +49,3 @@ command /comprar <text>:
             send "{@prefix}&aComida comprada por 40 moedas." to player
         else:
             send "{@prefix}&cItem inválido. Use /rpgloja." to player
-
-# Equipment purchased here is ordinary Minecraft equipment and can be used normally.
