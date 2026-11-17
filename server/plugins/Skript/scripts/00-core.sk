@@ -57,23 +57,11 @@ command /rpgajuda:
         send "&e/saldo &7- Consultar moedas." to player
         send "&e/pagar <jogador> <valor> &7- Transferir moedas." to player
         send "&e/classe &7- Consultar ou escolher uma classe." to player
-        send "&e/habilidades &7- Ver sua habilidade." to player
-        send "&e/habilidade &7- Usar sua habilidade." to player
+        send "&e/habilidades e /habilidade &7- Ver e usar sua técnica." to player
         send "&e/especializar &7- Ver especializações (nível 20+)." to player
-        send "&e/missoes &7- Ver sua missão de caça." to player
-        send "&e/resgatar &7- Resgatar missão concluída." to player
-
-command /rpgxp <player> <integer>:
-    permission: rpg.admin
-    permission message: &cVocê não tem permissão.
-    trigger:
-        if arg-2 <= 0:
-            send "{@prefix}&cA quantidade precisa ser positiva." to sender
-            stop
-        set {_id} to "%uuid of arg-1%"
-        if {rpg::%{_id}%::created} is not set:
-            send "{@prefix}&cEsse jogador ainda não criou um personagem." to sender
-            stop
-        rpg_add_xp(arg-1, arg-2)
-        send "{@prefix}&aVocê adicionou &f%arg-2% XP &apara %arg-1%." to sender
-        send "{@prefix}&aVocê recebeu &f%arg-2% XP&a." to arg-1
+        send "&e/missoes e /resgatar &7- Missões." to player
+        send "&e/recompensadiaria &7- Recompensa diária." to player
+        send "&e/rpgloja e /comprar &7- Loja." to player
+        send "&e/masmorra &7- Enfrentar o chefe (nível 5+)." to player
+        send "&e/guilda &7- Ver sua guilda; use /guildacriar e /guildaconvidar." to player
+        send "&e/regiao &7- Ver a região atual." to player
