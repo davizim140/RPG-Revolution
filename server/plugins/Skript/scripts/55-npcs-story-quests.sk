@@ -1,0 +1,124 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# NPC dialogue is command-driven so it works without Citizens or Skript addons.
+# Players talk to the town characters with /npc guia, /npc ferreiro or /npc explorador.
+
+command /npc <text>:
+    trigger:
+        if arg-1 is "guia":
+            send "&6&l[ELARA - GUIA DA CIDADE]" to player
+            send "&fBem-vindo, aventureiro. Este mundo recompensa quem explora e ajuda os habitantes." to player
+            send "&e/missaoaceitar madeira &7- Recolha 8 troncos de carvalho." to player
+            send "&e/missaoaceitar zumbis &7- Derrote 5 zumbis." to player
+            send "&7Consulte seu progresso com /minhasmissoes." to player
+        else if arg-1 is "ferreiro":
+            send "&6&l[BRAM - FERREIRO]" to player
+            send "&fPrecisa de equipamento? Minha loja vende itens básicos." to player
+            send "&e/rpgloja &7- Ver equipamentos e suprimentos." to player
+            send "&e/comprar <item> &7- Comprar com moedas do RPG." to player
+        else if arg-1 is "explorador":
+            send "&6&l[NYRA - EXPLORADORA]" to player
+            send "&fAs regiões mais perigosas exigem preparo. Consulte seu mapa de mundos." to player
+            send "&e/regiao &7- Ver a região atual." to player
+            send "&e/rpgmundos &7- Guia de exploração." to player
+            send "&e/masmorra &7- Desafio de chefe a partir do nível 5." to player
+        else:
+            send "{@prefix}&cPersonagem não encontrado. NPCs disponíveis: guia, ferreiro, explorador." to player
+
+command /missaoaceitar <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::created} is not true:
+            send "{@prefix}&cSeu personagem não foi inicializado." to player
+            stop
+        if arg-1 is "madeira":
+            if {rpg::%{_id}%::story::wood::done} is true:
+                send "{@prefix}&aVocê já concluiu essa tarefa." to player
+                stop
+            if {rpg::%{_id}%::story::wood::active} is true:
+                send "{@prefix}&eTarefa ativa: recolha 8 troncos de carvalho. Progresso: %{rpg::%{_id}%::story::wood::progress}%/8." to player
+                stop
+            set {rpg::%{_id}%::story::wood::active} to true
+            set {rpg::%{_id}%::story::wood::progress} to 0
+            send "&6&lNOVA MISSÃO: SUPRIMENTOS PARA A CIDADE" to player
+            send "&fElara precisa de 8 troncos de carvalho. Recolha-os e volte falar com ela." to player
+            stop
+        if arg-1 is "zumbis":
+            if {rpg::%{_id}%::story::wood::done} is not true:
+                send "{@prefix}&cConclua primeiro a missão de madeira." to player
+                stop
+            if {rpg::%{_id}%::story::zombies::done} is true:
+                send "{@prefix}&aVocê já concluiu essa tarefa." to player
+                stop
+            if {rpg::%{_id}%::story::zombies::active} is true:
+                send "{@prefix}&eTarefa ativa: derrote 5 zumbis. Progresso: %{rpg::%{_id}%::story::zombies::progress}%/5." to player
+                stop
+            set {rpg::%{_id}%::story::zombies::active} to true
+            set {rpg::%{_id}%::story::zombies::progress} to 0
+            send "&6&lNOVA MISSÃO: AMEAÇA À CIDADE" to player
+            send "&fBram relatou zumbis nas estradas. Derrote 5 e retorne ao guia." to player
+            stop
+        send "{@prefix}&cMissão inválida. Use madeira ou zumbis."
+
+command /minhasmissoes:
+    aliases: /minhamissao
+    trigger:
+        set {_id} to "%uuid of player%"
+        send "&6&lMISSÕES DA HISTÓRIA" to player
+        if {rpg::%{_id}%::story::wood::done} is true:
+            send "&a[Concluída] Suprimentos para a cidade." to player
+        else if {rpg::%{_id}%::story::wood::active} is true:
+            send "&e[Ativa] Madeira: &f%{rpg::%{_id}%::story::wood::progress}%&7/8 troncos." to player
+        else:
+            send "&7[Disponível] Fale com /npc guia e aceite madeira." to player
+        if {rpg::%{_id}%::story::zombies::done} is true:
+            send "&a[Concluída] Ameaça à cidade." to player
+        else if {rpg::%{_id}%::story::zombies::active} is true:
+            send "&e[Ativa] Zumbis: &f%{rpg::%{_id}%::story::zombies::progress}%&7/5." to player
+        else if {rpg::%{_id}%::story::wood::done} is true:
+            send "&7[Disponível] Fale com /npc guia e aceite zumbis." to player
+
+command /missaoentregar:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::story::wood::active} is true:
+            if {rpg::%{_id}%::story::wood::progress} >= 8:
+                set {rpg::%{_id}%::story::wood::active} to false
+                set {rpg::%{_id}%::story::wood::done} to true
+                add 75 to {rpg::%{_id}%::coins}
+                rpg_add_xp(player, 40)
+                send "{@prefix}&aEntrega aceita! Recompensa: 75 moedas e 40 XP." to player
+                send "&eAgora aceite a missão zumbis com /missaoaceitar zumbis." to player
+                stop
+        if {rpg::%{_id}%::story::zombies::active} is true:
+            if {rpg::%{_id}%::story::zombies::progress} >= 5:
+                set {rpg::%{_id}%::story::zombies::active} to false
+                set {rpg::%{_id}%::story::zombies::done} to true
+                add 125 to {rpg::%{_id}%::coins}
+                rpg_add_xp(player, 75)
+                send "{@prefix}&aA cidade está mais segura! Recompensa: 125 moedas e 75 XP." to player
+                stop
+        send "{@prefix}&cVocê ainda não concluiu uma missão que possa entregar." to player
+
+on break:
+    if event-block is oak log:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::story::wood::active} is true:
+            if {rpg::%{_id}%::story::wood::progress} < 8:
+                add 1 to {rpg::%{_id}%::story::wood::progress}
+                if {rpg::%{_id}%::story::wood::progress} is 8:
+                    send "{@prefix}&aObjetivo concluído! Volte e use /missaoentregar." to player
+                else:
+                    send "&7Madeira: &f%{rpg::%{_id}%::story::wood::progress}%&7/8" to player
+
+on death of zombie:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    if {rpg::%{_id}%::story::zombies::active} is true:
+        if {rpg::%{_id}%::story::zombies::progress} < 5:
+            add 1 to {rpg::%{_id}%::story::zombies::progress}
+            if {rpg::%{_id}%::story::zombies::progress} is 5:
+                send "{@prefix}&aObjetivo concluído! Volte ao guia e use /missaoentregar." to attacker
+            else:
+                send "&7Zumbis derrotados: &f%{rpg::%{_id}%::story::zombies::progress}%&7/5" to attacker
