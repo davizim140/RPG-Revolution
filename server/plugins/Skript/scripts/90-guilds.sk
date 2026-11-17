@@ -1,0 +1,84 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /guilda [<text>] [<player>] [<text>]:
+    aliases: /g
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is not set:
+            send "&6&lSISTEMA DE GUILDAS" to player
+            send "&e/guilda criar <nome>" to player
+            send "&e/guilda convidar <jogador>" to player
+            send "&e/guilda aceitar" to player
+            send "&e/guilda info" to player
+            send "&e/guilda sair" to player
+            stop
+        if arg-1 is "criar":
+            if {rpg::%{_id}%::guild} is set:
+                send "{@prefix}&cVocê já pertence a uma guilda." to player
+                stop
+            if arg-3 is not set:
+                send "{@prefix}&cUse /guilda criar <nome>." to player
+                stop
+            if {rpg::guild::%arg-3%::leader} is set:
+                send "{@prefix}&cJá existe uma guilda com esse nome." to player
+                stop
+            set {rpg::guild::%arg-3%::leader} to {_id}
+            set {rpg::%{_id}%::guild} to arg-3
+            add {_id} to {rpg::guild::%arg-3%::members::*}
+            send "{@prefix}&aGuilda &e%arg-3% &acriada!" to player
+            stop
+        if arg-1 is "convidar":
+            if {rpg::%{_id}%::guild} is not set:
+                send "{@prefix}&cVocê não pertence a uma guilda." to player
+                stop
+            set {_guild} to {rpg::%{_id}%::guild}
+            if {rpg::guild::%{_guild}%::leader} is not {_id}:
+                send "{@prefix}&cSomente o líder pode convidar jogadores." to player
+                stop
+            if arg-2 is not set:
+                send "{@prefix}&cUse /guilda convidar <jogador>." to player
+                stop
+            set {_target} to "%uuid of arg-2%"
+            if {rpg::%{_target}%::guild} is set:
+                send "{@prefix}&cEsse jogador já está em uma guilda." to player
+                stop
+            set {rpg::guild-invite::%{_target}%} to {_guild}
+            send "{@prefix}&aConvite enviado para %arg-2%." to player
+            send "{@prefix}&eVocê foi convidado para a guilda &6%{_guild}%&e. Use /guilda aceitar." to arg-2
+            stop
+        if arg-1 is "aceitar":
+            if {rpg::%{_id}%::guild} is set:
+                send "{@prefix}&cVocê já pertence a uma guilda." to player
+                stop
+            if {rpg::guild-invite::%{_id}%} is not set:
+                send "{@prefix}&cVocê não possui convites pendentes." to player
+                stop
+            set {_guild} to {rpg::guild-invite::%{_id}%}
+            set {rpg::%{_id}%::guild} to {_guild}
+            add {_id} to {rpg::guild::%{_guild}%::members::*}
+            delete {rpg::guild-invite::%{_id}%}
+            send "{@prefix}&aVocê entrou na guilda &e%{_guild}%&a!" to player
+            stop
+        if arg-1 is "sair":
+            if {rpg::%{_id}%::guild} is not set:
+                send "{@prefix}&cVocê não pertence a uma guilda." to player
+                stop
+            set {_guild} to {rpg::%{_id}%::guild}
+            if {rpg::guild::%{_guild}%::leader} is {_id}:
+                send "{@prefix}&cO líder não pode sair. Transfira a liderança ou encerre a guilda (função ainda indisponível)." to player
+                stop
+            remove {_id} from {rpg::guild::%{_guild}%::members::*}
+            delete {rpg::%{_id}%::guild}
+            send "{@prefix}&aVocê saiu da guilda." to player
+            stop
+        if arg-1 is "info":
+            if {rpg::%{_id}%::guild} is not set:
+                send "{@prefix}&cVocê não pertence a uma guilda." to player
+                stop
+            set {_guild} to {rpg::%{_id}%::guild}
+            send "&6&lGUILDA &e%{_guild}%" to player
+            send "&7Líder UUID: &f%{rpg::guild::%{_guild}%::leader}%" to player
+            send "&7Integrantes: &f%size of {rpg::guild::%{_guild}%::members::*}%" to player
+            stop
+        send "{@prefix}&cSubcomando inválido. Use /guilda." to player
