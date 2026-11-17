@@ -1,0 +1,75 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+on join:
+    set {_id} to "%uuid of player%"
+    if {rpg::%{_id}%::created} is not set:
+        set {rpg::%{_id}%::created} to true
+        set {rpg::%{_id}%::level} to 1
+        set {rpg::%{_id}%::xp} to 0
+        set {rpg::%{_id}%::coins} to 100
+        set {rpg::%{_id}%::points} to 0
+        set {rpg::%{_id}%::strength} to 1
+        set {rpg::%{_id}%::defense} to 1
+        set {rpg::%{_id}%::agility} to 1
+        set {rpg::%{_id}%::intelligence} to 1
+        set {rpg::%{_id}%::quest::hunt::progress} to 0
+        set {rpg::%{_id}%::quest::hunt::claimed} to false
+        send "{@prefix}&aPersonagem criado! Você recebeu &e100 moedas&a." to player
+    send "{@prefix}&eBem-vindo ao mundo. Use &f/rpgajuda&e para ver os comandos." to player
+
+function rpg_add_xp(p: player, amount: number):
+    set {_id} to "%uuid of {_p}%"
+    add {_amount} to {rpg::%{_id}%::xp}
+    while {rpg::%{_id}%::xp} >= ({rpg::%{_id}%::level} * 100):
+        set {_needed} to {rpg::%{_id}%::level} * 100
+        remove {_needed} from {rpg::%{_id}%::xp}
+        add 1 to {rpg::%{_id}%::level}
+        add 2 to {rpg::%{_id}%::points}
+        send "{@prefix}&6&lSUBIU DE NÍVEL! &eAgora você é nível &f%{rpg::%{_id}%::level}%&e. Recebeu 2 pontos de atributo." to {_p}
+
+command /perfil:
+    aliases: /profile
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::created} is not set:
+            send "{@prefix}&cPersonagem não inicializado. Reconecte-se." to player
+            stop
+        set {_level} to {rpg::%{_id}%::level}
+        set {_needed} to {_level} * 100
+        send "&6&m----------------------------------------" to player
+        send "&6&lRPG REVOLUTION &8| &f%player%" to player
+        send "&eNível: &f%{_level}%" to player
+        send "&eXP: &f%{rpg::%{_id}%::xp}%&7/&f%{_needed}%" to player
+        send "&6Moedas: &f%{rpg::%{_id}%::coins}%" to player
+        send "&dPontos disponíveis: &f%{rpg::%{_id}%::points}%" to player
+        send "&cForça: &f%{rpg::%{_id}%::strength}% &8| &9Defesa: &f%{rpg::%{_id}%::defense}%" to player
+        send "&aAgilidade: &f%{rpg::%{_id}%::agility}% &8| &5Inteligência: &f%{rpg::%{_id}%::intelligence}%" to player
+        send "&6&m----------------------------------------" to player
+
+command /rpgajuda:
+    aliases: /rpghelp
+    trigger:
+        send "&6&lRPG REVOLUTION &7- Comandos" to player
+        send "&e/perfil &7- Ver seu personagem." to player
+        send "&e/atributos &7- Ver seus atributos." to player
+        send "&e/upar <forca|defesa|agilidade|inteligencia> &7- Gastar 1 ponto." to player
+        send "&e/saldo &7- Consultar moedas." to player
+        send "&e/pagar <jogador> <valor> &7- Transferir moedas." to player
+        send "&e/missoes &7- Ver sua missão de caça." to player
+        send "&e/resgatar &7- Resgatar missão concluída." to player
+
+command /rpgxp <player> <integer>:
+    permission: rpg.admin
+    permission message: &cVocê não tem permissão.
+    trigger:
+        if arg-2 <= 0:
+            send "{@prefix}&cA quantidade precisa ser positiva." to sender
+            stop
+        set {_id} to "%uuid of arg-1%"
+        if {rpg::%{_id}%::created} is not set:
+            send "{@prefix}&cEsse jogador ainda não criou um personagem." to sender
+            stop
+        rpg_add_xp(arg-1, arg-2)
+        send "{@prefix}&aVocê adicionou &f%arg-2% XP &apara %arg-1%." to sender
+        send "{@prefix}&aVocê recebeu &f%arg-2% XP&a." to arg-1
