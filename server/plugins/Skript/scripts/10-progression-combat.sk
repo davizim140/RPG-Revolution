@@ -9,6 +9,17 @@ on death of living entity:
         rpg_add_xp(attacker, 10)
         add 5 to {rpg::%{_id}%::coins}
         send "{@prefix}&a+10 XP &8| &6+5 moedas &7por derrotar uma criatura." to attacker
+        set {_party} to {rpg::%{_id}%::party}
+        if {_party} is set:
+            loop all players:
+                set {_member-id} to "%uuid of loop-player%"
+                if {_member-id} is not {_id}:
+                    if {rpg::%{_member-id}%::party} is {_party}:
+                        if world of loop-player is world of attacker:
+                            if distance between loop-player and attacker <= 16:
+                                rpg_add_xp(loop-player, 5)
+                                add 2 to {rpg::%{_member-id}%::coins}
+                                send "&a+5 XP &8| &6+2 moedas &7(partilha de grupo)." to loop-player
 
 on damage of living entity:
     attacker is a player
