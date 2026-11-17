@@ -1,0 +1,16 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Uses Minecraft's date expression and a per-player claim marker.
+command /recompensadiaria:
+    aliases: /daily
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_today} to now formatted as "yyyy-MM-dd"
+        if {rpg::%{_id}%::daily-date} is {_today}:
+            send "{@prefix}&cVocê já resgatou sua recompensa hoje." to player
+            stop
+        set {rpg::%{_id}%::daily-date} to {_today}
+        add 50 to {rpg::%{_id}%::coins}
+        rpg_add_xp(player, 25)
+        send "{@prefix}&aRecompensa diária: &650 moedas &ae &e25 XP&a!" to player
