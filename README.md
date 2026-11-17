@@ -39,7 +39,7 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 - /missoes, /resgatar, /recompensadiaria
 - /rpgloja, /comprar <espada|armadura|arco|comida>
 - /masmorra
-- /guilda, /guilda criar <nome>, /guilda convidar <jogador>, /guilda aceitar, /guilda info, /guilda sair
+- /guilda, /guildacriar <nome>, /guildaconvidar <jogador>, /guildaaceitar, /guildainfo, /guildasair
 - /regiao, /rpgmundos
 - /rpgregiao definir <nome> <nivel-minimo> (admin; configura o mundo atual)
 - /rpgxp <jogador> <quantidade> e /rpgmoedas <jogador> <saldo> (admin)
