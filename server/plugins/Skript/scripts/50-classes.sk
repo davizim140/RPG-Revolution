@@ -22,7 +22,10 @@ every 2 seconds:
         set {_id} to "%uuid of loop-player%"
         if {rpg::%{_id}%::created} is true:
             if {rpg::%{_id}%::mana} < {rpg::%{_id}%::mana-max}:
-                add 2 to {rpg::%{_id}%::mana}
+                if {rpg::%{_id}%::specialization} is "arcanista":
+                    add 4 to {rpg::%{_id}%::mana}
+                else:
+                    add 2 to {rpg::%{_id}%::mana}
                 if {rpg::%{_id}%::mana} > {rpg::%{_id}%::mana-max}:
                     set {rpg::%{_id}%::mana} to {rpg::%{_id}%::mana-max}
             if {rpg::%{_id}%::skill-cooldown} > 0:
@@ -167,7 +170,10 @@ command /habilidade:
             loop all living entities in radius 5 around player:
                 if loop-entity is not player:
                     if loop-entity is not an armor stand:
-                        damage loop-entity by 7
+                        if {rpg::%{_id}%::specialization} is "elementalista":
+                            damage loop-entity by 9
+                        else:
+                            damage loop-entity by 7
             send "{@prefix}&5EXPLOSÃO ARCANA! &7Energia mágica atingiu a área." to player
 
         else if {rpg::%{_id}%::class} is "assassino":
@@ -176,8 +182,12 @@ command /habilidade:
                 stop
             remove 25 from {rpg::%{_id}%::mana}
             set {rpg::%{_id}%::skill-cooldown} to 15
-            apply speed 2 to player for 5 seconds
-            apply invisibility 1 to player for 5 seconds
+            if {rpg::%{_id}%::specialization} is "sombra":
+                apply speed 3 to player for 8 seconds
+                apply invisibility 1 to player for 8 seconds
+            else:
+                apply speed 2 to player for 5 seconds
+                apply invisibility 1 to player for 5 seconds
             send "{@prefix}&8PASSO SOMBRIO! &7Você desapareceu por alguns instantes." to player
 
         else if {rpg::%{_id}%::class} is "arqueiro":
@@ -194,14 +204,27 @@ on damage:
     set {_id} to "%uuid of attacker%"
     if {rpg::%{_id}%::class} is "guerreiro":
         increase damage by 1
+    else if {rpg::%{_id}%::class} is "mago":
+        increase damage by 0.5
+    else if {rpg::%{_id}%::class} is "assassino":
+        increase damage by 0.5
     if {rpg::%{_id}%::specialization} is "berserker":
         increase damage by 1
     if {rpg::%{_id}%::specialization} is "duelista":
         increase damage by 0.5
+    if {rpg::%{_id}%::class} is "arqueiro":
+        if attacker's tool is bow:
+            increase damage by 1
+            if {rpg::%{_id}%::specialization} is "francoatirador":
+                increase damage by 2
 
 on damage:
     victim is a player
     set {_id} to "%uuid of victim%"
+    set {_defense} to {rpg::%{_id}%::defense}
+    if {_defense} > 1:
+        set {_reduction} to ({_defense} - 1) * 0.25
+        decrease damage by {_reduction}
     if {rpg::%{_id}%::specialization} is "guardiao":
         decrease damage by 1
     if {rpg::%{_id}%::specialization} is "cacador":
