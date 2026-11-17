@@ -56,12 +56,13 @@ command /rpgajuda:
         send "&e/upar <forca|defesa|agilidade|inteligencia> &7- Gastar 1 ponto." to player
         send "&e/saldo &7- Consultar moedas." to player
         send "&e/pagar <jogador> <valor> &7- Transferir moedas." to player
-        send "&e/classe &7- Consultar ou escolher uma classe." to player
-        send "&e/habilidades e /habilidade &7- Ver e usar sua técnica." to player
-        send "&e/especializar &7- Ver especializações (nível 20+)." to player
-        send "&e/missoes e /resgatar &7- Missões." to player
+        send "&e/classe, /habilidades, /habilidade, /especializar &7- Classes." to player
+        send "&e/missoes e /resgatar &7- Missão inicial." to player
+        send "&e/npc <guia|ferreiro|explorador> &7- Conversar com personagens." to player
+        send "&e/missaoaceitar <madeira|zumbis> &7- Iniciar missão da história." to player
+        send "&e/minhasmissoes, /missaoentregar &7- Progresso e entrega." to player
         send "&e/recompensadiaria &7- Recompensa diária." to player
         send "&e/rpgloja e /comprar &7- Loja." to player
         send "&e/masmorra &7- Enfrentar o chefe (nível 5+)." to player
-        send "&e/guilda &7- Ver sua guilda; use /guildacriar e /guildaconvidar." to player
-        send "&e/regiao &7- Ver a região atual." to player
+        send "&e/guilda &7- Sistema de guildas." to player
+        send "&e/regiao e /rpgmundos &7- Exploração." to player
