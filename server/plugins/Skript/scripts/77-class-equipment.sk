@@ -1,0 +1,102 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Equipamentos exclusivos das classes. Os bônus são aplicados apenas ao portador
+# da classe correspondente, evitando que outra classe aproveite o item.
+
+command /fabricarclasse <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::created} is not true:
+            send "{@prefix}&cSeu personagem não foi inicializado." to player
+            stop
+        if arg-1 is "cajado":
+            if {rpg::%{_id}%::class} is not "mago":
+                send "{@prefix}&cSomente Magos podem fabricar o Cajado Arcano." to player
+                stop
+            if player's inventory does not contain 2 blaze rods:
+                send "{@prefix}&cVocê precisa de 2 varas de blaze." to player
+                stop
+            if player's inventory does not contain 4 amethyst shards:
+                send "{@prefix}&cVocê precisa de 4 fragmentos de ametista." to player
+                stop
+            if {rpg::%{_id}%::coins} < 200:
+                send "{@prefix}&cVocê precisa de 200 moedas." to player
+                stop
+            remove 2 blaze rods from player's inventory
+            remove 4 amethyst shards from player's inventory
+            remove 200 from {rpg::%{_id}%::coins}
+            set {_item} to blaze rod
+            set name of {_item} to "&5Cajado Arcano"
+            set lore of {_item} to "&7Classe: &5Mago" and "&7Bônus: &d+2 dano mágico corpo a corpo"
+            give {_item} to player
+            send "{@prefix}&aCajado Arcano fabricado!" to player
+        else if arg-1 is "adaga":
+            if {rpg::%{_id}%::class} is not "assassino":
+                send "{@prefix}&cSomente Assassinos podem fabricar a Adaga Sombria." to player
+                stop
+            if player's inventory does not contain 2 gold ingots:
+                send "{@prefix}&cVocê precisa de 2 barras de ouro." to player
+                stop
+            if player's inventory does not contain 3 string:
+                send "{@prefix}&cVocê precisa de 3 fios." to player
+                stop
+            if {rpg::%{_id}%::coins} < 200:
+                send "{@prefix}&cVocê precisa de 200 moedas." to player
+                stop
+            remove 2 gold ingots from player's inventory
+            remove 3 string from player's inventory
+            remove 200 from {rpg::%{_id}%::coins}
+            set {_item} to golden sword
+            set name of {_item} to "&8Adaga Sombria"
+            set lore of {_item} to "&7Classe: &8Assassino" and "&7Bônus: &c+2 dano"
+            give {_item} to player
+            send "{@prefix}&aAdaga Sombria fabricada!" to player
+        else if arg-1 is "arco":
+            if {rpg::%{_id}%::class} is not "arqueiro":
+                send "{@prefix}&cSomente Arqueiros podem fabricar o Arco do Batedor." to player
+                stop
+            if player's inventory does not contain 3 string:
+                send "{@prefix}&cVocê precisa de 3 fios." to player
+                stop
+            if player's inventory does not contain 5 feathers:
+                send "{@prefix}&cVocê precisa de 5 penas." to player
+                stop
+            if player's inventory does not contain 2 sticks:
+                send "{@prefix}&cVocê precisa de 2 gravetos." to player
+                stop
+            if {rpg::%{_id}%::coins} < 200:
+                send "{@prefix}&cVocê precisa de 200 moedas." to player
+                stop
+            remove 3 string from player's inventory
+            remove 5 feathers from player's inventory
+            remove 2 sticks from player's inventory
+            remove 200 from {rpg::%{_id}%::coins}
+            set {_item} to bow
+            set name of {_item} to "&aArco do Batedor"
+            set lore of {_item} to "&7Classe: &aArqueiro" and "&7Bônus: &c+2 dano à distância"
+            give {_item} to player
+            send "{@prefix}&aArco do Batedor fabricado!" to player
+        else:
+            send "{@prefix}&cUse /fabricarclasse <cajado|adaga|arco>." to player
+
+on damage of living entity:
+    attacker is a player
+    victim is not a player
+    set {_id} to "%uuid of attacker%"
+    set {_weapon} to name of attacker's tool
+    if {rpg::%{_id}%::class} is "mago":
+        if {_weapon} contains "Cajado Arcano":
+            increase damage by 2
+    if {rpg::%{_id}%::class} is "assassino":
+        if {_weapon} contains "Adaga Sombria":
+            increase damage by 2
+
+on damage:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    if {rpg::%{_id}%::class} is "arqueiro":
+        if attacker's tool is bow:
+            set {_weapon} to name of attacker's tool
+            if {_weapon} contains "Arco do Batedor":
+                increase damage by 2
