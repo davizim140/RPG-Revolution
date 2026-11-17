@@ -1,0 +1,58 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Contrato diário de caça a esqueletos.
+command /contrato:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::bounty::date} is not set:
+            send "{@prefix}&eContrato disponível: derrote 10 esqueletos." to player
+            send "&7Aceite com /contrato aceitar." to player
+            stop
+        send "&6&lCONTRATO DE CAÇA" to player
+        send "&7Progresso: &f%{rpg::%{_id}%::bounty::progress}%&7/10 esqueletos." to player
+        if {rpg::%{_id}%::bounty::claimed} is true:
+            send "&aContrato concluído hoje. Volte amanhã." to player
+        else if {rpg::%{_id}%::bounty::progress} >= 10:
+            send "&eUse /contrato entregar para receber 150 moedas e 100 XP." to player
+
+command /contrato <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_today} to now formatted as "yyyy-MM-dd"
+        if arg-1 is "aceitar":
+            if {rpg::%{_id}%::bounty::date} is {_today}:
+                send "{@prefix}&cVocê já aceitou ou concluiu o contrato de hoje." to player
+                stop
+            set {rpg::%{_id}%::bounty::date} to {_today}
+            set {rpg::%{_id}%::bounty::progress} to 0
+            set {rpg::%{_id}%::bounty::claimed} to false
+            send "{@prefix}&aContrato aceito: derrote 10 esqueletos." to player
+        else if arg-1 is "entregar":
+            if {rpg::%{_id}%::bounty::date} is not {_today}:
+                send "{@prefix}&cAceite o contrato de hoje primeiro." to player
+                stop
+            if {rpg::%{_id}%::bounty::claimed} is true:
+                send "{@prefix}&cVocê já recebeu a recompensa." to player
+                stop
+            if {rpg::%{_id}%::bounty::progress} < 10:
+                send "{@prefix}&cVocê ainda precisa derrotar mais esqueletos." to player
+                stop
+            set {rpg::%{_id}%::bounty::claimed} to true
+            add 150 to {rpg::%{_id}%::coins}
+            rpg_add_xp(player, 100)
+            send "{@prefix}&aContrato entregue: &6150 moedas &ae &e100 XP&a!" to player
+        else:
+            send "{@prefix}&cUse /contrato, /contrato aceitar ou /contrato entregar." to player
+
+on death of skeleton:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    set {_today} to now formatted as "yyyy-MM-dd"
+    if {rpg::%{_id}%::bounty::date} is {_today}:
+        if {rpg::%{_id}%::bounty::claimed} is not true:
+            if {rpg::%{_id}%::bounty::progress} < 10:
+                add 1 to {rpg::%{_id}%::bounty::progress}
+                send "&7Contrato: &f%{rpg::%{_id}%::bounty::progress}%&7/10 esqueletos." to attacker
+                if {rpg::%{_id}%::bounty::progress} is 10:
+                    send "{@prefix}&aObjetivo concluído! Use /contrato entregar." to attacker
