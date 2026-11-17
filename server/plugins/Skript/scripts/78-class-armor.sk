@@ -1,0 +1,140 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Armaduras de classe: quatro peças. O conjunto completo ativa bônus de combate.
+# Sem addons; identificação por nome do item.
+
+command /fabricararmadura <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_class} to {rpg::%{_id}%::class}
+        if {_class} is "nenhuma" or not set:
+            send "{@prefix}&cEscolha uma classe antes de fabricar uma armadura." to player
+            stop
+        if arg-1 is "capacete":
+            set {_part} to "Capacete"
+            if {_class} is "guerreiro":
+                set {_item} to iron helmet
+            else if {_class} is "mago":
+                set {_item} to golden helmet
+            else if {_class} is "assassino":
+                set {_item} to leather helmet
+            else:
+                set {_item} to chainmail helmet
+        else if arg-1 is "peitoral":
+            set {_part} to "Peitoral"
+            if {_class} is "guerreiro":
+                set {_item} to iron chestplate
+            else if {_class} is "mago":
+                set {_item} to golden chestplate
+            else if {_class} is "assassino":
+                set {_item} to leather chestplate
+            else:
+                set {_item} to chainmail chestplate
+        else if arg-1 is "calcas":
+            set {_part} to "Calças"
+            if {_class} is "guerreiro":
+                set {_item} to iron leggings
+            else if {_class} is "mago":
+                set {_item} to golden leggings
+            else if {_class} is "assassino":
+                set {_item} to leather leggings
+            else:
+                set {_item} to chainmail leggings
+        else if arg-1 is "botas":
+            set {_part} to "Botas"
+            if {_class} is "guerreiro":
+                set {_item} to iron boots
+            else if {_class} is "mago":
+                set {_item} to golden boots
+            else if {_class} is "assassino":
+                set {_item} to leather boots
+            else:
+                set {_item} to chainmail boots
+        else:
+            send "{@prefix}&cUse /fabricararmadura <capacete|peitoral|calcas|botas>." to player
+            stop
+        if player's inventory does not contain 4 iron ingots:
+            send "{@prefix}&cVocê precisa de 4 barras de ferro." to player
+            stop
+        if player's inventory does not contain 2 leather:
+            send "{@prefix}&cVocê precisa de 2 couros." to player
+            stop
+        if {rpg::%{_id}%::coins} < 100:
+            send "{@prefix}&cVocê precisa de 100 moedas." to player
+            stop
+        remove 4 iron ingots from player's inventory
+        remove 2 leather from player's inventory
+        remove 100 from {rpg::%{_id}%::coins}
+        if {_class} is "guerreiro":
+            set name of {_item} to "&cArmadura do Guerreiro - %{_part}%"
+        else if {_class} is "mago":
+            set name of {_item} to "&5Armadura do Mago - %{_part}%"
+        else if {_class} is "assassino":
+            set name of {_item} to "&8Armadura do Assassino - %{_part}%"
+        else:
+            set name of {_item} to "&aArmadura do Arqueiro - %{_part}%"
+        set lore of {_item} to "&7Conjunto de classe: &f%{_class}%" and "&7Peça: &f%{_part}%" and "&eBônus ativo com as 4 peças equipadas."
+        give {_item} to player
+        send "{@prefix}&aPeça de armadura fabricada: &f%{_part}%&a." to player
+
+on damage:
+    victim is a player
+    set {_id} to "%uuid of victim%"
+    set {_helmet} to name of victim's helmet
+    set {_chest} to name of victim's chestplate
+    set {_legs} to name of victim's leggings
+    set {_boots} to name of victim's boots
+    set {_set} to false
+    if {_helmet} contains "Armadura do Guerreiro":
+        if {_chest} contains "Armadura do Guerreiro":
+            if {_legs} contains "Armadura do Guerreiro":
+                if {_boots} contains "Armadura do Guerreiro":
+                    set {_set} to true
+    if {_helmet} contains "Armadura do Mago":
+        if {_chest} contains "Armadura do Mago":
+            if {_legs} contains "Armadura do Mago":
+                if {_boots} contains "Armadura do Mago":
+                    set {_set} to true
+    if {_helmet} contains "Armadura do Assassino":
+        if {_chest} contains "Armadura do Assassino":
+            if {_legs} contains "Armadura do Assassino":
+                if {_boots} contains "Armadura do Assassino":
+                    set {_set} to true
+    if {_helmet} contains "Armadura do Arqueiro":
+        if {_chest} contains "Armadura do Arqueiro":
+            if {_legs} contains "Armadura do Arqueiro":
+                if {_boots} contains "Armadura do Arqueiro":
+                    set {_set} to true
+    if {_set} is true:
+        if {rpg::%{_id}%::class} is "guerreiro":
+            if damage > 2:
+                set damage to damage - 2
+            else:
+                cancel event
+
+on damage of living entity:
+    attacker is a player
+    victim is not a player
+    set {_id} to "%uuid of attacker%"
+    set {_helmet} to name of attacker's helmet
+    set {_chest} to name of attacker's chestplate
+    set {_legs} to name of attacker's leggings
+    set {_boots} to name of attacker's boots
+    set {_set} to false
+    if {rpg::%{_id}%::class} is "mago":
+        if {_helmet} contains "Armadura do Mago":
+            if {_chest} contains "Armadura do Mago":
+                if {_legs} contains "Armadura do Mago":
+                    if {_boots} contains "Armadura do Mago":
+                        set {_set} to true
+        if {_set} is true:
+            increase damage by 1
+    if {rpg::%{_id}%::class} is "assassino":
+        if {_helmet} contains "Armadura do Assassino":
+            if {_chest} contains "Armadura do Assassino":
+                if {_legs} contains "Armadura do Assassino":
+                    if {_boots} contains "Armadura do Assassino":
+                        set {_set} to true
+        if {_set} is true:
+            increase damage by 1
