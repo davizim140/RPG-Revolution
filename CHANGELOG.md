@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 - Artesanato e raridades
+- Receitas próprias para espada incomum, couraça épica e arco épico.
+- Fabricação consome materiais vanilla e moedas do personagem.
+- Comandos /rpgcraft e /fabricar.
+- Documentação e ajuda atualizadas.
+- Raridades são visuais nesta versão; sem bônus próprios de atributos.
+
 ## 0.4.0 - NPCs e linha de história
 - Diálogos de Elara, Bram e Nyra por comandos, sem addons.
 - Missão de coleta de 8 troncos de carvalho.
