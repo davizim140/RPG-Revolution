@@ -32,6 +32,10 @@ every 2 seconds:
                 remove 2 from {rpg::%{_id}%::skill-cooldown}
                 if {rpg::%{_id}%::skill-cooldown} < 0:
                     set {rpg::%{_id}%::skill-cooldown} to 0
+            if {rpg::%{_id}%::agility} >= 10:
+                apply speed 2 to loop-player for 4 seconds
+            else if {rpg::%{_id}%::agility} >= 5:
+                apply speed 1 to loop-player for 4 seconds
 
 command /classe [<text>]:
     trigger:
@@ -78,7 +82,7 @@ command /especializar [<text>]:
         if arg-1 is not set:
             send "&6&lESPECIALIZAÇÕES DISPONÍVEIS" to player
             if {rpg::%{_id}%::class} is "guerreiro":
-                send "&c/ especializar guardiao &7- maior resistência." to player
+                send "&c/especializar guardiao &7- maior resistência." to player
                 send "&c/especializar berserker &7- maior dano." to player
             else if {rpg::%{_id}%::class} is "mago":
                 send "&5/especializar elementalista &7- poder arcano." to player
