@@ -12,11 +12,11 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 ## Sistemas implementados
 - Personagens, níveis, XP, atributos, economia e progressão.
 - Quatro classes, habilidades, mana e especializações.
-- Armas de classe: Cajado Arcano, Adaga Sombria e Arco do Batedor.
-- Armaduras de classe com quatro peças e bônus de conjunto.
+- Armas e armaduras exclusivas por classe, com bônus de conjunto.
 - Espada do Aprendiz e Couraça do Guardião aprimoráveis até +3.
 - Loja, receitas, itens nomeados e raridades visuais.
-- Missão inicial, linha de história e contrato diário de caça a esqueletos.
+- Missão inicial, linha de história e contrato diário de caça.
+- Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
 - Regiões informativas por mundo.
 - Masmorra com chefe.
 - Guildas com convite, transferência de liderança, expulsão, chat e banco.
@@ -31,18 +31,14 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 6. Teste em servidor separado antes de produção.
 
 ## Comandos principais
-- /rpgajuda, /perfil, /atributos, /upar <forca|defesa|agilidade|inteligencia>
+- /rpgajuda, /perfil, /atributos, /upar
 - /classe, /habilidades, /habilidade, /especializar
-- /saldo, /pagar <jogador> <valor>
-- /missoes, /resgatar, /recompensadiaria
-- /npc <guia|ferreiro|explorador>
-- /missaoaceitar <madeira|zumbis>, /minhasmissoes, /missaoentregar
-- /rpgloja, /comprar <espada|armadura|arco|comida>
-- /rpgcraft, /fabricar <espada|armadura|arco>
-- /fabricarclasse <cajado|adaga|arco>
-- /fabricararmadura <capacete|peitoral|calcas|botas>
-- /equipamento, /aprimorar
-- /contrato, /contrato aceitar, /contrato entregar
+- /saldo, /pagar
+- /missoes, /resgatar, /recompensadiaria, /contrato
+- /npc, /missaoaceitar, /minhasmissoes, /missaoentregar
+- /rpgloja, /comprar, /rpgcraft, /fabricar
+- /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar
+- /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
 - /masmorra
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
 - /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo
@@ -53,14 +49,15 @@ Permissão administrativa: rpg.admin.
 
 ## Limitações conhecidas
 - Itens especiais são identificados pelo nome; bigorna ou renomeação pode afetar os bônus. Ainda não há identificador persistente NBT/PDC.
-- As raridades são visuais, exceto os bônus programados nos itens descritos.
-- Bônus do arco de classe dependem do evento de dano e precisam ser validados com flechas no servidor.
-- Armaduras de classe são identificadas por nome; conjunto Guerreiro reduz dano, Mago e Assassino aumentam dano corpo a corpo, Arqueiro recebe velocidade.
-- NPCs da história são diálogos por comando, não entidades físicas com skin.
-- Regiões ainda não bloqueiam entrada por nível.
-- A masmorra ainda é um encontro simples com criatura vanilla, sem arena instanciada ou mecânicas complexas.
-- Guildas ainda não têm guerras, cargos ou sistema de níveis.
+- Raridades são visuais, exceto bônus programados nos itens descritos.
+- O bônus do Arco do Batedor precisa de validação em combate real com flechas.
+- Armaduras de classe são identificadas pelo nome; conjunto Guerreiro reduz dano, Mago e Assassino aumentam dano corpo a corpo, Arqueiro recebe velocidade.
+- NPCs são diálogos por comando, não entidades físicas com skin.
+- Regiões exibem nível recomendado, mas ainda não bloqueiam entrada por nível.
+- A masmorra é um encontro simples com criatura vanilla, sem arena instanciada ou mecânicas complexas.
+- Grupos compartilham recompensas com integrantes online no mesmo mundo e a até 16 blocos do jogador que derrotou a criatura.
+- Guildas ainda não têm guerras, cargos ou níveis.
 - Não há HUD customizada, mapa próprio ou eventos mundiais.
 
 ## Validação
-O GitHub Actions faz verificações estruturais e empacota ZIP. Isso não comprova sintaxe Skript nem execução em Paper 26.3. É obrigatório testar /sk reload all e os sistemas em um servidor de homologação antes de produção.
+O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e empacota ZIP. Isso não comprova sintaxe Skript nem execução em Paper 26.3. Teste /sk reload all e todos os sistemas em servidor de homologação antes de produção.
