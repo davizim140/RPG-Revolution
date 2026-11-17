@@ -63,6 +63,7 @@ command /rpgajuda:
         send "&e/minhasmissoes, /missaoentregar &7- Progresso e entrega." to player
         send "&e/recompensadiaria &7- Recompensa diária." to player
         send "&e/rpgloja e /comprar &7- Loja." to player
+        send "&e/rpgcraft e /fabricar <espada|armadura|arco> &7- Artesanato e equipamentos raros." to player
         send "&e/masmorra &7- Enfrentar o chefe (nível 5+)." to player
         send "&e/guilda &7- Sistema de guildas." to player
         send "&e/regiao e /rpgmundos &7- Exploração." to player
