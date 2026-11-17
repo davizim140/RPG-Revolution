@@ -56,6 +56,10 @@ command /rpgajuda:
         send "&e/upar <forca|defesa|agilidade|inteligencia> &7- Gastar 1 ponto." to player
         send "&e/saldo &7- Consultar moedas." to player
         send "&e/pagar <jogador> <valor> &7- Transferir moedas." to player
+        send "&e/classe &7- Consultar ou escolher uma classe." to player
+        send "&e/habilidades &7- Ver sua habilidade." to player
+        send "&e/habilidade &7- Usar sua habilidade." to player
+        send "&e/especializar &7- Ver especializações (nível 20+)." to player
         send "&e/missoes &7- Ver sua missão de caça." to player
         send "&e/resgatar &7- Resgatar missão concluída." to player
 
