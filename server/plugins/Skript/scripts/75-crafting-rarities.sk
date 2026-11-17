@@ -1,0 +1,77 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /rpgcraft:
+    trigger:
+        send "&6&lOFICINA DE ARTESANATO" to player
+        send "&e/fabricar espada &7- 2 barras de ferro + 2 gravetos + 100 moedas" to player
+        send "&b/fabricar armadura &7- 8 diamantes + 2 couros + 250 moedas" to player
+        send "&d/fabricar arco &7- 3 fios + 3 gravetos + 5 penas + 150 moedas" to player
+        send "&7Os equipamentos recebem nome e raridade visual. Os atributos ainda são os do item vanilla." to player
+
+command /fabricar <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::created} is not true:
+            send "{@prefix}&cSeu personagem não foi inicializado." to player
+            stop
+        if arg-1 is "espada":
+            if player's inventory does not contain 2 iron ingots:
+                send "{@prefix}&cFaltam 2 barras de ferro." to player
+                stop
+            if player's inventory does not contain 2 sticks:
+                send "{@prefix}&cFaltam 2 gravetos." to player
+                stop
+            if {rpg::%{_id}%::coins} < 100:
+                send "{@prefix}&cVocê precisa de 100 moedas." to player
+                stop
+            remove 2 iron ingots from player's inventory
+            remove 2 sticks from player's inventory
+            remove 100 from {rpg::%{_id}%::coins}
+            set {_item} to iron sword
+            set name of {_item} to "&bEspada do Aprendiz"
+            set lore of {_item} to "&7Raridade: &bIncomum" and "&7Forjada na Oficina RPG Revolution"
+            give {_item} to player
+            send "{@prefix}&aEspada incomum fabricada!" to player
+        else if arg-1 is "armadura":
+            if player's inventory does not contain 8 diamonds:
+                send "{@prefix}&cFaltam 8 diamantes." to player
+                stop
+            if player's inventory does not contain 2 leather:
+                send "{@prefix}&cFaltam 2 couros." to player
+                stop
+            if {rpg::%{_id}%::coins} < 250:
+                send "{@prefix}&cVocê precisa de 250 moedas." to player
+                stop
+            remove 8 diamonds from player's inventory
+            remove 2 leather from player's inventory
+            remove 250 from {rpg::%{_id}%::coins}
+            set {_item} to diamond chestplate
+            set name of {_item} to "&dCouraça do Guardião"
+            set lore of {_item} to "&7Raridade: &dÉpica" and "&7Forjada na Oficina RPG Revolution"
+            give {_item} to player
+            send "{@prefix}&aCouraça épica fabricada!" to player
+        else if arg-1 is "arco":
+            if player's inventory does not contain 3 string:
+                send "{@prefix}&cFaltam 3 fios." to player
+                stop
+            if player's inventory does not contain 3 sticks:
+                send "{@prefix}&cFaltam 3 gravetos." to player
+                stop
+            if player's inventory does not contain 5 feathers:
+                send "{@prefix}&cFaltam 5 penas." to player
+                stop
+            if {rpg::%{_id}%::coins} < 150:
+                send "{@prefix}&cVocê precisa de 150 moedas." to player
+                stop
+            remove 3 string from player's inventory
+            remove 3 sticks from player's inventory
+            remove 5 feathers from player's inventory
+            remove 150 from {rpg::%{_id}%::coins}
+            set {_item} to bow
+            set name of {_item} to "&dArco do Caçador"
+            set lore of {_item} to "&7Raridade: &dÉpica" and "&7Forjado na Oficina RPG Revolution"
+            give {_item} to player
+            send "{@prefix}&aArco épico fabricado!" to player
+        else:
+            send "{@prefix}&cReceita inválida. Use /rpgcraft." to player
