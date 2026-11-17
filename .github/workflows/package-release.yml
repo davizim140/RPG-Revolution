@@ -1,0 +1,56 @@
+name: Package and Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify project structure
+        shell: bash
+        run: |
+          test -f README.md
+          test -d server/plugins/Skript/scripts
+          count=$(find server/plugins/Skript/scripts -maxdepth 1 -type f -name '*.sk' | wc -l)
+          test "$count" -gt 0
+          echo "Found $count Skript files."
+          for file in server/plugins/Skript/scripts/*.sk; do
+            test -s "$file"
+            if grep -nE 'TODO|FIXME|MOCK|FAKE' "$file"; then
+              echo "Placeholder marker found in $file"
+              exit 1
+            fi
+          done
+
+      - name: Build install ZIP
+        shell: bash
+        run: |
+          mkdir -p dist
+          zip -r "dist/RPG-Revolution-${GITHUB_REF_NAME}.zip" server README.md CHANGELOG.md
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RPG-Revolution-${{ github.ref_name }}
+          path: dist/*.zip
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: RPG Revolution ${{ github.ref_name }}
+          generate_release_notes: true
+          files: dist/*.zip
