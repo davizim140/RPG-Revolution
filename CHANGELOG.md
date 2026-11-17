@@ -1,16 +1,21 @@
 # Changelog
 
+## 0.4.0 - NPCs e linha de história
+- Diálogos de Elara, Bram e Nyra por comandos, sem addons.
+- Missão de coleta de 8 troncos de carvalho.
+- Missão encadeada de derrotar 5 zumbis.
+- Progresso persistente e recompensas de moedas e XP.
+- Ajuda e documentação atualizadas.
+
 ## 0.3.0 - Sistemas de mundo e comunidade
 - Cadastro informativo de regiões por mundo.
 - Loja de equipamentos e suprimentos com moedas do RPG.
-- Chefe de masmorra repetível com recompensa de XP e moedas.
+- Chefe de masmorra repetível.
 - Guildas com criação, convite, entrada, consulta e saída.
-- Recompensa diária de XP e moedas.
+- Recompensa diária.
 
 ## 0.2.0 - Classes
-- Quatro classes jogáveis e habilidades ativas.
-- Mana, regeneração, recargas e especializações de nível 20.
-- Passivas de classe e especialização.
+- Quatro classes jogáveis, habilidades ativas, mana e especializações.
 
 ## 0.1.0 - Fundação
 - Personagens, níveis, XP, atributos, economia e missão inicial.
