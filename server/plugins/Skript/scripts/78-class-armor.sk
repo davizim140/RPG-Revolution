@@ -8,7 +8,10 @@ command /fabricararmadura <text>:
     trigger:
         set {_id} to "%uuid of player%"
         set {_class} to {rpg::%{_id}%::class}
-        if {_class} is "nenhuma" or not set:
+        if {_class} is not set:
+            send "{@prefix}&cEscolha uma classe antes de fabricar uma armadura." to player
+            stop
+        if {_class} is "nenhuma":
             send "{@prefix}&cEscolha uma classe antes de fabricar uma armadura." to player
             stop
         if arg-1 is "capacete":
@@ -138,3 +141,17 @@ on damage of living entity:
                         set {_set} to true
         if {_set} is true:
             increase damage by 1
+
+every 3 seconds:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        if {rpg::%{_id}%::class} is "arqueiro":
+            set {_helmet} to name of loop-player's helmet
+            set {_chest} to name of loop-player's chestplate
+            set {_legs} to name of loop-player's leggings
+            set {_boots} to name of loop-player's boots
+            if {_helmet} contains "Armadura do Arqueiro":
+                if {_chest} contains "Armadura do Arqueiro":
+                    if {_legs} contains "Armadura do Arqueiro":
+                        if {_boots} contains "Armadura do Arqueiro":
+                            apply speed 1 to loop-player for 4 seconds
