@@ -14,11 +14,10 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 ## Sistemas incluídos
 - Personagens, níveis, XP, atributos, economia e missão inicial.
 - Quatro classes, mana, habilidades e especializações.
+- Armas exclusivas fabricáveis por classe: Cajado Arcano (Mago), Adaga Sombria (Assassino) e Arco do Batedor (Arqueiro).
+- Espada do Aprendiz e Couraça do Guardião com bônus de combate e aprimoramentos até +3.
 - Regiões informativas por mundo.
-- Loja de equipamentos básicos.
-- Receitas próprias para espada incomum, couraça épica e arco épico.
-- Bônus de dano da espada especial e redução de dano da couraça especial.
-- Aprimoramento de espada e couraça até +3, consumindo diamantes e moedas.
+- Loja e receitas próprias de equipamentos.
 - Chefe de masmorra repetível.
 - Guildas com criação e convites.
 - Recompensa diária.
@@ -42,6 +41,7 @@ ViaVersion é um plugin separado: não altera a versão-base do servidor nem gar
 - /missaoaceitar <madeira|zumbis>, /minhasmissoes, /missaoentregar
 - /rpgloja, /comprar <espada|armadura|arco|comida>
 - /rpgcraft, /fabricar <espada|armadura|arco>
+- /fabricarclasse <cajado|adaga|arco> (exige a classe correspondente)
 - /equipamento, /aprimorar (segure a espada ou couraça especial)
 - /masmorra
 - /guilda, /guildacriar <nome>, /guildaconvidar <jogador>, /guildaaceitar, /guildainfo, /guildasair
@@ -52,10 +52,10 @@ Permissão administrativa: rpg.admin.
 
 ## Limites conhecidos
 - A identificação dos equipamentos especiais usa o nome do item; renomeá-los em bigorna pode afetar o reconhecimento. Ainda não há identificador persistente próprio nem atributos NBT/PDC.
-- O bônus especial de combate é aplicado à espada fabricada; o arco mantém dano vanilla.
+- O Cajado Arcano e a Adaga Sombria dão bônus no combate corpo a corpo; o Arco do Batedor depende do evento de dano do arco e precisa ser confirmado em teste real com flechas.
+- A espada especial e a couraça especial têm bônus; os demais itens vanilla não recebem atributos próprios.
 - Os NPCs são personagens de diálogo acionados por comando, não entidades com skin ou interação física.
 - Regiões exibem nível recomendado, mas ainda não bloqueiam entrada por nível.
-- Loja entrega itens vanilla nomeados; não há atributos extras.
 - O chefe é um zumbi vanilla com vida aumentada; não há arena instanciada nem mecânicas especiais.
 - Guildas ainda não têm transferência de liderança, chat próprio, banco ou guerras.
 - HUD customizada, eventos mundiais e grupos de dungeon ainda não estão implementados.
