@@ -28,6 +28,8 @@ command /upar <text>:
             add 1 to {rpg::%{_id}%::agility}
         else if arg-1 is "inteligencia":
             add 1 to {rpg::%{_id}%::intelligence}
+            add 5 to {rpg::%{_id}%::mana-max}
+            add 5 to {rpg::%{_id}%::mana}
         else:
             send "{@prefix}&cAtributo inválido. Use forca, defesa, agilidade ou inteligencia." to player
             stop
