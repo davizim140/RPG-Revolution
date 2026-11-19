@@ -36,7 +36,7 @@ command /guildacriar <text>:
         set {rpg::guild::%arg-1%::xp} to 0
         set {rpg::guild::%arg-1%::bank} to 0
         set {rpg::%{_id}%::guild} to arg-1
-        set {rpg::%{_id}%::guild-role} to "member"
+        set {rpg::%{_id}%::guild-role} to "leader"
         add {_id} to {rpg::guild::%arg-1%::members::*}
         send "{@prefix}&aGuilda &e%arg-1% &acriada!" to player
 
