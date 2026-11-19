@@ -1,0 +1,84 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Combate montado: abates de monstros concedem XP à montaria do próprio jogador.
+on death of monster:
+    attacker is a player
+    if vehicle of attacker is a horse:
+        set {_horse} to vehicle of attacker
+        if tamer of {_horse} is attacker:
+            rpg_mount_add_xp(attacker, {_horse}, 10)
+            add 1 to {rpg::mount::%uuid of {_horse}%::combat-kills::%uuid of attacker%}
+            send "{@prefix}&aSua montaria recebeu &e10 XP &apor participar do combate!" to attacker
+
+# Bônus de impacto enquanto o jogador ataca montado no próprio cavalo.
+on damage:
+    attacker is a player
+    if vehicle of attacker is a horse:
+        set {_horse} to vehicle of attacker
+        if tamer of {_horse} is attacker:
+            if victim is not a player:
+                if victim is a monster:
+                    set {_level} to {rpg::mount::%uuid of {_horse}%::level}
+                    if {_level} is not set:
+                        set {_level} to 1
+                    set {_bonus} to {_level} * 0.15
+                    if {_bonus} > 3:
+                        set {_bonus} to 3
+                    add {_bonus} to damage
+
+command /montariacombate [<text>]:
+    trigger:
+        if arg-1 is not set or arg-1 is "status":
+            if vehicle of player is not a horse:
+                send "{@prefix}&cMonte seu próprio cavalo para consultar o combate montado." to player
+                stop
+            set {_horse} to vehicle of player
+            if tamer of {_horse} is not player:
+                send "{@prefix}&cEsta montaria não pertence a você." to player
+                stop
+            set {_level} to {rpg::mount::%uuid of {_horse}%::level}
+            if {_level} is not set:
+                set {_level} to 1
+            set {_kills} to {rpg::mount::%uuid of {_horse}%::combat-kills::%uuid of player%}
+            if {_kills} is not set:
+                set {_kills} to 0
+            send "&6&lCOMBATE MONTADO" to player
+            send "&7Nível da montaria: &e%{_level}% &8| &7Abates montados: &e%{_kills}%" to player
+            send "&7Bônus de dano contra monstros: &e+%{_level} * 0.15% &7(até +3)." to player
+            send "&e/montariacombate habilidade &7- Ativar Investida (nível 5)." to player
+            stop
+        if arg-1 is "habilidade":
+            if vehicle of player is not a horse:
+                send "{@prefix}&cVocê precisa estar montado em seu próprio cavalo." to player
+                stop
+            set {_horse} to vehicle of player
+            if tamer of {_horse} is not player:
+                send "{@prefix}&cEsta montaria não pertence a você." to player
+                stop
+            set {_id} to "%uuid of player%"
+            set {_level} to {rpg::mount::%uuid of {_horse}%::level}
+            if {_level} is not set:
+                set {_level} to 1
+            if {_level} < 5:
+                send "{@prefix}&cInvestida desbloqueia no nível 5 da montaria. Nível atual: %{_level}%." to player
+                stop
+            if {rpg::%{_id}%::mount::charge-cooldown} is set:
+                if {rpg::%{_id}%::mount::charge-cooldown} > 0:
+                    send "{@prefix}&cInvestida recarrega em %{rpg::%{_id}%::mount::charge-cooldown}% segundos." to player
+                    stop
+            set {rpg::%{_id}%::mount::charge-cooldown} to 60
+            apply speed 3 to player for 8 seconds
+            apply strength 2 to player for 8 seconds
+            apply speed 2 to {_horse} for 8 seconds
+            apply resistance 1 to {_horse} for 8 seconds
+            send "&6&lINVESTIDA! &eVocê e sua montaria avançam com força aumentada por 8 segundos." to player
+            stop
+        send "{@prefix}&cUse /montariacombate status ou /montariacombate habilidade." to player
+
+every 1 second:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        if {rpg::%{_id}%::mount::charge-cooldown} is set:
+            if {rpg::%{_id}%::mount::charge-cooldown} > 0:
+                remove 1 from {rpg::%{_id}%::mount::charge-cooldown}
