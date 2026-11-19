@@ -45,7 +45,7 @@ on damage:
         if victim is a zombie:
             if {rpg::invasion::mob::%uuid of victim%} is true:
                 if attacker is a player:
-                    add "%uuid of attacker%" to {rpg::invasion::participants::*}
+                    set {rpg::invasion::participants::%uuid of attacker%} to true
 
 on death of zombie:
     if {rpg::invasion::mob::%uuid of victim%} is true:
@@ -54,12 +54,11 @@ on death of zombie:
         if {rpg::invasion::remaining} <= 0:
             delete {rpg::invasion::active}
             broadcast "{@prefix}&aA invasão foi repelida!"
-            loop {rpg::invasion::participants::*}:
-                set {_participantId} to loop-value
-                loop all players:
-                    if "%uuid of loop-player%" is {_participantId}:
-                        add 200 to {rpg::%{_participantId}%::coins}
-                        rpg_add_xp(loop-player, 100)
-                        send "{@prefix}&6Recompensa da invasão: &e200 moedas &ae &e100 XP&a!" to loop-player
+            loop all players:
+                set {_participantId} to "%uuid of loop-player%"
+                if {rpg::invasion::participants::%{_participantId}%} is true:
+                    add 200 to {rpg::%{_participantId}%::coins}
+                    rpg_add_xp(loop-player, 100)
+                    send "{@prefix}&6Recompensa da invasão: &e200 moedas &ae &e100 XP&a!" to loop-player
             delete {rpg::invasion::participants::*}
             delete {rpg::invasion::remaining}
