@@ -372,3 +372,25 @@ on item move:
                 if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
                     cancel event
                     stop
+
+# Impede que itens dropados dentro de territorios sejam transportados
+# por portais do Nether ou do End para fora da area reivindicada.
+# O evento entity portal nao inclui jogadores.
+on entity portal:
+    if event-entity is an item:
+        set {_from} to past event-location
+        set {_to} to event-location
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if "%world of {_from}%" is {rpg::territory::%{_territory}%::world}:
+                set {_dxFrom} to (x-coordinate of {_from}) - {rpg::territory::%{_territory}%::x}
+                set {_dzFrom} to (z-coordinate of {_from}) - {rpg::territory::%{_territory}%::z}
+                set {_dxTo} to (x-coordinate of {_to}) - {rpg::territory::%{_territory}%::x}
+                set {_dzTo} to (z-coordinate of {_to}) - {rpg::territory::%{_territory}%::z}
+                if abs({_dxFrom}) <= {@territory-radius} and abs({_dzFrom}) <= {@territory-radius}:
+                    if "%world of {_to}%" is not {rpg::territory::%{_territory}%::world}:
+                        cancel event
+                        stop
+                    if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
+                        cancel event
+                        stop
