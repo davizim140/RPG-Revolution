@@ -30,7 +30,8 @@ command /prestigio:
         send "&6&lRENASCIMENTO DE PRESTÍGIO!" to player
         send "&ePrestígio: &f%{_prestige}%&7/10" to player
         send "&aRecompensas: &f5 pontos de atributo, 1.000 moedas e 1 ficha de prestígio." to player
-        send "&dBônus permanente de XP: +%({_prestige} * 5)%%%." to player
+        set {_bonusPercent} to {_prestige} * 5
+        send "&dBônus permanente de XP: +%{_bonusPercent}%%%." to player
         send "&7Sua classe, talentos, atributos, itens, pets e guilda foram preservados." to player
 
 command /endgame:
@@ -54,5 +55,6 @@ command /endgame:
         send "&dPrestígio: &f%{_prestige}%&7/10" to player
         send "&6Fichas de prestígio: &f%{_tokens}%" to player
         send "&7Cada prestígio concede +5%% de XP permanente, 5 pontos de atributo, 1.000 moedas e 1 ficha." to player
-        send "&7Seu bônus atual de XP é +%({_prestige} * 5)%%%." to player
+        set {_bonusPercent} to {_prestige} * 5
+        send "&7Seu bônus atual de XP é +%{_bonusPercent}%%%." to player
         send "&7Próximo marco: &fNível 100" to player
