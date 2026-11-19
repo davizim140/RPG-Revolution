@@ -1,0 +1,78 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Chefe mundial de três fases. A identificação é feita pelo UUID, não pelo nome.
+command /chefemundial [<text>]:
+    permission: rpg.admin
+    permission message: {@prefix}&cVocê não tem permissão.
+    trigger:
+        if arg-1 is "encerrar":
+            if {rpg::worldboss::active} is not true:
+                send "{@prefix}&cNão há chefe mundial ativo." to player
+                stop
+            loop all entities:
+                if {rpg::worldboss::entity::%uuid of loop-entity%} is true:
+                    delete {rpg::worldboss::entity::%uuid of loop-entity%}
+                    kill loop-entity
+            delete {rpg::worldboss::*}
+            broadcast "{@prefix}&eO evento do chefe mundial foi encerrado pela administração."
+            stop
+        if arg-1 is not "iniciar":
+            send "{@prefix}&e/chefemundial iniciar|encerrar" to player
+            stop
+        if {rpg::worldboss::active} is true:
+            send "{@prefix}&cJá existe um chefe mundial ativo." to player
+            stop
+        spawn ravager at location of player
+        set {_boss} to last spawned entity
+        set name of {_boss} to "&4&lTITÃ DA FENDA"
+        set max health of {_boss} to 500
+        set health of {_boss} to 500
+        apply resistance 1 to {_boss} for 999999 seconds
+        set {rpg::worldboss::active} to true
+        set {rpg::worldboss::id} to "%uuid of {_boss}%"
+        set {rpg::worldboss::entity::%uuid of {_boss}%} to true
+        set {rpg::worldboss::phase} to 1
+        delete {rpg::worldboss::participants::*}
+        broadcast "{@prefix}&4&lCHEFE MUNDIAL! &cO Titã da Fenda surgiu em %world of player%!"
+        stop
+
+on damage:
+    if {rpg::worldboss::active} is true:
+        if "%uuid of victim%" is {rpg::worldboss::id}:
+            if attacker is a player:
+                set {rpg::worldboss::participants::%uuid of attacker%} to true
+            if {rpg::worldboss::phase} is 1:
+                if health of victim <= 300:
+                    set {rpg::worldboss::phase} to 2
+                    apply strength 1 to victim for 999999 seconds
+                    apply speed 1 to victim for 999999 seconds
+                    loop 2 times:
+                        spawn zombie at location of victim
+                        set {_add} to last spawned entity
+                        set name of {_add} to "&cServo do Titã"
+                        set max health of {_add} to 35
+                        set health of {_add} to 35
+                    broadcast "{@prefix}&cO Titã entrou na fase 2! Seus servos chegaram."
+            else if {rpg::worldboss::phase} is 2:
+                if health of victim <= 150:
+                    set {rpg::worldboss::phase} to 3
+                    apply strength 2 to victim for 999999 seconds
+                    apply speed 2 to victim for 999999 seconds
+                    apply resistance 2 to victim for 999999 seconds
+                    broadcast "{@prefix}&4&lFASE FINAL! &cO Titã está enfurecido!"
+
+on death of ravager:
+    if {rpg::worldboss::entity::%uuid of victim%} is true:
+        delete {rpg::worldboss::entity::%uuid of victim%}
+        delete {rpg::worldboss::active}
+        delete {rpg::worldboss::id}
+        delete {rpg::worldboss::phase}
+        broadcast "{@prefix}&6&lTITÃ DERROTADO! &aO mundo venceu a ameaça!"
+        loop all players:
+            if {rpg::worldboss::participants::%uuid of loop-player%} is true:
+                add 500 to {rpg::%uuid of loop-player%::coins}
+                rpg_add_xp(loop-player, 300)
+                give loop-player 2 diamonds
+                send "{@prefix}&aRecompensa: 500 moedas, 300 XP e 2 diamantes." to loop-player
+        delete {rpg::worldboss::participants::*}
