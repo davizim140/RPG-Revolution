@@ -1,3 +1,8 @@
+## 0.43.0 - Auditoria de limpeza de itens
+- Limpezas confirmadas registram horário, administrador, UUID, mundo, território, posição e quantidade removida.
+- Novo comando administrativo /rpgitenslog consulta o histórico persistente.
+- O histórico não tem rotação automática nesta versão.
+
 ## 0.42.0 - Limpeza administrativa de itens em territórios
 - Adicionado /rpgitenslimpar para administradores dentro do território atual.
 - A remoção exige o argumento CONFIRMAR e informa que todos os itens dropados da área serão removidos, inclusive itens legítimos.
