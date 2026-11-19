@@ -105,7 +105,7 @@ on damage of living entity:
 
 on death of living entity:
     if attacker is a player:
-        set {_id} to "%attacker's uuid%"
+        set {_id} to "%uuid of attacker%"
         set {_name} to name of attacker's tool
         if {_name} is "&6Lâmina Solar":
             set {_type} to "espada"
@@ -136,8 +136,36 @@ command /maestriaarma:
     trigger:
         set {_id} to "%uuid of player%"
         send "&6&lMAESTRIA DE ARMAS" to player
-        loop "espada", "machado" and "arco":
-            if {rpg::%{_id}%::legendary::%loop-value%::forged} is true:
-                send "&e%loop-value%: &fNível %{rpg::%{_id}%::legendary::%loop-value%::level}% &7| XP: %{rpg::%{_id}%::legendary::%loop-value%::xp}%" to player
-            else:
-                send "&7%loop-value%: &8Não forjada" to player
+        if {rpg::%{_id}%::legendary::espada::forged} is true:
+            send "&eEspada: &fNível %{rpg::%{_id}%::legendary::espada::level}% &7| XP: %{rpg::%{_id}%::legendary::espada::xp}%" to player
+        else:
+            send "&7Espada: &8Não forjada" to player
+        if {rpg::%{_id}%::legendary::machado::forged} is true:
+            send "&eMachado: &fNível %{rpg::%{_id}%::legendary::machado::level}% &7| XP: %{rpg::%{_id}%::legendary::machado::xp}%" to player
+        else:
+            send "&7Machado: &8Não forjado" to player
+        if {rpg::%{_id}%::legendary::arco::forged} is true:
+            send "&eArco: &fNível %{rpg::%{_id}%::legendary::arco::level}% &7| XP: %{rpg::%{_id}%::legendary::arco::xp}%" to player
+        else:
+            send "&7Arco: &8Não forjado" to player
+
+# O projétil guarda o tipo de arma no disparo para aplicar o bônus do arco no impacto.
+on shoot:
+    shooter is a player
+    projectile is an arrow
+    set {_name} to name of shooter's tool
+    if {_name} is "&bArco da Tempestade":
+        set {rpg::legendary::arrow::%uuid of projectile%::owner} to "%uuid of shooter%"
+        set {rpg::legendary::arrow::%uuid of projectile%::type} to "arco"
+
+on damage of living entity:
+    projectile is an arrow
+    victim is not a player
+    if {rpg::legendary::arrow::%uuid of projectile%::type} is "arco":
+        set {_id} to {rpg::legendary::arrow::%uuid of projectile%::owner}
+        set {_level} to {rpg::%{_id}%::legendary::arco::level}
+        if {_level} is not set:
+            set {_level} to 1
+        increase damage by 2 + {_level}
+        delete {rpg::legendary::arrow::%uuid of projectile%::*
+    }
