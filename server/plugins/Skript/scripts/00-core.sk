@@ -56,7 +56,7 @@ command /rpgajuda:
         send "&e/upar <forca|defesa|agilidade|inteligencia> &7- Gastar 1 ponto." to player
         send "&e/saldo &7- Consultar moedas." to player
         send "&e/pagar <jogador> <valor> &7- Transferir moedas." to player
-        send "&e/classe, /habilidades, /habilidade, /especializar, /despertar, /sombra, /invocar, /sombras, /furia, /arcano, /precisao &7- Classes e poderes despertados." to player
+        send "&e/classe, /habilidades, /habilidade, /especializar, /despertar, /sombra, /invocar, /sombras, /exercito, /libertar, /furia, /arcano, /precisao &7- Classes e poderes despertados." to player
         send "&e/missoes e /resgatar &7- Missão inicial." to player
         send "&e/npc <guia|ferreiro|explorador> &7- Conversar com personagens." to player
         send "&e/missaoaceitar <madeira|zumbis> &7- Iniciar missão da história." to player
