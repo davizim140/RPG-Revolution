@@ -1,0 +1,118 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Evolução persistente das armas lendárias. O nível fica salvo por jogador/tipo.
+# Cada aprimoramento exige a arma correspondente na mão para evitar evoluir por engano.
+
+command /melhorararma <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is "espada":
+            set {_type} to "espada"
+            set {_expected} to "&6Lâmina Solar"
+        else if arg-1 is "machado":
+            set {_type} to "machado"
+            set {_expected} to "&cMachado do Colosso"
+        else if arg-1 is "arco":
+            set {_type} to "arco"
+            set {_expected} to "&bArco da Tempestade"
+        else:
+            send "{@prefix}&eUse /melhorararma <espada|machado|arco>." to player
+            stop
+        if {rpg::%{_id}%::legendary::%{_type}%::forged} is not true:
+            send "{@prefix}&cVocê ainda não forjou essa arma." to player
+            stop
+        if name of player's tool is not {_expected}:
+            send "{@prefix}&cSegure sua arma lendária correspondente na mão principal." to player
+            stop
+        set {_tier} to {rpg::%{_id}%::legendary::%{_type}%::tier}
+        if {_tier} is not set:
+            set {_tier} to 0
+        if {_tier} >= 3:
+            send "{@prefix}&6Essa arma já alcançou a evolução máxima (III)." to player
+            stop
+        if player's inventory does not contain 1 netherite ingot:
+            send "{@prefix}&cCada evolução exige 1 barra de netherita." to player
+            stop
+        if player's inventory does not contain 4 diamonds:
+            send "{@prefix}&cCada evolução exige 4 diamantes." to player
+            stop
+        if {rpg::%{_id}%::coins} < 750:
+            send "{@prefix}&cVocê precisa de 750 moedas." to player
+            stop
+        remove 1 netherite ingot from player's inventory
+        remove 4 diamonds from player's inventory
+        remove 750 from {rpg::%{_id}%::coins}
+        add 1 to {_tier}
+        set {rpg::%{_id}%::legendary::%{_type}%::tier} to {_tier}
+        set {_mastery} to {rpg::%{_id}%::legendary::%{_type}%::level}
+        if {_mastery} is not set:
+            set {_mastery} to 1
+        if {_type} is "espada":
+            set {_item} to netherite sword
+        else if {_type} is "machado":
+            set {_item} to netherite axe
+        else:
+            set {_item} to bow
+        set name of {_item} to {_expected}
+        set lore of {_item} to "&7Raridade: &6LENDÁRIA" and "&7Evolução: &f%{_tier}%/3" and "&7Maestria: &fNível %{_mastery}%" and "&7Bônus de evolução: &c+%{_tier} * 2% de dano" and "&eHabilidade: use /poderarma"
+        set lore of player's tool to lore of {_item}
+        send "{@prefix}&6Sua arma alcançou a evolução &e%{_tier}%&6! Bônus passivo: &c+%{_tier} * 2% de dano&6." to player
+
+command /evolucaoarma:
+    trigger:
+        set {_id} to "%uuid of player%"
+        send "&6&lEVOLUÇÃO DAS ARMAS LENDÁRIAS" to player
+        loop "espada", "machado" and "arco":
+            set {_type} to loop-value
+            if {rpg::%{_id}%::legendary::%{_type}%::forged} is true:
+                set {_tier} to {rpg::%{_id}%::legendary::%{_type}%::tier}
+                if {_tier} is not set:
+                    set {_tier} to 0
+                send "&e%{_type}%: &fEvolução %{_tier}%/3" to player
+            else:
+                send "&7%{_type}%: &8Não forjada" to player
+        send "&7Custo por nível: 1 barra de netherita, 4 diamantes e 750 moedas." to player
+        send "&7Use /melhorararma <espada|machado|arco> segurando a arma." to player
+
+# Bônus passivo adicional da evolução, sem substituir o bônus de maestria do arquivo 110.
+on damage of living entity:
+    attacker is a player
+    victim is not a player
+    set {_id} to "%uuid of attacker%"
+    set {_weapon} to name of attacker's tool
+    if {_weapon} is "&6Lâmina Solar":
+        set {_type} to "espada"
+    else if {_weapon} is "&cMachado do Colosso":
+        set {_type} to "machado"
+    else if {_weapon} is "&bArco da Tempestade":
+        set {_type} to "arco"
+    if {_type} is set:
+        if {rpg::%{_id}%::legendary::%{_type}%::forged} is true:
+            set {_tier} to {rpg::%{_id}%::legendary::%{_type}%::tier}
+            if {_tier} is set:
+                if {_tier} > 0:
+                    increase damage by {_tier} * 2
+
+# O arco dispara projéteis: o tier é registrado no momento do disparo.
+on shoot:
+    shooter is a player
+    projectile is an arrow
+    if name of shooter's tool is "&bArco da Tempestade":
+        set {rpg::legendary::evolution-arrow::%uuid of projectile%::owner} to "%uuid of shooter%"
+        set {rpg::legendary::evolution-arrow::%uuid of projectile%::tier} to {rpg::%uuid of shooter%::legendary::arco::tier}
+
+on damage of living entity:
+    projectile is an arrow
+    victim is not a player
+    set {_arrow} to "%uuid of projectile%"
+    if {rpg::legendary::evolution-arrow::%{_arrow}%::owner} is set:
+        set {_tier} to {rpg::legendary::evolution-arrow::%{_arrow}%::tier}
+        if {_tier} is set:
+            if {_tier} > 0:
+                increase damage by {_tier} * 2
+        delete {rpg::legendary::evolution-arrow::%{_arrow}%::*}
+
+on projectile hit:
+    if projectile is an arrow:
+        delete {rpg::legendary::evolution-arrow::%uuid of projectile%::*}
