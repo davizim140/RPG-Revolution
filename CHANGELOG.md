@@ -1,3 +1,11 @@
+## 0.59.0 - Raids cooperativas de chefes
+- Adicionado /raidchefe normal|heroica|pesadelo, integrado aos grupos existentes e iniciado pelo líder.
+- Exige pelo menos dois integrantes online, no mesmo mundo e a até 24 blocos; níveis mínimos 10, 20 e 35.
+- Colosso da Raid escala para 250, 500 ou 800 de vida conforme a dificuldade.
+- /raidchefe status mostra o dano contribuído por integrante; /raidchefe cancelar encerra o encontro.
+- Moedas, XP e diamantes são distribuídos proporcionalmente ao dano causado; participantes que causaram dano recebem um sorteio de equipamento de chefe.
+- A desconexão do líder encerra e limpa a raid. Requer teste de sintaxe, balanceamento e runtime em Paper real.
+
 ## 0.58.0 - Chefes lendários invocáveis
 - Adicionado /invocarchefe guardiao|lich|draco; exige 8 diamantes, 1 estrela do Nether e 1.000 moedas.
 - Guardião Primordial (400 HP), Lich Eterno (300 HP) e Draco Celestial (350 HP) possuem duas transições de fase e invocam reforços.
