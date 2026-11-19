@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.0 - Evolução do Exército das Sombras
+- Rank dos soldados agora acompanha o nível do Monarca: C (nível 1+), B (10+), A (25+) e S (50+).
+- Cada rank aplica efeitos de combate progressivamente melhores; o rank é definido no momento da invocação.
+- /sombras agora informa nível do Monarca, rank atual e quantidade de soldados ativos.
+
+
 ## 0.17.0 - Exército das Sombras
 - Monarca das Sombras pode invocar dois soldados (esqueletos wither) por 45 segundos com /invocar.
 - Invocação custa 50 de mana e usa recarga compartilhada de 60 segundos.
