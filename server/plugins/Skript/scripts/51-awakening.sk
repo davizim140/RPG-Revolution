@@ -386,3 +386,57 @@ on death of wither skeleton:
         loop 5 times:
             if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is victim:
                 delete {rpg::%{_ownerId}%::permanent-shadow::%loop-number%}
+# Progressão individual das sombras permanentes.
+# Cada sombra ganha 1 XP por criatura derrotada; a cada 5 XP sobe um nível.
+# Os bônus são reaplicados no evento de evolução.
+on death of monster:
+    attacker is a wither skeleton
+    set {_shadowId} to "%uuid of attacker%"
+    set {_ownerId} to {rpg::shadow-owner::%{_shadowId}%}
+    if {_ownerId} is set:
+        loop 5 times:
+            if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is attacker:
+                add 1 to {rpg::%{_ownerId}%::permanent-shadow-xp::%loop-number%}
+                set {_xp} to {rpg::%{_ownerId}%::permanent-shadow-xp::%loop-number%}
+                set {_level} to {rpg::%{_ownerId}%::permanent-shadow-level::%loop-number%}
+                if {_level} is not set:
+                    set {_level} to 1
+                if {_xp} >= {_level} * 5:
+                    if {_level} < 10:
+                        add 1 to {_level}
+                        set {rpg::%{_ownerId}%::permanent-shadow-level::%loop-number%} to {_level}
+                        if {_level} >= 2:
+                            apply speed 1 to attacker for 999999 seconds
+                        if {_level} >= 4:
+                            apply strength 1 to attacker for 999999 seconds
+                        if {_level} >= 7:
+                            apply resistance 1 to attacker for 999999 seconds
+                        if {_level} >= 10:
+                            apply strength 2 to attacker for 999999 seconds
+                        loop all players:
+                            if "%uuid of loop-player%" is {_ownerId}:
+                                send "&5&lSOMBRA EVOLUÍDA! &7Uma sombra permanente alcançou o nível &f%{_level}%&7." to loop-player
+
+command /sombranivel <number>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::awakening} is not "monarca_sombras":
+            send "{@prefix}&cSomente o Monarca pode consultar suas sombras." to player
+            stop
+        if arg-1 is not between 1 and 5:
+            send "{@prefix}&cEscolha um espaço de 1 a 5." to player
+            stop
+        set {_slot} to arg-1
+        if {rpg::%{_id}%::permanent-shadow::%{_slot}%} is not set:
+            send "{@prefix}&cEsse espaço está vazio." to player
+            stop
+        set {_level} to {rpg::%{_id}%::permanent-shadow-level::%{_slot}%}
+        if {_level} is not set:
+            set {_level} to 1
+        set {_xp} to {rpg::%{_id}%::permanent-shadow-xp::%{_slot}%}
+        if {_xp} is not set:
+            set {_xp} to 0
+        send "&5&lSTATUS DA SOMBRA" to player
+        send "&7Nível: &f%{_level}%&7/10" to player
+        send "&7Experiência: &f%{_xp}%" to player
+        send "&7Próximo nível: &f%{_level} * 5% XP total" to player
