@@ -14,7 +14,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Quatro classes, habilidades, mana e especializações.
 - Despertares raros (3% por classe) ao escolher uma classe pela primeira vez: Assassino/Monarca das Sombras, Guerreiro/Colosso, Mago/Arquimago e Arqueiro/Olho Celestial, cada um com passiva e habilidade exclusiva. O Monarca invoca três soldados temporários por 45 segundos e pode extrair até cinco sombras permanentes, que evoluem individualmente até o nível 10. O Monarca pode alternar posturas agressiva, defensiva ou passiva com /posturasombras e reunir todos os soldados com /reunirsombras.
 - Armas e armaduras exclusivas por classe, com bônus de conjunto.
-- Espada do Aprendiz e Couraça do Guardião aprimoráveis até +3. Três armas lendárias forjáveis (Lâmina Solar, Machado do Colosso e Arco da Tempestade) evoluem por abates até maestria 5 e possuem habilidades ativas próprias.
+- Espada do Aprendiz e Couraça do Guardião aprimoráveis até +3. Três armas lendárias forjáveis (Lâmina Solar, Machado do Colosso e Arco da Tempestade) evoluem por abates até maestria 5, possuem habilidades ativas próprias e podem receber até três níveis de evolução permanente por jogador.
 - Loja, receitas, itens nomeados e raridades visuais.
 - Missão inicial, linha de história e contrato diário de caça.
 - Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
@@ -49,7 +49,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /missoes, /resgatar, /recompensadiaria, /contrato
 - /npc, /rpgnpc criar, /rpgnpc limpar, /missaoaceitar, /minhasmissoes, /missaoentregar
 - /rpgloja, /comprar, /mercado [listar|vender|comprar|cancelar], /rpgcraft, /fabricar
-- /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar, /forjarlendaria <espada|machado|arco>, /poderarma, /maestriaarma
+- /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar, /forjarlendaria <espada|machado|arco>, /poderarma, /maestriaarma, /melhorararma <espada|machado|arco>, /evolucaoarma
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
 - /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin), /invocarchefe guardiao|lich|draco, /chefeslendarios encerrar (admin), /raidchefe normal|heroica|pesadelo|status|cancelar, /raidarena configurar 1|2|3 (admin) ou normal|heroica|pesadelo|status|cancelar, /raidbau abrir|status
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
@@ -210,3 +210,11 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Ao derrotar o Titã, moedas, XP e diamantes são distribuídos proporcionalmente ao dano registrado; participantes que causaram dano também recebem um item de chefe e um baú. Dificuldades concedem recompensas-base de 800/1.400/2.400 moedas, 500/900/1.500 XP e 3/5/8 diamantes.
 - `/raidarena status` consulta a sala e inimigos restantes; `/raidarena cancelar` encerra o encontro. A desconexão do líder remove os inimigos e encerra a sessão.
 - Limitação: são pontos de surgimento configurados manualmente, não estruturas construídas automaticamente nem instâncias isoladas. A implementação usa mobs vanilla e precisa de teste de sintaxe e runtime em Paper real; o workflow de GitHub não comprova execução. Os ataques especiais do Titã usam dano e efeitos de poção; balanceamento e interação com armaduras precisam ser verificados em jogo.
+
+
+### Evolução de armas lendárias (0.62.0)
+- Cada arma lendária pode receber até três níveis de evolução, persistidos por jogador e tipo de arma, mesmo após reinícios.
+- /melhorararma espada|machado|arco exige que o jogador segure a arma correspondente e tenha 1 barra de netherita, 4 diamantes e 750 moedas por nível.
+- Cada nível acrescenta +2 de dano contra criaturas; no arco, o nível é registrado no disparo e aplicado quando a flecha atinge uma criatura.
+- /evolucaoarma mostra o progresso das três armas. O lore da arma segurada é atualizado no aprimoramento.
+- A evolução usa variáveis persistentes do Skript; não cria identificador NBT/PDC. Renomear a arma em bigorna ainda pode impedir o reconhecimento. É necessário validar sintaxe e combate em Paper real.
