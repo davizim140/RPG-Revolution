@@ -1,0 +1,134 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+    territory-cost: 500
+    territory-radius: 16
+
+# Guild territories are square plots centered on the claiming block.
+# Protection is enforced for block breaking, placing and interactions.
+command /guildterritorio [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê precisa pertencer a uma guilda." to player
+            stop
+        if arg-1 is not set or arg-1 is "ajuda":
+            send "&6&lTERRITÓRIOS DE GUILDA" to player
+            send "&e/guildterritorio reivindicar &7- Reivindica a área atual (500 moedas do banco)." to player
+            send "&e/guildterritorio info &7- Mostra o território onde você está." to player
+            send "&e/guildterritorio abandonar &7- Abandona o território da sua guilda nesta posição." to player
+            stop
+        if arg-1 is "reivindicar":
+            if {rpg::guild::%{_guild}%::leader} is not {_id}:
+                send "{@prefix}&cSomente o líder pode reivindicar territórios." to player
+                stop
+            set {_count} to size of {rpg::guild::%{_guild}%::territories::*}
+            if {_count} >= 3:
+                send "{@prefix}&cSua guilda já atingiu o limite de 3 territórios." to player
+                stop
+            if {rpg::guild::%{_guild}%::bank} < {@territory-cost}:
+                send "{@prefix}&cO banco precisa ter {@territory-cost} moedas." to player
+                stop
+            set {_world} to "%world of player%"
+            set {_x} to floor(x-coordinate of player)
+            set {_z} to floor(z-coordinate of player)
+            loop {rpg::territories::*}:
+                set {_territory} to loop-value
+                if {rpg::territory::%{_territory}%::world} is {_world}:
+                    set {_dx} to {_x} - {rpg::territory::%{_territory}%::x}
+                    set {_dz} to {_z} - {rpg::territory::%{_territory}%::z}
+                    if abs({_dx}) <= 32 and abs({_dz}) <= 32:
+                        send "{@prefix}&cJá existe um território próximo. Escolha outra área." to player
+                        stop
+            set {_key} to "%{_world}%:%{_x}%:%{_z}%"
+            if {rpg::territory::%{_key}%::guild} is set:
+                send "{@prefix}&cEsta área já foi reivindicada." to player
+                stop
+            remove {@territory-cost} from {rpg::guild::%{_guild}%::bank}
+            set {rpg::territory::%{_key}%::guild} to {_guild}
+            set {rpg::territory::%{_key}%::world} to {_world}
+            set {rpg::territory::%{_key}%::x} to {_x}
+            set {rpg::territory::%{_key}%::z} to {_z}
+            add {_key} to {rpg::territories::*}
+            add {_key} to {rpg::guild::%{_guild}%::territories::*}
+            send "{@prefix}&aTerritório reivindicado! Custo: {@territory-cost} moedas. Área: 33x33 blocos." to player
+            stop
+        if arg-1 is "info":
+            set {_found} to false
+            loop {rpg::territories::*}:
+                set {_territory} to loop-value
+                if {rpg::territory::%{_territory}%::world} is "%world of player%":
+                    set {_dx} to (floor(x-coordinate of player)) - {rpg::territory::%{_territory}%::x}
+                    set {_dz} to (floor(z-coordinate of player)) - {rpg::territory::%{_territory}%::z}
+                    if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                        set {_owner} to {rpg::territory::%{_territory}%::guild}
+                        send "{@prefix}&eTerritório pertencente à guilda &6%{_owner}%&e." to player
+                        set {_found} to true
+                        stop
+            if {_found} is false:
+                send "{@prefix}&7Esta área não pertence a nenhuma guilda." to player
+            stop
+        if arg-1 is "abandonar":
+            if {rpg::guild::%{_guild}%::leader} is not {_id}:
+                send "{@prefix}&cSomente o líder pode abandonar territórios." to player
+                stop
+            set {_found} to false
+            loop {rpg::guild::%{_guild}%::territories::*}:
+                set {_territory} to loop-value
+                if {rpg::territory::%{_territory}%::world} is "%world of player%":
+                    set {_dx} to (floor(x-coordinate of player)) - {rpg::territory::%{_territory}%::x}
+                    set {_dz} to (floor(z-coordinate of player)) - {rpg::territory::%{_territory}%::z}
+                    if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                        remove {_territory} from {rpg::territories::*}
+                        remove {_territory} from {rpg::guild::%{_guild}%::territories::*}
+                        delete {rpg::territory::%{_territory}%::*}
+                        send "{@prefix}&aTerritório abandonado. O custo não é reembolsado." to player
+                        set {_found} to true
+                        stop
+            if {_found} is false:
+                send "{@prefix}&cSua guilda não possui território nesta posição." to player
+            stop
+        send "{@prefix}&cSubcomando inválido. Use /guildterritorio ajuda." to player
+
+on break:
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                set {_owner} to {rpg::territory::%{_territory}%::guild}
+                set {_id} to "%uuid of player%"
+                if {rpg::%{_id}%::guild} is not {_owner}:
+                    cancel event
+                    send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
+                stop
+
+on place:
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                set {_owner} to {rpg::territory::%{_territory}%::guild}
+                set {_id} to "%uuid of player%"
+                if {rpg::%{_id}%::guild} is not {_owner}:
+                    cancel event
+                    send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
+                stop
+
+on right click:
+    if clicked block is set:
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if {rpg::territory::%{_territory}%::world} is "%world of clicked block%":
+                set {_dx} to (x-coordinate of clicked block) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of clicked block) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                    set {_owner} to {rpg::territory::%{_territory}%::guild}
+                    set {_id} to "%uuid of player%"
+                    if {rpg::%{_id}%::guild} is not {_owner}:
+                        cancel event
+                        send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
+                    stop
