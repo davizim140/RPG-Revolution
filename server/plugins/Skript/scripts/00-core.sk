@@ -69,7 +69,8 @@ command /rpgajuda:
         send "&e/fabricararmadura <capacete|peitoral|calcas|botas> &7- Conjunto da classe." to player
         send "&e/contrato [aceitar|entregar] &7- Contrato diário de caça." to player
         send "&e/grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar &7- Grupos e XP compartilhado." to player
-        send "&e/guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildanivel, /guildaguerra &7- Gestão, progressão e guerras de guilda." to player
+        send "&e/guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildanivel, /guildaguerra &7- Gestão, progressão e guerras de guilda.
+        send "&e/pvpstatus &7- Estatísticas e conquistas PvP." to player" to player
         send "&e/fabricarclasse <cajado|adaga|arco> &7- Armas exclusivas da sua classe." to player
         send "&e/masmorra [cancelar], /expedicao [cancelar] &7- Masmorra e expedição (nível 10+)." to player
         send "&e/guilda &7- Sistema de guildas." to player
