@@ -1,0 +1,61 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Conquistas automáticas: cada marco só pode ser resgatado uma vez.
+function rpg_check_achievement(p: player, key: text, goal: number, reward: number, xp_reward: number, label: text):
+    set {_id} to "%uuid of {_p}%"
+    if {rpg::%{_id}%::achievement::%{_key}%} is true:
+        stop
+    if {rpg::%{_id}%::achievement-progress::%{_key}%} >= {_goal}:
+        set {rpg::%{_id}%::achievement::%{_key}%} to true
+        add 1 to {rpg::%{_id}%::achievement-count}
+        add {_reward} to {rpg::%{_id}%::coins}
+        rpg_add_xp({_p}, {_xp_reward})
+        send "&6&lCONQUISTA DESBLOQUEADA!" to {_p}
+        send "&e%{_label}% &7- &a+%{_reward}% moedas &8| &b+%{_xp_reward}% XP" to {_p}
+
+on death of living entity:
+    attacker is a player
+    if victim is not a player:
+        set {_id} to "%uuid of attacker%"
+        add 1 to {rpg::%{_id}%::achievement-progress::monster-kills}
+        rpg_check_achievement(attacker, "monster-10", 10, 100, 50, "Caçador iniciante")
+        rpg_check_achievement(attacker, "monster-50", 50, 250, 125, "Caçador experiente")
+        rpg_check_achievement(attacker, "monster-100", 100, 500, 250, "Lenda da caça")
+
+on break:
+    set {_id} to "%uuid of player%"
+    add 1 to {rpg::%{_id}%::achievement-progress::blocks}
+    rpg_check_achievement(player, "blocks-100", 100, 100, 50, "Trabalhador")
+    rpg_check_achievement(player, "blocks-500", 500, 300, 150, "Mestre construtor")
+
+on death of player:
+    attacker is a player
+    if attacker is not victim:
+        set {_id} to "%uuid of attacker%"
+        add 1 to {rpg::%{_id}%::achievement-progress::pvp-wins}
+        rpg_check_achievement(attacker, "pvp-5", 5, 150, 75, "Duelista")
+        rpg_check_achievement(attacker, "pvp-25", 25, 400, 200, "Campeão da arena")
+
+command /conquistas:
+    aliases: /achievements
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_count} to {rpg::%{_id}%::achievement-count}
+        set {_kills} to {rpg::%{_id}%::achievement-progress::monster-kills}
+        set {_blocks} to {rpg::%{_id}%::achievement-progress::blocks}
+        set {_pvp} to {rpg::%{_id}%::achievement-progress::pvp-wins}
+        if {_count} is not set:
+            set {_count} to 0
+        if {_kills} is not set:
+            set {_kills} to 0
+        if {_blocks} is not set:
+            set {_blocks} to 0
+        if {_pvp} is not set:
+            set {_pvp} to 0
+        send "&6&lCONQUISTAS &8| &f%{_count}% desbloqueadas" to player
+        send "&eCaça: &f%{_kills}% abates &7(10 / 50 / 100)" to player
+        send "&eConstrução: &f%{_blocks}% blocos quebrados &7(100 / 500)" to player
+        send "&ePvP: &f%{_pvp}% vitórias &7(5 / 25)" to player
+        send "&7As recompensas são entregues automaticamente ao atingir cada marco." to player
+        send "&7Recompensas já obtidas não podem ser repetidas." to player
