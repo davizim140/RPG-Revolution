@@ -1,3 +1,10 @@
+## 0.54.0 - Dificuldades de expedição
+- /expedicao normal (nível 10+), heroica (20+) e pesadelo (35+).
+- Vida de guardiões, arqueiros e chefe final escala em 1x, 1,5x e 2x conforme a dificuldade.
+- Recompensas aumentam por dificuldade: 600/900/1.200 moedas, 400/600/800 XP, 3/4/6 diamantes e 1/2/3 sorteios de equipamento.
+- Dificuldade é persistida por expedição; corrigida a ordem de leitura das recompensas antes de limpar os dados da sessão.
+- Requer teste de sintaxe e runtime em Paper real.
+
 ## 0.53.0 - Drops exclusivos de chefes
 - Devorador das Ruínas: cada conclusão de expedição concede um equipamento exclusivo aleatório.
 - Titã da Fenda: cada participante registrado recebe dois sorteios de equipamento exclusivo.
