@@ -41,6 +41,8 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 6. Teste em servidor separado antes de produção.
 
 ## Comandos principais
+- /rpgitenslimpar [CONFIRMAR] (admin): limpeza manual de todos os itens dropados no território atual; exige confirmação e remove também itens legítimos.
+
 - /rpgajuda, /perfil, /atributos, /upar
 - /classe, /habilidades, /habilidade, /especializar, /despertar, /sombra, /invocar, /sombras, /exercito, /libertar, /posturasombras, /reunirsombras, /furia, /arcano, /precisao
 - /saldo, /pagar
