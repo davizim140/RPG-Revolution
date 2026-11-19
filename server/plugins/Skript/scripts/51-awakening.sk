@@ -275,3 +275,114 @@ on damage:
             if {rpg::%{_ownerId}%::shadow::%loop-number%} is attacker:
                 if victim is loop-player:
                     cancel event
+
+# Extração permanente: o Monarca pode erguer uma sombra de um inimigo derrotado.
+# As sombras extraídas ocupam até cinco espaços e permanecem até serem destruídas/libertadas.
+command /exercito:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::awakening} is not "monarca_sombras":
+            send "{@prefix}&cSomente o Monarca das Sombras pode comandar este exército." to player
+            stop
+        set {_count} to 0
+        loop 5 times:
+            if {rpg::%{_id}%::permanent-shadow::%loop-number%} is set:
+                if {rpg::%{_id}%::permanent-shadow::%loop-number%} is alive:
+                    add 1 to {_count}
+                else:
+                    delete {rpg::%{_id}%::permanent-shadow::%loop-number%}
+        send "&5&lEXÉRCITO PERMANENTE" to player
+        send "&7Soldados: &f%{_count}%&7/5" to player
+        loop 5 times:
+            if {rpg::%{_id}%::permanent-shadow::%loop-number%} is set:
+                if {rpg::%{_id}%::permanent-shadow::%loop-number%} is alive:
+                    send "&8- &5%name of {rpg::%{_id}%::permanent-shadow::%loop-number%}%" to player
+        send "&7Para libertar: &f/libertar <1-5>" to player
+
+command /libertar <number>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::awakening} is not "monarca_sombras":
+            send "{@prefix}&cSomente o Monarca pode libertar sombras." to player
+            stop
+        if arg-1 is not between 1 and 5:
+            send "{@prefix}&cEscolha um espaço de 1 a 5." to player
+            stop
+        set {_slot} to arg-1
+        if {rpg::%{_id}%::permanent-shadow::%{_slot}%} is not set:
+            send "{@prefix}&cEsse espaço está vazio." to player
+            stop
+        if {rpg::%{_id}%::permanent-shadow::%{_slot}%} is alive:
+            kill {rpg::%{_id}%::permanent-shadow::%{_slot}%}
+        delete {rpg::%{_id}%::permanent-shadow::%{_slot}%}
+        send "{@prefix}&7A sombra do espaço &f%{_slot}% &7foi libertada." to player
+
+# Chance de 15% ao derrotar um monstro; cada Monarca pode manter até cinco.
+on death of monster:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    if {rpg::%{_id}%::awakening} is "monarca_sombras":
+        set {_freeSlot} to 0
+        set {_count} to 0
+        loop 5 times:
+            if {rpg::%{_id}%::permanent-shadow::%loop-number%} is set:
+                if {rpg::%{_id}%::permanent-shadow::%loop-number%} is alive:
+                    add 1 to {_count}
+                else:
+                    delete {rpg::%{_id}%::permanent-shadow::%loop-number%}
+            else if {_freeSlot} is 0:
+                set {_freeSlot} to loop-number
+        if {_count} >= 5:
+            stop
+        if {_freeSlot} is 0:
+            stop
+        chance of 15%:
+            set {_fallenName} to name of victim
+            if {_fallenName} is not set:
+                set {_fallenName} to "%type of victim%"
+            spawn a wither skeleton at location of victim
+            set {_shadow} to last spawned entity
+            set name of {_shadow} to "&5Sombra de %{_fallenName}%"
+            set {rpg::%{_id}%::permanent-shadow::%{_freeSlot}%} to {_shadow}
+            set {rpg::%{_id}%::permanent-shadow-owner::%uuid of {_shadow}%} to {_id}
+            apply resistance 1 to {_shadow} for 999999 seconds
+            send "{@prefix}&5&lRESSURREIÇÃO! &7Você ergueu &f%{_fallenName}% &7como sombra permanente. (&f%{_count}%&7/5)" to attacker
+
+# Sombras permanentes protegem o Monarca e atacam o alvo que o feriu.
+on damage:
+    attacker is a player
+    set {_ownerId} to "%uuid of attacker%"
+    if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
+        if victim is not a player:
+            loop 5 times:
+                if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is set:
+                    if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is alive:
+                        set target of {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} to victim
+
+on damage:
+    victim is a player
+    set {_ownerId} to "%uuid of victim%"
+    if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
+        if attacker is a living entity:
+            loop 5 times:
+                if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is set:
+                    if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is alive:
+                        set target of {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} to attacker
+
+# Impede que uma sombra permanente cause dano ao próprio Monarca.
+on damage:
+    attacker is a wither skeleton
+    victim is a player
+    set {_victimId} to "%uuid of victim%"
+    if {rpg::%{_victimId}%::awakening} is "monarca_sombras":
+        loop 5 times:
+            if {rpg::%{_victimId}%::permanent-shadow::%loop-number%} is attacker:
+                cancel event
+
+# Libera automaticamente o espaço quando uma sombra permanente morre.
+on death of wither skeleton:
+    loop all players:
+        set {_ownerId} to "%uuid of loop-player%"
+        loop 5 times:
+            if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is victim:
+                delete {rpg::%{_ownerId}%::permanent-shadow::%loop-number%}
