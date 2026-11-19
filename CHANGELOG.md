@@ -1,3 +1,9 @@
+## 0.50.0 - Acessórios de pets
+- Adicionados Coleira de Caça para lobos, Amuleto Vital para gatos e Pena Celeste para papagaios.
+- Cada acessório custa 300 moedas, é comprado uma única vez e fica desbloqueado permanentemente.
+- Bônus passivos são aplicados enquanto o pet correspondente está invocado: força, regeneração ou velocidade.
+- Novo comando /petacessorio com loja, compra, equipamento, remoção e status.
+
 ## 0.49.0 - Pets companheiros
 - Adicionados três companheiros adotáveis: lobo, gato e papagaio, cada um com função e habilidade próprias.
 - 5% de chance de adoção Rara; raridade amplia a habilidade e concede resistência adicional.
