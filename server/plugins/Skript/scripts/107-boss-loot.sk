@@ -1,0 +1,55 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Recompensas exclusivas de chefes. Itens são identificados pelo nome e lore.
+function rpg_give_boss_loot(p: player):
+    set {_roll} to random integer between 1 and 100
+    if {_roll} <= 40:
+        set {_item} to diamond sword
+        set name of {_item} to "&5Lâmina do Devorador"
+        set lore of {_item} to "&7Raridade: &5Épica" and "&7Relíquia de chefe" and "&cBônus RPG: +3 de dano"
+        give {_item} to {_p}
+        send "{@prefix}&5Drop épico: &dLâmina do Devorador&5!" to {_p}
+    else if {_roll} <= 75:
+        set {_item} to diamond chestplate
+        set name of {_item} to "&5Couraça das Ruínas"
+        set lore of {_item} to "&7Raridade: &5Épica" and "&7Relíquia de chefe" and "&9Bônus RPG: reduz 3 de dano"
+        give {_item} to {_p}
+        send "{@prefix}&5Drop épico: &dCouraça das Ruínas&5!" to {_p}
+    else:
+        set {_item} to bow
+        set name of {_item} to "&6Arco do Titã"
+        set lore of {_item} to "&7Raridade: &6Lendária" and "&7Relíquia de chefe" and "&cBônus RPG: +4 de dano com flechas"
+        give {_item} to {_p}
+        send "{@prefix}&6&lDROP LENDÁRIO: &eArco do Titã&6!" to {_p}
+
+# Bônus da Lâmina do Devorador e do Arco do Titã.
+on damage of living entity:
+    attacker is a player
+    if victim is not a player:
+        set {_weapon} to name of attacker's tool
+        if {_weapon} is "&5Lâmina do Devorador":
+            increase damage by 3
+
+on shoot:
+    shooter is a player
+    projectile is an arrow
+    set {_weapon} to name of shooter's tool
+    if {_weapon} is "&6Arco do Titã":
+        set {rpg::bossloot::arrow::%uuid of projectile%} to true
+
+on damage of living entity:
+    projectile is an arrow
+    if {rpg::bossloot::arrow::%uuid of projectile%} is true:
+        if victim is not a player:
+            increase damage by 4
+        delete {rpg::bossloot::arrow::%uuid of projectile%}
+
+# Defesa da Couraça das Ruínas.
+on damage of player:
+    set {_armor} to name of victim's chestplate
+    if {_armor} is "&5Couraça das Ruínas":
+        if damage > 3:
+            set damage to damage - 3
+        else:
+            cancel event
