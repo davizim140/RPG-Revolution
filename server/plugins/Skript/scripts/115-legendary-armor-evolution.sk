@@ -1,0 +1,167 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Evolução individual das quatro peças da armadura de classe.
+# A progressão fica salva por jogador e peça, sem addons.
+
+command /evoluirarmadura <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_class} to {rpg::%{_id}%::class}
+        if {_class} is not set:
+            send "{@prefix}&cEscolha uma classe primeiro." to player
+            stop
+        if arg-1 is "capacete":
+            set {_part} to "Capacete"
+            set {_slotname} to name of player's helmet
+        else if arg-1 is "peitoral":
+            set {_part} to "Peitoral"
+            set {_slotname} to name of player's chestplate
+        else if arg-1 is "calcas":
+            set {_part} to "Calças"
+            set {_slotname} to name of player's leggings
+        else if arg-1 is "botas":
+            set {_part} to "Botas"
+            set {_slotname} to name of player's boots
+        else:
+            send "{@prefix}&eUse /evoluirarmadura <capacete|peitoral|calcas|botas>." to player
+            stop
+        if {_slotname} does not contain "Armadura do":
+            send "{@prefix}&cEquipe a peça de armadura de classe correspondente." to player
+            stop
+        if {_class} is "guerreiro":
+            set {_className} to "Guerreiro"
+        else if {_class} is "mago":
+            set {_className} to "Mago"
+        else if {_class} is "assassino":
+            set {_className} to "Assassino"
+        else if {_class} is "arqueiro":
+            set {_className} to "Arqueiro"
+        else:
+            send "{@prefix}&cSua classe não possui armadura evolutiva." to player
+            stop
+        if {_slotname} does not contain "Armadura do %{_className}%":
+            send "{@prefix}&cEssa peça não pertence à sua classe." to player
+            stop
+        set {_tier} to {rpg::%{_id}%::armor::%{_part}%::tier}
+        if {_tier} is not set:
+            set {_tier} to 0
+        if {_tier} >= 3:
+            send "{@prefix}&6Essa peça já está no nível máximo III." to player
+            stop
+        if player's inventory does not contain 1 netherite ingot:
+            send "{@prefix}&cVocê precisa de 1 barra de netherita." to player
+            stop
+        if player's inventory does not contain 2 diamonds:
+            send "{@prefix}&cVocê precisa de 2 diamantes." to player
+            stop
+        if {rpg::%{_id}%::coins} < 500:
+            send "{@prefix}&cVocê precisa de 500 moedas." to player
+            stop
+        remove 1 netherite ingot from player's inventory
+        remove 2 diamonds from player's inventory
+        remove 500 from {rpg::%{_id}%::coins}
+        add 1 to {_tier}
+        set {rpg::%{_id}%::armor::%{_part}%::tier} to {_tier}
+        if {_part} is "Capacete":
+            set lore of player's helmet to "&7Conjunto: &f%{_className}%" and "&7Evolução: &6%{_tier}%/3" and "&9Defesa lendária: peça aprimorada"
+        else if {_part} is "Peitoral":
+            set lore of player's chestplate to "&7Conjunto: &f%{_className}%" and "&7Evolução: &6%{_tier}%/3" and "&9Defesa lendária: peça aprimorada"
+        else if {_part} is "Calças":
+            set lore of player's leggings to "&7Conjunto: &f%{_className}%" and "&7Evolução: &6%{_tier}%/3" and "&9Defesa lendária: peça aprimorada"
+        else:
+            set lore of player's boots to "&7Conjunto: &f%{_className}%" and "&7Evolução: &6%{_tier}%/3" and "&9Defesa lendária: peça aprimorada"
+        send "{@prefix}&a%{_part}% evoluído para &6%{_tier}%/3&a. Progresso salvo." to player
+
+command /evolucaoarmadura:
+    trigger:
+        set {_id} to "%uuid of player%"
+        send "&6&lEVOLUÇÃO DA ARMADURA" to player
+        loop "Capacete", "Peitoral", "Calças" and "Botas":
+            set {_part} to loop-value
+            set {_tier} to {rpg::%{_id}%::armor::%{_part}%::tier}
+            if {_tier} is not set:
+                set {_tier} to 0
+            send "&e%{_part}%: &f%{_tier}%/3" to player
+        send "&7Custo por nível e peça: 1 netherita, 2 diamantes e 500 moedas." to player
+
+# Ativa a guarda lendária quando as quatro peças da classe do jogador estão equipadas.
+command /guardialendaria:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_class} to {rpg::%{_id}%::class}
+        if {_class} is "guerreiro":
+            set {_needle} to "Armadura do Guerreiro"
+        else if {_class} is "mago":
+            set {_needle} to "Armadura do Mago"
+        else if {_class} is "assassino":
+            set {_needle} to "Armadura do Assassino"
+        else if {_class} is "arqueiro":
+            set {_needle} to "Armadura do Arqueiro"
+        else:
+            send "{@prefix}&cEscolha uma classe primeiro." to player
+            stop
+        if name of player's helmet does not contain {_needle}:
+            send "{@prefix}&cEquipe o conjunto completo da sua classe." to player
+            stop
+        if name of player's chestplate does not contain {_needle}:
+            send "{@prefix}&cEquipe o conjunto completo da sua classe." to player
+            stop
+        if name of player's leggings does not contain {_needle}:
+            send "{@prefix}&cEquipe o conjunto completo da sua classe." to player
+            stop
+        if name of player's boots does not contain {_needle}:
+            send "{@prefix}&cEquipe o conjunto completo da sua classe." to player
+            stop
+        if {rpg::%{_id}%::armor::guard-cooldown} is set:
+            if difference between now and {rpg::%{_id}%::armor::guard-cooldown} < 90 seconds:
+                send "{@prefix}&cGuarda lendária em recarga." to player
+                stop
+        set {_total} to 0
+        loop "Capacete", "Peitoral", "Calças" and "Botas":
+            set {_tier} to {rpg::%{_id}%::armor::%loop-value%::tier}
+            if {_tier} is set:
+                add {_tier} to {_total}
+        if {_total} >= 8:
+            apply resistance 2 to player for 8 seconds
+            apply absorption 2 to player for 8 seconds
+            set {_grade} to "III"
+        else if {_total} >= 4:
+            apply resistance 1 to player for 8 seconds
+            apply absorption 1 to player for 8 seconds
+            set {_grade} to "II"
+        else:
+            apply resistance 1 to player for 5 seconds
+            set {_grade} to "I"
+        set {rpg::%{_id}%::armor::guard-cooldown} to now
+        send "{@prefix}&bGuarda Lendária %{_grade}% ativada por tempo limitado!" to player
+
+# O conjunto evoluído reduz dano recebido conforme a soma dos níveis das peças.
+on damage:
+    victim is a player
+    set {_id} to "%uuid of victim%"
+    set {_class} to {rpg::%{_id}%::class}
+    if {_class} is "guerreiro":
+        set {_needle} to "Armadura do Guerreiro"
+    else if {_class} is "mago":
+        set {_needle} to "Armadura do Mago"
+    else if {_class} is "assassino":
+        set {_needle} to "Armadura do Assassino"
+    else if {_class} is "arqueiro":
+        set {_needle} to "Armadura do Arqueiro"
+    if {_needle} is set:
+        if name of victim's helmet contains {_needle}:
+            if name of victim's chestplate contains {_needle}:
+                if name of victim's leggings contains {_needle}:
+                    if name of victim's boots contains {_needle}:
+                        set {_total} to 0
+                        loop "Capacete", "Peitoral", "Calças" and "Botas":
+                            set {_tier} to {rpg::%{_id}%::armor::%loop-value%::tier}
+                            if {_tier} is set:
+                                add {_tier} to {_total}
+                        set {_reduction} to floor({_total} / 4)
+                        if {_reduction} > 0:
+                            if damage > {_reduction}:
+                                set damage to damage - {_reduction}
+                            else:
+                                cancel event
