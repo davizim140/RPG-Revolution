@@ -1,0 +1,61 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+command /guildacargo <text> <player>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê não pertence a uma guilda." to player
+            stop
+        if {rpg::guild::%{_guild}%::leader} is not {_id}:
+            send "{@prefix}&cSomente o líder pode alterar cargos." to player
+            stop
+        set {_target} to "%uuid of arg-2%"
+        if {rpg::%{_target}%::guild} is not {_guild}:
+            send "{@prefix}&cO jogador precisa estar na sua guilda e online." to player
+            stop
+        if {_target} is {_id}:
+            send "{@prefix}&cO líder já possui o cargo máximo." to player
+            stop
+        if arg-1 is "promover":
+            if {rpg::%{_target}%::guild-role} is "officer":
+                send "{@prefix}&cEsse jogador já é oficial." to player
+                stop
+            set {rpg::%{_target}%::guild-role} to "officer"
+            send "{@prefix}&a%arg-2% agora é oficial da guilda." to player
+            send "{@prefix}&eVocê foi promovido a oficial da guilda &6%{_guild}%&e." to arg-2
+        else if arg-1 is "rebaixar":
+            if {rpg::%{_target}%::guild-role} is not "officer":
+                send "{@prefix}&cEsse jogador não é oficial." to player
+                stop
+            set {rpg::%{_target}%::guild-role} to "member"
+            send "{@prefix}&a%arg-2% voltou ao cargo de membro." to player
+            send "{@prefix}&eVocê voltou ao cargo de membro." to arg-2
+        else:
+            send "{@prefix}&cUse /guildacargo <promover|rebaixar> <jogador>." to player
+
+command /guildacargos:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê não pertence a uma guilda." to player
+            stop
+        send "&6&lCARGOS DA GUILDA &e%{_guild}%" to player
+        loop {rpg::guild::%{_guild}%::members::*}:
+            set {_member-id} to loop-value
+            set {_role} to {rpg::%{_member-id}%::guild-role}
+            if {rpg::guild::%{_guild}%::leader} is {_member-id}:
+                set {_role} to "Líder"
+            else if {_role} is "officer":
+                set {_role} to "Oficial"
+            else:
+                set {_role} to "Membro"
+            set {_online} to false
+            loop all players:
+                if "%uuid of loop-player%" is {_member-id}:
+                    set {_online} to true
+                    send "&7- &f%loop-player% &8| &e%{_role}%" to player
+            if {_online} is false:
+                send "&7- &f%{_member-id}% &8| &e%{_role}% &8(offline)" to player
