@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0 - NPCs físicos
+- Adicionado gerenciamento administrativo de NPCs com aldeões vanilla.
+- Clique com o botão direito nos NPCs para abrir os diálogos existentes de guia, ferreiro e exploradora.
+- Comandos /rpgnpc criar e /rpgnpc limpar; sem Citizens ou addons de Skript.
+
+
 ## 0.9.0 - Grupos e progressão cooperativa
 - Criados grupos com convite, entrada, saída, expulsão e encerramento pelo líder.
 - Integrantes online no mesmo mundo e a até 16 blocos recebem parte do XP e moedas por abates.
