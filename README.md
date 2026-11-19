@@ -98,3 +98,11 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - O servidor contabiliza colheitas maduras de trigo, cenoura, batata, beterraba e verruga do Nether dentro de territórios da própria guilda.
 - `/guildcolheita` mostra o total individual e o total acumulado da guilda.
 - O sistema é estatístico: não altera drops, não concede XP/moedas e não conta colheitas fora dos territórios da guilda.
+
+
+### Progressão de agricultura (0.46.0)
+- Cada colheita madura válida concede 5 XP de agricultura.
+- A experiência necessária para o próximo nível é 100 × nível atual.
+- Cada nível concede 50 moedas; níveis múltiplos de 5 concedem mais 100 moedas.
+- O comando /guildcolheita agora mostra nível e XP individuais, além das estatísticas da guilda.
+- A progressão é individual e persistente; somente colheitas em territórios da própria guilda contam.
