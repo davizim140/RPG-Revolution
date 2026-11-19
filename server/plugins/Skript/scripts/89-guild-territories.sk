@@ -289,3 +289,33 @@ on block flow:
                 if abs({_dx}) <= {@territory-radius} + 1 and abs({_dz}) <= {@territory-radius} + 1:
                     cancel event
                     stop
+
+# Impede dano e destruicao de veiculos que possuem inventario
+# (por exemplo, carrinhos com bau ou funil) dentro de territorios.
+# A verificacao usa a expressao nativa "inventory of entity"; veiculos
+# sem inventario nao sao afetados.
+on vehicle damage:
+    if inventory of event-vehicle is set:
+        set {_vehicleLocation} to location of event-vehicle
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if "%world of {_vehicleLocation}%" is {rpg::territory::%{_territory}%::world}:
+                set {_dx} to (x-coordinate of {_vehicleLocation}) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of {_vehicleLocation}) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
+
+# Salvaguarda no evento final de destruicao, inclusive para danos
+# causados por fontes que nao sejam jogadores.
+on vehicle destroy:
+    if inventory of event-vehicle is set:
+        set {_vehicleLocation} to location of event-vehicle
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if "%world of {_vehicleLocation}%" is {rpg::territory::%{_territory}%::world}:
+                set {_dx} to (x-coordinate of {_vehicleLocation}) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of {_vehicleLocation}) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
