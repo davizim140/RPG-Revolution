@@ -1,0 +1,45 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Despertar raro: 3% ao escolher Assassino pela primeira vez.
+# O poder é permanente e não pode ser obtido novamente por comando.
+command /despertar:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::awakening} is "monarca_sombras":
+            send "&5&lDESPERTAR: MONARCA DAS SOMBRAS" to player
+            send "&7Classe: &fassassino despertado" to player
+            send "&7Passiva: &f+2 de dano em ataques corpo a corpo." to player
+            send "&7Habilidade: &f/sombra (35 mana, recarga de 30 segundos)." to player
+            send "&7Poder: &fvelocidade, força e invisibilidade por 10 segundos." to player
+        else:
+            send "{@prefix}&7Você ainda não despertou um poder especial." to player
+            send "&8Há uma chance rara de despertar ao escolher Assassino." to player
+
+command /sombra:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::class} is not "assassino":
+            send "{@prefix}&cEste poder pertence ao Assassino." to player
+            stop
+        if {rpg::%{_id}%::awakening} is not "monarca_sombras":
+            send "{@prefix}&cVocê não possui o despertar Monarca das Sombras." to player
+            stop
+        if {rpg::%{_id}%::mana} < 35:
+            send "{@prefix}&cVocê precisa de 35 de mana." to player
+            stop
+        if {rpg::%{_id}%::skill-cooldown} > 0:
+            send "{@prefix}&cA habilidade recarrega em %{rpg::%{_id}%::skill-cooldown}% segundos." to player
+            stop
+        remove 35 from {rpg::%{_id}%::mana}
+        set {rpg::%{_id}%::skill-cooldown} to 30
+        apply speed 3 to player for 10 seconds
+        apply strength 2 to player for 10 seconds
+        apply invisibility 1 to player for 10 seconds
+        send "{@prefix}&5&lDOMÍNIO DAS SOMBRAS! &7Você se tornou uma sombra impossível de alcançar." to player
+
+on damage:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    if {rpg::%{_id}%::awakening} is "monarca_sombras":
+        increase damage by 2
