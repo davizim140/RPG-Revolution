@@ -12,9 +12,27 @@ command /despertar:
             send "&7Passiva: &f+2 de dano em ataques corpo a corpo." to player
             send "&7Habilidade: &f/sombra (35 mana, recarga de 30 segundos)." to player
             send "&7Poder: &fvelocidade, força e invisibilidade por 10 segundos." to player
+        else if {rpg::%{_id}%::awakening} is "colosso":
+            send "&6&lDESPERTAR: COLOSSO" to player
+            send "&7Classe: &fGuerreiro despertado" to player
+            send "&7Passiva: &f+2 de dano corpo a corpo." to player
+            send "&7Habilidade: &f/furia (35 mana, recarga de 30 segundos)." to player
+            send "&7Poder: &fforça III e resistência II por 10 segundos." to player
+        else if {rpg::%{_id}%::awakening} is "arquimago":
+            send "&5&lDESPERTAR: ARQUIMAGO" to player
+            send "&7Classe: &fMago despertado" to player
+            send "&7Passiva: &f+2 de dano mágico corpo a corpo." to player
+            send "&7Habilidade: &f/arcano (40 mana, recarga de 30 segundos)." to player
+            send "&7Poder: &fregeneração II e resistência I por 12 segundos." to player
+        else if {rpg::%{_id}%::awakening} is "olho_celestial":
+            send "&b&lDESPERTAR: OLHO CELESTIAL" to player
+            send "&7Classe: &fArqueiro despertado" to player
+            send "&7Passiva: &f+3 de dano com arco." to player
+            send "&7Habilidade: &f/precisao (30 mana, recarga de 25 segundos)." to player
+            send "&7Poder: &fvelocidade III e visão noturna por 15 segundos." to player
         else:
             send "{@prefix}&7Você ainda não despertou um poder especial." to player
-            send "&8Há uma chance rara de despertar ao escolher Assassino." to player
+            send "&8Há uma chance rara de despertar ao escolher sua classe." to player
 
 command /sombra:
     trigger:
@@ -43,3 +61,78 @@ on damage:
     set {_id} to "%uuid of attacker%"
     if {rpg::%{_id}%::awakening} is "monarca_sombras":
         increase damage by 2
+
+command /furia:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::class} is not "guerreiro":
+            send "{@prefix}&cEste poder pertence ao Guerreiro." to player
+            stop
+        if {rpg::%{_id}%::awakening} is not "colosso":
+            send "{@prefix}&cVocê não possui o despertar Colosso." to player
+            stop
+        if {rpg::%{_id}%::mana} < 35:
+            send "{@prefix}&cVocê precisa de 35 de mana." to player
+            stop
+        if {rpg::%{_id}%::skill-cooldown} > 0:
+            send "{@prefix}&cA habilidade recarrega em %{rpg::%{_id}%::skill-cooldown}% segundos." to player
+            stop
+        remove 35 from {rpg::%{_id}%::mana}
+        set {rpg::%{_id}%::skill-cooldown} to 30
+        apply strength 3 to player for 10 seconds
+        apply resistance 2 to player for 10 seconds
+        send "{@prefix}&6&lFÚRIA DO COLOSSO! &7Seu poder físico foi ampliado." to player
+
+command /arcano:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::class} is not "mago":
+            send "{@prefix}&cEste poder pertence ao Mago." to player
+            stop
+        if {rpg::%{_id}%::awakening} is not "arquimago":
+            send "{@prefix}&cVocê não possui o despertar Arquimago." to player
+            stop
+        if {rpg::%{_id}%::mana} < 40:
+            send "{@prefix}&cVocê precisa de 40 de mana." to player
+            stop
+        if {rpg::%{_id}%::skill-cooldown} > 0:
+            send "{@prefix}&cA habilidade recarrega em %{rpg::%{_id}%::skill-cooldown}% segundos." to player
+            stop
+        remove 40 from {rpg::%{_id}%::mana}
+        set {rpg::%{_id}%::skill-cooldown} to 30
+        apply regeneration 2 to player for 12 seconds
+        apply resistance 1 to player for 12 seconds
+        send "{@prefix}&5&lASCENSÃO ARCANA! &7A energia arcana envolve seu corpo." to player
+
+command /precisao:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::class} is not "arqueiro":
+            send "{@prefix}&cEste poder pertence ao Arqueiro." to player
+            stop
+        if {rpg::%{_id}%::awakening} is not "olho_celestial":
+            send "{@prefix}&cVocê não possui o despertar Olho Celestial." to player
+            stop
+        if {rpg::%{_id}%::mana} < 30:
+            send "{@prefix}&cVocê precisa de 30 de mana." to player
+            stop
+        if {rpg::%{_id}%::skill-cooldown} > 0:
+            send "{@prefix}&cA habilidade recarrega em %{rpg::%{_id}%::skill-cooldown}% segundos." to player
+            stop
+        remove 30 from {rpg::%{_id}%::mana}
+        set {rpg::%{_id}%::skill-cooldown} to 25
+        apply speed 3 to player for 15 seconds
+        apply night vision 1 to player for 15 seconds
+        send "{@prefix}&b&lOLHO CELESTIAL! &7Sua percepção e precisão foram ampliadas." to player
+
+on damage:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    if {rpg::%{_id}%::awakening} is "colosso":
+        if attacker's tool is not bow:
+            increase damage by 2
+    if {rpg::%{_id}%::awakening} is "arquimago":
+        increase damage by 2
+    if {rpg::%{_id}%::awakening} is "olho_celestial":
+        if attacker's tool is bow:
+            increase damage by 3
