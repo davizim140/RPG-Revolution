@@ -1,3 +1,10 @@
+## 0.51.0 - Árvore de talentos dos pets
+- Adicionado sistema de pontos de talento: 1 ponto a cada dois níveis do pet após o nível 1.
+- Cada talento custa um ponto e pode ser adquirido uma única vez; pontos gastos e talentos são persistentes.
+- Lobo: Mordida, Guardião e Rastreador. Gato: Ronronar, Reflexo e Vigia. Papagaio: Corrente, Plumagem e Observador.
+- Efeitos de suporte são mantidos enquanto o pet estiver vivo e invocado.
+- Novos comandos /pettrilha e /pettalento.
+
 ## 0.50.0 - Acessórios de pets
 - Adicionados Coleira de Caça para lobos, Amuleto Vital para gatos e Pena Celeste para papagaios.
 - Cada acessório custa 300 moedas, é comprado uma única vez e fica desbloqueado permanentemente.
