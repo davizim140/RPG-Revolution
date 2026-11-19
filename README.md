@@ -35,7 +35,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /classe, /habilidades, /habilidade, /especializar
 - /saldo, /pagar
 - /missoes, /resgatar, /recompensadiaria, /contrato
-- /npc, /missaoaceitar, /minhasmissoes, /missaoentregar
+- /npc, /rpgnpc criar, /rpgnpc limpar, /missaoaceitar, /minhasmissoes, /missaoentregar
 - /rpgloja, /comprar, /rpgcraft, /fabricar
 - /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
@@ -52,7 +52,7 @@ Permissão administrativa: rpg.admin.
 - Raridades são visuais, exceto bônus programados nos itens descritos.
 - O bônus do Arco do Batedor precisa de validação em combate real com flechas.
 - Armaduras de classe são identificadas pelo nome; conjunto Guerreiro reduz dano, Mago e Assassino aumentam dano corpo a corpo, Arqueiro recebe velocidade.
-- NPCs são diálogos por comando, não entidades físicas com skin.
+- NPCs físicos usam aldeões vanilla e abrem os diálogos existentes ao clicar; não têm skin personalizada.
 - Regiões exibem nível recomendado, mas ainda não bloqueiam entrada por nível.
 - A masmorra é um encontro simples com criatura vanilla, sem arena instanciada ou mecânicas complexas.
 - Grupos compartilham recompensas com integrantes online no mesmo mundo e a até 16 blocos do jogador que derrotou a criatura.
