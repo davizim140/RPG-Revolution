@@ -20,7 +20,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
 - Regiões configuráveis por mundo, com bloqueio de teleporte entre mundos para personagens abaixo do nível mínimo.
 - Masmorra individual básica, expedição avançada em três dificuldades (Normal 10+, Heroica 20+, Pesadelo 35+) e expedições cooperativas integradas aos grupos e raids de chefes com dificuldade e recompensa proporcional ao dano contribuído. A Arena das Ruínas (/arenadungeon) adiciona três salas de combate com sentinelas, aranhas armadilhadas e o chefe Guardião Arcano, tesouros intermediários e recompensa final; o encontro usa a área atual sem alterar blocos do mundo.
-- Chefe mundial de três fases, com servos, participação e recompensas. Chefes lendários invocáveis: Guardião Primordial, Lich Eterno e Draco Celestial, cada um com 400/300/350 de vida, duas transições de fase, reforços e relíquia exclusiva.
+- Chefe mundial de três fases, com servos, participação e recompensas. Chefes lendários invocáveis: Guardião Primordial, Lich Eterno e Draco Celestial, cada um com 400/300/350 de vida, duas transições de fase, reforços e relíquia exclusiva. Arenas cooperativas de raid em três etapas configuráveis, com ondas de inimigos, Titã final e baús de recompensa por sala.
 - Mercado entre jogadores com anúncios em custódia, compra e cancelamento.
 - Progressão de guildas por caça, níveis e depósito automático no banco.
 - Guerras de guildas por desafio/aceite, placar PvP e prêmio ao vencedor.
@@ -51,7 +51,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /rpgloja, /comprar, /mercado [listar|vender|comprar|cancelar], /rpgcraft, /fabricar
 - /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar, /forjarlendaria <espada|machado|arco>, /poderarma, /maestriaarma
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
-- /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin), /invocarchefe guardiao|lich|draco, /chefeslendarios encerrar (admin), /raidchefe normal|heroica|pesadelo|status|cancelar
+- /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin), /invocarchefe guardiao|lich|draco, /chefeslendarios encerrar (admin), /raidchefe normal|heroica|pesadelo|status|cancelar, /raidarena configurar 1|2|3 (admin) ou normal|heroica|pesadelo|status|cancelar, /raidbau abrir|status
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
 - /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildacargo, /guildacargos, /guildterritorio, /guildterritorioguerra, /guildanivel, /guildaguerra, /pvpstatus
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
@@ -200,3 +200,13 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Abates com a arma evoluem maestria até o nível 5; cada nível aumenta o bônus de dano e reduz a recarga da habilidade, com mínimo de 30 segundos.
 - /poderarma ativa a habilidade da arma segurada; /maestriaarma consulta os níveis. Os dados de maestria ficam persistidos por jogador e tipo de arma.
 - Itens são identificados pelo nome e ainda podem ser afetados por renomeação em bigorna. Requer teste de sintaxe e runtime em Paper real.
+
+
+### Arenas cooperativas de raid (0.60.0)
+- A administração configura os pontos de surgimento das três salas com `/raidarena configurar 1`, `/raidarena configurar 2` e `/raidarena configurar 3`, posicionando-se no local desejado. Os três pontos devem ficar no mesmo mundo.
+- O líder inicia com `/raidarena normal|heroica|pesadelo`. São exigidos pelo menos dois membros online do grupo, no mesmo mundo e a até 24 blocos do líder; níveis mínimos 10/20/35.
+- Sala 1: três Guardiões (zumbis). Sala 2: quatro Sentinelas (esqueletos). Sala 3: Titã da Arena (ravager) com 500/900/1.400 de vida.
+- Ao concluir cada uma das duas primeiras salas, cada membro registrado recebe um baú virtual, aberto por `/raidbau abrir`; `/raidbau status` consulta a quantidade. O baú entrega aleatoriamente moedas, XP, diamantes ou maçã dourada.
+- Ao derrotar o Titã, moedas, XP e diamantes são distribuídos proporcionalmente ao dano registrado; participantes que causaram dano também recebem um item de chefe e um baú. Dificuldades concedem recompensas-base de 800/1.400/2.400 moedas, 500/900/1.500 XP e 3/5/8 diamantes.
+- `/raidarena status` consulta a sala e inimigos restantes; `/raidarena cancelar` encerra o encontro. A desconexão do líder remove os inimigos e encerra a sessão.
+- Limitação: são pontos de surgimento configurados manualmente, não estruturas construídas automaticamente nem instâncias isoladas. A implementação usa mobs vanilla e precisa de teste de sintaxe e runtime em Paper real; o workflow de GitHub não comprova execução.
