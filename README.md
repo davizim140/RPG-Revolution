@@ -250,3 +250,10 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Cada prestígio reinicia nível e XP, mas preserva classe, especialização, atributos, talentos, equipamentos, pets e guilda. Recompensa: 5 pontos de atributo, 1.000 moedas e 1 ficha de prestígio.
 - Cada prestígio aumenta permanentemente a XP recebida em 5%, até +50% no prestígio 10. As fichas ficam contabilizadas para futuras recompensas de endgame; ainda não têm loja de troca.
 - A integração da nova curva precisa ser testada em Paper real. GitHub Actions verifica empacotamento, não sintaxe/runtime Skript.
+
+
+### Loja de prestígio (0.67.0)
+- `/lojaprestigio` lista quatro melhorias permanentes compradas com fichas recebidas ao renascer.
+- `/vitalidadeeterna` custa 1 ficha e concede Regeneração I; `/forcaeterna` custa 2 e adiciona 2 de dano contra criaturas; `/guardiaoeterno` custa 2 e concede Resistência I; `/menteeterna` custa 3 e acelera a regeneração de mana em +2 por ciclo.
+- Cada melhoria é única por personagem. Os efeitos são aplicados enquanto o jogador está online.
+- Necessário validar os efeitos, aliases e sintaxe em uma instância Paper real; o workflow de empacotamento não executa o Skript.
