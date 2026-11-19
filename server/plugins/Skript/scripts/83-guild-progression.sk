@@ -1,0 +1,44 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# XP de guilda por caça. O progresso é global e permanece salvo em variáveis Skript.
+on death of monster:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    set {_guild} to {rpg::%{_id}%::guild}
+    if {_guild} is set:
+        add 2 to {rpg::guild::%{_guild}%::xp}
+        if {rpg::guild::%{_guild}%::level} is not set:
+            set {rpg::guild::%{_guild}%::level} to 1
+        set {_level} to {rpg::guild::%{_guild}%::level}
+        set {_needed} to {_level} * 100
+        while {rpg::guild::%{_guild}%::xp} >= {_needed}:
+            remove {_needed} from {rpg::guild::%{_guild}%::xp}
+            add 1 to {_level}
+            set {rpg::guild::%{_guild}%::level} to {_level}
+            add 100 to {rpg::guild::%{_guild}%::bank}
+            set {_needed} to {_level} * 100
+            loop all players:
+                if {rpg::%uuid of loop-player%::guild} is {_guild}:
+                    send "&6&lGUILDA EVOLUIU! &7%{_guild}% alcançou o nível &e%{_level}%&7. O banco recebeu 100 moedas." to loop-player
+
+command /guildanivel:
+    aliases: /guildaprogressao
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê não pertence a uma guilda." to player
+            stop
+        set {_level} to {rpg::guild::%{_guild}%::level}
+        if {_level} is not set:
+            set {_level} to 1
+        set {_xp} to {rpg::guild::%{_guild}%::xp}
+        if {_xp} is not set:
+            set {_xp} to 0
+        set {_needed} to {_level} * 100
+        send "&6&lPROGRESSÃO DA GUILDA" to player
+        send "&7Guilda: &f%{_guild}%" to player
+        send "&7Nível: &e%{_level}%" to player
+        send "&7XP: &f%{_xp}%&7/&f%{_needed}%" to player
+        send "&7Banco: &6%{rpg::guild::%{_guild}%::bank}% moedas" to player
