@@ -1,3 +1,8 @@
+## 0.42.0 - Limpeza administrativa de itens em territórios
+- Adicionado /rpgitenslimpar para administradores dentro do território atual.
+- A remoção exige o argumento CONFIRMAR e informa que todos os itens dropados da área serão removidos, inclusive itens legítimos.
+- A limpeza é manual; não há remoção automática nem filtro confiável de idade/autor do item.
+
 ## 0.41.0 - Proteção contra despawn de itens em territórios
 - Cancela o desaparecimento natural de itens dropados enquanto estiverem dentro de territórios reivindicados.
 - Fora da área protegida, o temporizador normal de despawn continua funcionando.
