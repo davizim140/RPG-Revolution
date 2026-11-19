@@ -1,0 +1,65 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Evento manual de invasao. Exige permissao rpg.admin.
+# Participantes que causarem dano direto aos invasores recebem a recompensa final.
+command /invasao [<text>]:
+    permission: rpg.admin
+    permission message: {@prefix}&cVocê não tem permissão.
+    trigger:
+        if arg-1 is "iniciar":
+            if {rpg::invasion::active} is true:
+                send "{@prefix}&cJá existe uma invasão ativa." to player
+                stop
+            if world of player is not set:
+                stop
+            set {rpg::invasion::active} to true
+            set {rpg::invasion::remaining} to 5
+            delete {rpg::invasion::participants::*}
+            loop 5 times:
+                spawn zombie at location of player
+                set {_mob} to last spawned entity
+                set name of {_mob} to "&cInvasor da Fenda"
+                set max health of {_mob} to 30
+                set health of {_mob} to 30
+                set {rpg::invasion::mob::%uuid of {_mob}%} to true
+            broadcast "{@prefix}&4&lINVASÃO! &cCinco invasores surgiram em %world of player%!"
+            stop
+        if arg-1 is "encerrar":
+            if {rpg::invasion::active} is not true:
+                send "{@prefix}&cNão há invasão ativa." to player
+                stop
+            delete {rpg::invasion::active}
+            delete {rpg::invasion::remaining}
+            delete {rpg::invasion::participants::*}
+            loop all entities:
+                if {rpg::invasion::mob::%uuid of loop-entity%} is true:
+                    delete {rpg::invasion::mob::%uuid of loop-entity%}
+                    kill loop-entity
+            broadcast "{@prefix}&eA invasão foi encerrada por um administrador."
+            stop
+        send "{@prefix}&eUso: /invasao iniciar ou /invasao encerrar" to player
+
+on damage:
+    if {rpg::invasion::active} is true:
+        if victim is a zombie:
+            if {rpg::invasion::mob::%uuid of victim%} is true:
+                if attacker is a player:
+                    add "%uuid of attacker%" to {rpg::invasion::participants::*}
+
+on death of zombie:
+    if {rpg::invasion::mob::%uuid of victim%} is true:
+        delete {rpg::invasion::mob::%uuid of victim%}
+        remove 1 from {rpg::invasion::remaining}
+        if {rpg::invasion::remaining} <= 0:
+            delete {rpg::invasion::active}
+            broadcast "{@prefix}&aA invasão foi repelida!"
+            loop {rpg::invasion::participants::*}:
+                set {_participantId} to loop-value
+                loop all players:
+                    if "%uuid of loop-player%" is {_participantId}:
+                        add 200 to {rpg::%{_participantId}%::coins}
+                        rpg_add_xp(loop-player, 100)
+                        send "{@prefix}&6Recompensa da invasão: &e200 moedas &ae &e100 XP&a!" to loop-player
+            delete {rpg::invasion::participants::*}
+            delete {rpg::invasion::remaining}
