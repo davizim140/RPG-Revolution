@@ -1,3 +1,7 @@
+## 0.28.0 - Proteção contra fogo em territórios
+- Eventos de ignição e propagação de fogo são cancelados dentro de territórios reivindicados.
+- A proteção também impede fogo natural dentro da área; não altera dano de entidades.
+
 ## 0.27.0 - Proteção adicional de territórios
 - Explosões deixam de destruir blocos dentro de territórios reivindicados.
 - Pistões posicionados dentro de territórios não podem estender ou retrair.
