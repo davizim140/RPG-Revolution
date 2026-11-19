@@ -36,6 +36,7 @@ command /arenadungeon [<text>]:
             stop
         set {rpg::arena::%{_id}%::active} to true
         set {rpg::arena::%{_id}%::room} to 1
+        set {rpg::arena::%{_id}%::remaining} to 3
         set {rpg::arena::%{_id}%::world} to world of player
         set {rpg::arena::%{_id}%::x} to x-coordinate of player
         set {rpg::arena::%{_id}%::y} to y-coordinate of player
