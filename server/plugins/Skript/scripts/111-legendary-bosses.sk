@@ -1,0 +1,132 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Chefes lendários invocados por jogadores. Apenas um encontro global pode existir.
+# Custos: 8 diamantes, 1 estrela do Nether e 1.000 moedas.
+command /invocarchefe [<text>]:
+    trigger:
+        if arg-1 is not "guardiao" and arg-1 is not "lich" and arg-1 is not "draco":
+            send "{@prefix}&e/invocarchefe guardiao|lich|draco" to player
+            send "&7Custo: 8 diamantes, 1 estrela do Nether e 1.000 moedas." to player
+            stop
+        if {rpg::legendboss::active} is true:
+            send "{@prefix}&cJá existe um chefe lendário ativo no mundo." to player
+            stop
+        if player's inventory does not contain 8 diamonds:
+            send "{@prefix}&cVocê precisa de 8 diamantes." to player
+            stop
+        if player's inventory does not contain 1 nether star:
+            send "{@prefix}&cVocê precisa de 1 estrela do Nether." to player
+            stop
+        if {rpg::%uuid of player%::coins} < 1000:
+            send "{@prefix}&cVocê precisa de 1.000 moedas." to player
+            stop
+        remove 8 diamonds from player's inventory
+        remove 1 nether star from player's inventory
+        remove 1000 from {rpg::%uuid of player%::coins}
+        if arg-1 is "guardiao":
+            spawn ravager at location of player
+            set {_boss} to last spawned entity
+            set name of {_boss} to "&6&lGUARDIÃO PRIMORDIAL"
+            set max health of {_boss} to 400
+            set health of {_boss} to 400
+            set {rpg::legendboss::type} to "guardiao"
+            broadcast "{@prefix}&6Um Guardião Primordial foi invocado por %player%!"
+        else if arg-1 is "lich":
+            spawn evoker at location of player
+            set {_boss} to last spawned entity
+            set name of {_boss} to "&5&lLICH ETERNO"
+            set max health of {_boss} to 300
+            set health of {_boss} to 300
+            set {rpg::legendboss::type} to "lich"
+            broadcast "{@prefix}&5O Lich Eterno foi invocado por %player%!"
+        else:
+            spawn phantom at location of player
+            set {_boss} to last spawned entity
+            set name of {_boss} to "&b&lDRACO CELESTIAL"
+            set max health of {_boss} to 350
+            set health of {_boss} to 350
+            set {rpg::legendboss::type} to "draco"
+            broadcast "{@prefix}&bO Draco Celestial foi invocado por %player%!"
+        set {rpg::legendboss::active} to true
+        set {rpg::legendboss::id} to "%uuid of {_boss}%"
+        set {rpg::legendboss::phase} to 1
+        set {rpg::legendboss::entity::%uuid of {_boss}%} to true
+        set {rpg::legendboss::participants::%uuid of player%} to true
+        apply resistance 1 to {_boss} for 999999 seconds
+        send "{@prefix}&aEncontro iniciado! Ataque o chefe para registrar sua participação." to player
+
+on damage:
+    if {rpg::legendboss::active} is true:
+        if "%uuid of victim%" is {rpg::legendboss::id}:
+            if attacker is a player:
+                set {rpg::legendboss::participants::%uuid of attacker%} to true
+            if {rpg::legendboss::phase} is 1:
+                if health of victim <= max health of victim * 0.6:
+                    set {rpg::legendboss::phase} to 2
+                    if {rpg::legendboss::type} is "guardiao":
+                        apply strength 1 to victim for 999999 seconds
+                        loop 3 times:
+                            spawn zombie at location of victim
+                            set name of last spawned entity to "&6Sentinela Primordial"
+                    else if {rpg::legendboss::type} is "lich":
+                        apply speed 1 to victim for 999999 seconds
+                        loop 3 times:
+                            spawn vex at location of victim
+                            set name of last spawned entity to "&5Espírito do Lich"
+                    else:
+                        apply speed 2 to victim for 999999 seconds
+                        loop 3 times:
+                            spawn phantom at location of victim
+                            set name of last spawned entity to "&bAsa do Draco"
+                    broadcast "{@prefix}&cO chefe lendário entrou na fase 2!"
+            else if {rpg::legendboss::phase} is 2:
+                if health of victim <= max health of victim * 0.25:
+                    set {rpg::legendboss::phase} to 3
+                    apply strength 2 to victim for 999999 seconds
+                    apply speed 2 to victim for 999999 seconds
+                    apply resistance 2 to victim for 999999 seconds
+                    broadcast "{@prefix}&4&lFASE FINAL! &cO chefe liberou todo o seu poder!"
+
+on death:
+    if {rpg::legendboss::entity::%uuid of victim%} is true:
+        delete {rpg::legendboss::entity::%uuid of victim%}
+        set {_type} to {rpg::legendboss::type}
+        broadcast "{@prefix}&6&lCHEFE LENDÁRIO DERROTADO!"
+        loop all players:
+            if {rpg::legendboss::participants::%uuid of loop-player%} is true:
+                add 750 to {rpg::%uuid of loop-player%::coins}
+                rpg_add_xp(loop-player, 500)
+                if {_type} is "guardiao":
+                    set {_reward} to netherite ingot
+                    set name of {_reward} to "&6Núcleo do Guardião"
+                    set lore of {_reward} to "&7Relíquia lendária" and "&7Prova da queda do Guardião Primordial"
+                else if {_type} is "lich":
+                    set {_reward} to enchanted golden apple
+                    set name of {_reward} to "&5Coração do Lich"
+                    set lore of {_reward} to "&7Relíquia lendária" and "&7Essência preservada do Lich Eterno"
+                else:
+                    set {_reward} to elytra
+                    set name of {_reward} to "&bEscama do Draco Celestial"
+                    set lore of {_reward} to "&7Relíquia lendária" and "&7Fragmento das asas do Draco"
+                give {_reward} to loop-player
+                send "{@prefix}&a+750 moedas, +500 XP e uma relíquia exclusiva!" to loop-player
+        delete {rpg::legendboss::*}
+
+# Encerramento administrativo e remoção segura do chefe ativo.
+command /chefeslendarios [<text>]:
+    permission: rpg.admin
+    permission message: {@prefix}&cVocê não tem permissão.
+    trigger:
+        if arg-1 is not "encerrar":
+            send "{@prefix}&e/chefeslendarios encerrar" to player
+            stop
+        if {rpg::legendboss::active} is not true:
+            send "{@prefix}&cNão há chefe lendário ativo." to player
+            stop
+        loop all entities:
+            if {rpg::legendboss::entity::%uuid of loop-entity%} is true:
+                delete {rpg::legendboss::entity::%uuid of loop-entity%}
+                kill loop-entity
+        delete {rpg::legendboss::*}
+        broadcast "{@prefix}&eO encontro lendário foi encerrado pela administração."
