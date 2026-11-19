@@ -92,7 +92,7 @@ command /rpgtemporada <text> [<text>]:
                 set {_next-season} to {rpg::season::current}
                 set {rpg::season::%{_next-season}%::name} to "%{rpg::season::auto::name}% %{_next-season}%"
                 set {rpg::season::%{_next-season}%::started} to now
-                set {rpg::season::%{_next-season}%::ends} to now + {rpg::season::auto::days} days
+                set {rpg::season::%{_next-season}%::ends} to {rpg::season::auto::days} days from now
                 set {rpg::season::active} to true
                 broadcast "&6&lNOVA TEMPORADA AUTOMÁTICA! &eTemporada %{_next-season}%: &f%{rpg::season::%{_next-season}%::name}%"
                 broadcast "&7Ela termina em %{rpg::season::auto::days}% dia(s). Use /rankingtemporada.";
@@ -229,7 +229,7 @@ command /rpgtemporadaauto <text> [<number>]:
         set {_season} to {rpg::season::current}
         set {rpg::season::%{_season}%::name} to "Temporada Automática %{_season}%"
         set {rpg::season::%{_season}%::started} to now
-        set {rpg::season::%{_season}%::ends} to now + arg-2 days
+        set {rpg::season::%{_season}%::ends} to arg-2 days from now
         set {rpg::season::active} to true
         broadcast "&6&lTEMPORADA AUTOMÁTICA INICIADA! &eTemporada %{_season}%"
         broadcast "&7Duração: &f%arg-2% dia(s). &7Use /rankingtemporada."
