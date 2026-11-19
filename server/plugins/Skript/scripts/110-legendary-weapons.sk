@@ -1,0 +1,143 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Armas lendárias fabricadas por jogadores. A maestria é persistida por jogador e tipo.
+command /forjarlendaria <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is "espada":
+            set {_name} to "&6Lâmina Solar"
+            set {_type} to "espada"
+            set {_item} to netherite sword
+        else if arg-1 is "machado":
+            set {_name} to "&cMachado do Colosso"
+            set {_type} to "machado"
+            set {_item} to netherite axe
+        else if arg-1 is "arco":
+            set {_name} to "&bArco da Tempestade"
+            set {_type} to "arco"
+            set {_item} to bow
+        else:
+            send "{@prefix}&eUse /forjarlendaria <espada|machado|arco>." to player
+            stop
+        if {rpg::%{_id}%::legendary::%{_type}%::forged} is true:
+            send "{@prefix}&cVocê já forjou esta arma lendária. Cada tipo só pode ser forjado uma vez." to player
+            stop
+        if player's inventory does not contain 1 netherite ingot:
+            send "{@prefix}&cVocê precisa de 1 barra de netherita." to player
+            stop
+        if player's inventory does not contain 8 diamonds:
+            send "{@prefix}&cVocê precisa de 8 diamantes." to player
+            stop
+        if {rpg::%{_id}%::coins} < 1500:
+            send "{@prefix}&cVocê precisa de 1.500 moedas." to player
+            stop
+        remove 1 netherite ingot from player's inventory
+        remove 8 diamonds from player's inventory
+        remove 1500 from {rpg::%{_id}%::coins}
+        set name of {_item} to {_name}
+        set lore of {_item} to "&7Raridade: &6LENDÁRIA" and "&7Maestria: &fNível 1" and "&7Abates com a arma concedem maestria." and "&eHabilidade: use /poderarma"
+        give {_item} to player
+        set {rpg::%{_id}%::legendary::%{_type}%::forged} to true
+        set {rpg::%{_id}%::legendary::%{_type}%::level} to 1
+        set {rpg::%{_id}%::legendary::%{_type}%::xp} to 0
+        send "{@prefix}&6&lARMA LENDÁRIA FORJADA! &e%{_name}%&7. Use /poderarma para ativar sua habilidade." to player
+
+command /poderarma:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_name} to name of player's tool
+        if {_name} is "&6Lâmina Solar":
+            set {_type} to "espada"
+        else if {_name} is "&cMachado do Colosso":
+            set {_type} to "machado"
+        else if {_name} is "&bArco da Tempestade":
+            set {_type} to "arco"
+        else:
+            send "{@prefix}&cSegure uma arma lendária para usar seu poder." to player
+            stop
+        if {rpg::%{_id}%::legendary::%{_type}%::forged} is not true:
+            send "{@prefix}&cEsta arma não está vinculada à sua maestria." to player
+            stop
+        if {rpg::%{_id}%::legendary::%{_type}%::cooldown} is set:
+            if {rpg::%{_id}%::legendary::%{_type}%::cooldown} > now:
+                send "{@prefix}&cHabilidade em recarga." to player
+                stop
+        set {_level} to {rpg::%{_id}%::legendary::%{_type}%::level}
+        if {_type} is "espada":
+            apply fire resistance 1 to player for 8 seconds
+            apply strength 2 to player for 6 seconds
+            set {_power} to "Fúria Solar"
+        else if {_type} is "machado":
+            apply resistance 2 to player for 8 seconds
+            apply strength 1 to player for 8 seconds
+            set {_power} to "Vigor do Colosso"
+        else:
+            apply speed 3 to player for 8 seconds
+            apply jump boost 2 to player for 8 seconds
+            set {_power} to "Passo da Tempestade"
+        set {_cooldown} to 60 - ({_level} * 5)
+        if {_cooldown} < 30:
+            set {_cooldown} to 30
+        set {rpg::%{_id}%::legendary::%{_type}%::cooldown} to now
+        add {_cooldown} seconds to {rpg::%{_id}%::legendary::%{_type}%::cooldown}
+        send "{@prefix}&6%{_power}% &7ativado! Recarga: %{_cooldown}% segundos." to player
+
+on damage of living entity:
+    attacker is a player
+    victim is not a player
+    set {_id} to "%uuid of attacker%"
+    set {_name} to name of attacker's tool
+    if {_name} is "&6Lâmina Solar":
+        set {_type} to "espada"
+        set {_bonus} to 2
+    else if {_name} is "&cMachado do Colosso":
+        set {_type} to "machado"
+        set {_bonus} to 3
+    else if {_name} is "&bArco da Tempestade":
+        set {_type} to "arco"
+        set {_bonus} to 2
+    if {_type} is set:
+        set {_level} to {rpg::%{_id}%::legendary::%{_type}%::level}
+        if {_level} is not set:
+            set {_level} to 1
+        increase damage by {_bonus} + {_level}
+
+on death of living entity:
+    if attacker is a player:
+        set {_id} to "%attacker's uuid%"
+        set {_name} to name of attacker's tool
+        if {_name} is "&6Lâmina Solar":
+            set {_type} to "espada"
+        else if {_name} is "&cMachado do Colosso":
+            set {_type} to "machado"
+        else if {_name} is "&bArco da Tempestade":
+            set {_type} to "arco"
+        if {_type} is set:
+            if {rpg::%{_id}%::legendary::%{_type}%::forged} is true:
+                add 1 to {rpg::%{_id}%::legendary::%{_type}%::xp}
+                set {_xp} to {rpg::%{_id}%::legendary::%{_type}%::xp}
+                set {_level} to {rpg::%{_id}%::legendary::%{_type}%::level}
+                set {_needed} to {_level} * 10
+                if {_level} < 5:
+                    if {_xp} >= {_needed}:
+                        remove {_needed} from {rpg::%{_id}%::legendary::%{_type}%::xp}
+                        add 1 to {rpg::%{_id}%::legendary::%{_type}%::level}
+                        set {_newLevel} to {rpg::%{_id}%::legendary::%{_type}%::level}
+                        send "{@prefix}&6Sua arma lendária evoluiu para maestria %{_newLevel}%!" to attacker
+                        if name of attacker's tool is "&6Lâmina Solar":
+                            set lore of attacker's tool to "&7Raridade: &6LENDÁRIA" and "&7Maestria: &fNível %{_newLevel}%" and "&7Abates com a arma concedem maestria." and "&eHabilidade: use /poderarma"
+                        else if name of attacker's tool is "&cMachado do Colosso":
+                            set lore of attacker's tool to "&7Raridade: &6LENDÁRIA" and "&7Maestria: &fNível %{_newLevel}%" and "&7Abates com a arma concedem maestria." and "&eHabilidade: use /poderarma"
+                        else:
+                            set lore of attacker's tool to "&7Raridade: &6LENDÁRIA" and "&7Maestria: &fNível %{_newLevel}%" and "&7Abates com a arma concedem maestria." and "&eHabilidade: use /poderarma"
+
+command /maestriaarma:
+    trigger:
+        set {_id} to "%uuid of player%"
+        send "&6&lMAESTRIA DE ARMAS" to player
+        loop "espada", "machado" and "arco":
+            if {rpg::%{_id}%::legendary::%loop-value%::forged} is true:
+                send "&e%loop-value%: &fNível %{rpg::%{_id}%::legendary::%loop-value%::level}% &7| XP: %{rpg::%{_id}%::legendary::%loop-value%::xp}%" to player
+            else:
+                send "&7%loop-value%: &8Não forjada" to player
