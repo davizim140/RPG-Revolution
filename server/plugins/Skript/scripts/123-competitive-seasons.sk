@@ -95,7 +95,7 @@ command /rpgtemporada <text> [<text>]:
                 set {rpg::season::%{_next-season}%::ends} to {rpg::season::auto::days} days from now
                 set {rpg::season::active} to true
                 broadcast "&6&lNOVA TEMPORADA AUTOMÁTICA! &eTemporada %{_next-season}%: &f%{rpg::season::%{_next-season}%::name}%"
-                broadcast "&7Ela termina em %{rpg::season::auto::days}% dia(s). Use /rankingtemporada.";
+                broadcast "&7Ela termina em %{rpg::season::auto::days}% dia(s). Use /rankingtemporada."
 
             stop
         send "{@prefix}&eUse /rpgtemporada iniciar <nome> ou /rpgtemporada encerrar." to sender
