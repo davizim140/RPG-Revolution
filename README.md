@@ -20,7 +20,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
 - Regiões configuráveis por mundo, com bloqueio de teleporte entre mundos para personagens abaixo do nível mínimo.
 - Masmorra individual básica, expedição avançada em três dificuldades (Normal 10+, Heroica 20+, Pesadelo 35+) e expedições cooperativas integradas aos grupos. A Arena das Ruínas (/arenadungeon) adiciona três salas de combate com sentinelas, aranhas armadilhadas e o chefe Guardião Arcano, tesouros intermediários e recompensa final; o encontro usa a área atual sem alterar blocos do mundo.
-- Chefe mundial de três fases, com servos, participação e recompensas.
+- Chefe mundial de três fases, com servos, participação e recompensas. Chefes lendários invocáveis: Guardião Primordial, Lich Eterno e Draco Celestial, cada um com 400/300/350 de vida, duas transições de fase, reforços e relíquia exclusiva.
 - Mercado entre jogadores com anúncios em custódia, compra e cancelamento.
 - Progressão de guildas por caça, níveis e depósito automático no banco.
 - Guerras de guildas por desafio/aceite, placar PvP e prêmio ao vencedor.
@@ -51,7 +51,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /rpgloja, /comprar, /mercado [listar|vender|comprar|cancelar], /rpgcraft, /fabricar
 - /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar, /forjarlendaria <espada|machado|arco>, /poderarma, /maestriaarma
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
-- /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin)
+- /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin), /invocarchefe guardiao|lich|draco, /chefeslendarios encerrar (admin)
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
 - /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildacargo, /guildacargos, /guildterritorio, /guildterritorioguerra, /guildanivel, /guildaguerra, /pvpstatus
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
@@ -62,6 +62,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 Permissão administrativa: rpg.admin.
 
 ## Limitações conhecidas
+- Chefes lendários permitem apenas um encontro global por vez. Invocação custa 8 diamantes, 1 estrela do Nether e 1.000 moedas; participantes registrados recebem 750 moedas, 500 XP e uma relíquia específica ao vencer. Os encontros usam mobs vanilla e ainda precisam de validação de sintaxe, balanceamento e runtime em Paper real.
 - Itens especiais são identificados pelo nome; bigorna ou renomeação pode afetar os bônus. Ainda não há identificador persistente NBT/PDC.
 - Raridades são visuais, exceto bônus programados nos itens descritos.
 - O bônus do Arco do Batedor precisa de validação em combate real com flechas.
