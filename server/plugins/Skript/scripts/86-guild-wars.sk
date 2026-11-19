@@ -1,0 +1,90 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Uma guerra global por vez. Somente líderes desafiam, aceitam e encerram.
+command /guildaguerra <text> [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_guild} to {rpg::%{_id}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê precisa estar em uma guilda." to player
+            stop
+        if arg-1 is "desafiar":
+            if arg-2 is not set:
+                send "{@prefix}&cUse /guildaguerra desafiar <guilda>." to player
+                stop
+            if {rpg::guild::%{_guild}%::leader} is not {_id}:
+                send "{@prefix}&cSomente o líder pode declarar guerra." to player
+                stop
+            if {rpg::guild::%arg-2%::leader} is not set:
+                send "{@prefix}&cEssa guilda não existe." to player
+                stop
+            if arg-2 is {_guild}:
+                send "{@prefix}&cSua guilda não pode desafiar a si mesma." to player
+                stop
+            if {rpg::guildwar::active} is true:
+                send "{@prefix}&cJá existe uma guerra ou desafio em andamento." to player
+                stop
+            set {rpg::guildwar::challenger} to {_guild}
+            set {rpg::guildwar::defender} to arg-2
+            set {rpg::guildwar::active} to false
+            loop all players:
+                if {rpg::%uuid of loop-player%::guild} is arg-2:
+                    send "{@prefix}&cA guilda &f%{_guild}% &cdesafiou sua guilda! O líder pode usar /guildaguerra aceitar." to loop-player
+            send "{@prefix}&aDesafio enviado. A guerra só começa quando o líder rival aceitar." to player
+            stop
+        if arg-1 is "aceitar":
+            if {rpg::guild::%{_guild}%::leader} is not {_id}:
+                send "{@prefix}&cSomente o líder pode aceitar." to player
+                stop
+            if {rpg::guildwar::defender} is not {_guild}:
+                send "{@prefix}&cNão existe desafio pendente para sua guilda." to player
+                stop
+            set {rpg::guildwar::active} to true
+            set {rpg::guildwar::score::%{rpg::guildwar::challenger}%} to 0
+            set {rpg::guildwar::score::%{rpg::guildwar::defender}%} to 0
+            broadcast "{@prefix}&4&lGUERRA DE GUILDAS! &c%{rpg::guildwar::challenger}% &7vs &c%{rpg::guildwar::defender}%&7. Derrotas de membros valem 1 ponto."
+            stop
+        if arg-1 is "status":
+            send "&4&lGUERRA DE GUILDAS" to player
+            if {rpg::guildwar::challenger} is set:
+                send "&7Desafiante: &f%{rpg::guildwar::challenger}%" to player
+                send "&7Defensora: &f%{rpg::guildwar::defender}%" to player
+                send "&7Placar: &c%{rpg::guildwar::score::%{rpg::guildwar::challenger}%}% &7x &c%{rpg::guildwar::score::%{rpg::guildwar::defender}%}%" to player
+            else:
+                send "&7Nenhuma guerra ou desafio pendente." to player
+            stop
+        if arg-1 is "encerrar":
+            if {rpg::guild::%{_guild}%::leader} is not {_id}:
+                send "{@prefix}&cSomente o líder pode encerrar a guerra." to player
+                stop
+            if {rpg::guildwar::active} is not true:
+                send "{@prefix}&cNão há guerra ativa." to player
+                stop
+            set {_a} to {rpg::guildwar::challenger}
+            set {_b} to {rpg::guildwar::defender}
+            set {_scoreA} to {rpg::guildwar::score::%{_a}%}
+            set {_scoreB} to {rpg::guildwar::score::%{_b}%}
+            if {_scoreA} > {_scoreB}:
+                add 300 to {rpg::guild::%{_a}%::bank}
+                broadcast "{@prefix}&6%{_a}% venceu a guerra e recebeu 300 moedas no banco!"
+            else if {_scoreB} > {_scoreA}:
+                add 300 to {rpg::guild::%{_b}%::bank}
+                broadcast "{@prefix}&6%{_b}% venceu a guerra e recebeu 300 moedas no banco!"
+            else:
+                broadcast "{@prefix}&eA guerra terminou empatada. Nenhuma recompensa foi distribuída."
+            delete {rpg::guildwar::*}
+            stop
+        send "{@prefix}&e/guildaguerra desafiar <guilda> | aceitar | status | encerrar" to player
+
+on death of player:
+    attacker is a player
+    if {rpg::guildwar::active} is true:
+        set {_killerGuild} to {rpg::%uuid of attacker%::guild}
+        set {_victimGuild} to {rpg::%uuid of victim%::guild}
+        if {_killerGuild} is set and {_victimGuild} is set:
+            if {_killerGuild} is not {_victimGuild}:
+                if {_killerGuild} is {rpg::guildwar::challenger} or {_killerGuild} is {rpg::guildwar::defender}:
+                    if {_victimGuild} is {rpg::guildwar::challenger} or {_victimGuild} is {rpg::guildwar::defender}:
+                        add 1 to {rpg::guildwar::score::%{_killerGuild}%}
+                        broadcast "{@prefix}&c%attacker% derrotou %victim%! &7Placar: %{rpg::guildwar::score::%{rpg::guildwar::challenger}%}% x %{rpg::guildwar::score::%{rpg::guildwar::defender}%}%" 
