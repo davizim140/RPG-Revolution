@@ -21,6 +21,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Masmorra com chefe.
 - Guildas com convite, transferência de liderança, expulsão, chat e banco.
 - Recompensas diárias.
+- Evento manual de invasão mundial: cinco invasores, participação registrada e recompensa coletiva.
 - HUD leve na action bar com nível, XP, vida e mana; ativação individual por /rpghud on|off.
 
 ## Instalação
@@ -45,6 +46,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
 - /rpghud [on|off]
+- /invasao iniciar|encerrar (permissão rpg.admin)
 - /rpgxp, /rpgmoedas
 
 Permissão administrativa: rpg.admin.
