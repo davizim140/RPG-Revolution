@@ -489,3 +489,28 @@ command /rpgitenslog:
         send "&6&lHISTÓRICO DE LIMPEZA DE ITENS" to player
         loop {rpg::territory-cleanup-log::*}:
             send "&7%loop-value%" to player
+
+
+# Protege lavouras e terrenos agricolas contra alteracoes feitas por entidades.
+# Inclui pisoteio de farmland e mobs que removem/substituem blocos.
+# A regra vale para todas as entidades dentro de territorios reivindicados.
+on entity changing block:
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                cancel event
+                stop
+
+# Protecao explicita para o evento de ovelhas comerem blocos de grama.
+on sheep eat:
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                cancel event
+                stop
