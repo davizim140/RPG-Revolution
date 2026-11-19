@@ -1,3 +1,10 @@
+## 0.47.0 - Pecuária de guilda
+- Alimentar animais com alimentos correspondentes dentro do território da própria guilda registra alimentações e concede 2 XP, com limite por animal a cada 30 segundos.
+- Reproduções iniciadas por jogadores dentro do território próprio concedem 20 XP e atualizam estatísticas pessoais e coletivas.
+- Adicionada progressão individual de pecuária, com 25 moedas por nível e bônus de 75 moedas nos níveis múltiplos de 5.
+- Títulos próprios de pecuária são desbloqueados nos níveis 5, 10 e 15.
+- Novo comando /guildpecuaria.
+
 ## 0.46.0 - Níveis e recompensas de agricultura
 - Cada colheita madura válida concede 5 XP de agricultura.
 - A cada nível, o jogador recebe 50 moedas; múltiplos de 5 concedem bônus adicional de 100 moedas e desbloqueiam títulos nos níveis 5, 10 e 15.
