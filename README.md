@@ -285,3 +285,11 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - `/rankingtemporada` (alias `/toptemporada`) mostra o top 10 online; `/pontostemporada` consulta os próprios pontos e `/historicotemporadas` lista campeões registrados.
 - Os dados são separados por número de temporada; iniciar outra temporada não apaga níveis, moedas, kills PvP nem pontuações anteriores.
 - Limitação: o campeão é escolhido entre jogadores online no encerramento e o ranking exibe apenas jogadores online. Não há premiação automática nesta versão. Eventos e sintaxe precisam de teste em Paper com Skript; Actions verifica estrutura/empacotamento, não runtime.
+
+
+### Recompensas de temporadas (0.72.0)
+- Ao encerrar a temporada, o campeão registrado recebe 2.000 moedas e 500 XP pendentes, além do título sazonal exibido no `/perfil`.
+- Participantes que alcançaram pelo menos 100 pontos recebem 300 moedas e 100 XP pendentes.
+- `/recompensatemporada` consulta e resgata as recompensas uma única vez; os valores pendentes ficam associados ao UUID e podem ser resgatados mesmo após reconectar.
+- A pontuação e os prêmios de temporadas anteriores permanecem salvos. O título sazonal é cosmético.
+- Requer validação no Paper/Skript real. O workflow automatizado verifica empacotamento/estrutura, não execução dos eventos.
