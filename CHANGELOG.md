@@ -1,3 +1,10 @@
+## 0.56.0 - Arena das Ruínas
+- Adicionado /arenadungeon iniciar|status|cancelar, com requisito de nível 15.
+- Três salas progressivas: Sentinelas das Ruínas, Aranhas Armadilhadas e chefe Guardião Arcano.
+- Baús de tesouro são representados por recompensas entregues ao concluir cada sala: moedas e consumíveis; a sala final também entrega XP, diamantes e equipamento de chefe.
+- Cancelamento e desconexão removem os inimigos vinculados ao encontro.
+- A arena não modifica blocos do mundo nem constrói uma estrutura física; requer teste de sintaxe e runtime em Paper real.
+
 ## 0.55.0 - Expedições cooperativas
 - Adicionado /expedicaogrupo normal|heroica|pesadelo para grupos existentes, iniciado pelo líder.
 - Exige pelo menos dois integrantes online no mesmo mundo e a até 24 blocos; todos devem cumprir o nível mínimo da dificuldade.
