@@ -1,0 +1,117 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Evolucao de cavalos domados pelo proprio jogador.
+function rpg_mount_add_xp(p: player, h: entity, amount: number):
+    set {_id} to "%uuid of {_h}%"
+    if {rpg::mount::%{_id}%::level} is not set:
+        set {rpg::mount::%{_id}%::level} to 1
+    if {rpg::mount::%{_id}%::xp} is not set:
+        set {rpg::mount::%{_id}%::xp} to 0
+    if {rpg::mount::%{_id}%::base-speed} is not set:
+        set {rpg::mount::%{_id}%::base-speed} to generic movement speed attribute of {_h}
+    if {rpg::mount::%{_id}%::base-jump} is not set:
+        set {rpg::mount::%{_id}%::base-jump} to horse jump strength attribute of {_h}
+    add {_amount} to {rpg::mount::%{_id}%::xp}
+    while {rpg::mount::%{_id}%::xp} >= ({rpg::mount::%{_id}%::level} * 150):
+        set {_needed} to {rpg::mount::%{_id}%::level} * 150
+        remove {_needed} from {rpg::mount::%{_id}%::xp}
+        add 1 to {rpg::mount::%{_id}%::level}
+        set {_level} to {rpg::mount::%{_id}%::level}
+        set {_speed} to {rpg::mount::%{_id}%::base-speed} + ({_level} * 0.002)
+        set {_jump} to {rpg::mount::%{_id}%::base-jump} + ({_level} * 0.01)
+        if {_speed} > 0.35:
+            set {_speed} to 0.35
+        if {_jump} > 1:
+            set {_jump} to 1
+        set generic movement speed attribute of {_h} to {_speed}
+        set horse jump strength attribute of {_h} to {_jump}
+        send "{@prefix}&aSua montaria subiu para o nível &e%{_level}%&a!" to {_p}
+        if {_level} is 5 or 10 or 15:
+            send "{@prefix}&6Sua montaria recebeu um novo marco de evolução!" to {_p}
+
+# Percurso só conta quando o jogador monta seu próprio cavalo.
+on player move:
+    if vehicle of player is a horse:
+        set {_horse} to vehicle of player
+        if tamer of {_horse} is player:
+            set {_id} to "%uuid of {_horse}%"
+            if {rpg::mount::%{_id}%::last-location::%uuid of player%} is set:
+                set {_last} to {rpg::mount::%{_id}%::last-location::%uuid of player%}
+                add distance between {_last} and location of player to {rpg::mount::%{_id}%::distance-progress::%uuid of player%}
+            set {rpg::mount::%{_id}%::last-location::%uuid of player%} to location of player
+            while {rpg::mount::%{_id}%::distance-progress::%uuid of player%} >= 8:
+                remove 8 from {rpg::mount::%{_id}%::distance-progress::%uuid of player%}
+                add 5 to {rpg::mount::%{_id}%::distance::%uuid of player%}
+                rpg_mount_add_xp(player, {_horse}, 5)
+        else:
+            delete {rpg::mount::%uuid of {_horse}%::last-location::%uuid of player%}
+            delete {rpg::mount::%uuid of {_horse}%::distance-progress::%uuid of player%}
+    else:
+        # Evita acumular distância enquanto o jogador caminha a pé.
+        loop {rpg::mount::tracked::*}:
+            delete {rpg::mount::%loop-value%::last-location::%uuid of player%}
+            delete {rpg::mount::%loop-value%::distance-progress::%uuid of player%}
+
+# Cavalos raros: chance de 5% no nascimento dentro da propriedade da guilda.
+on breeding:
+    if breeder is not a player:
+        stop
+    if bred offspring is not a horse:
+        stop
+    set {_p} to breeder
+    set {_uuid} to "%uuid of {_p}%"
+    set {_guild} to {rpg::%{_uuid}%::guild}
+    if {_guild} is not set:
+        stop
+    set {_loc} to location of bred offspring
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of {_loc}%":
+            set {_dx} to (x-coordinate of {_loc}) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of {_loc}) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= 16 and abs({_dz}) <= 16:
+                if {rpg::territory::%{_territory}%::guild} is {_guild}:
+                    if chance of 5%:
+                        set {_foal} to bred offspring
+                        set {_id} to "%uuid of {_foal}%"
+                        set {rpg::mount::%{_id}%::rare} to true
+                        set {rpg::mount::%{_id}%::level} to 1
+                        set {rpg::mount::%{_id}%::xp} to 0
+                        set {rpg::mount::%{_id}%::base-speed} to generic movement speed attribute of {_foal}
+                        set {rpg::mount::%{_id}%::base-jump} to horse jump strength attribute of {_foal}
+                        add 0.015 to generic movement speed attribute of {_foal}
+                        add 0.08 to horse jump strength attribute of {_foal}
+                        add 5 to generic max health attribute of {_foal}
+                        heal {_foal}
+                        set name of {_foal} to "&6✦ Corcel Raro ✦"
+                        send "{@prefix}&6Um &eCorcel Raro &6nasceu em seu território! Chance: 5%." to {_p}
+                stop
+
+command /montaria:
+    trigger:
+        if vehicle of player is not a horse:
+            send "{@prefix}&cMonte seu próprio cavalo para consultar a evolução." to player
+            stop
+        set {_horse} to vehicle of player
+        if tamer of {_horse} is not player:
+            send "{@prefix}&cEsta montaria não pertence a você." to player
+            stop
+        set {_id} to "%uuid of {_horse}%"
+        set {_level} to {rpg::mount::%{_id}%::level}
+        set {_xp} to {rpg::mount::%{_id}%::xp}
+        set {_distance} to {rpg::mount::%{_id}%::distance::%uuid of player%}
+        if {_level} is not set:
+            set {_level} to 1
+        if {_xp} is not set:
+            set {_xp} to 0
+        if {_distance} is not set:
+            set {_distance} to 0
+        set {_needed} to {_level} * 150
+        send "&6&lEVOLUÇÃO DA MONTARIA" to player
+        send "&eMontaria: &f%name of {_horse}%" to player
+        send "&eNível: &f%{_level}% &8| &eXP: &f%{_xp}%&7/&f%{_needed}%" to player
+        send "&eDistância percorrida com você: &f%{_distance}% blocos." to player
+        send "&7A cada 8 blocos montado: 5 XP. Níveis aumentam velocidade e salto." to player
+        if {rpg::mount::%{_id}%::rare} is true:
+            send "&6Raridade: &eCorcel Raro &8(+vida, velocidade e salto)." to player
