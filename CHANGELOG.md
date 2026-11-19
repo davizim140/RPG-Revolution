@@ -1,3 +1,8 @@
+## 0.33.0 - Proteção contra coleta automática
+- Bloqueia coleta de itens do chão por funis dentro de territórios reivindicados.
+- O evento nativo do Skript também cobre carrinhos com funil.
+- Mantém o bloqueio de transferências automáticas entre inventários protegidos.
+
 ## 0.32.0 - Proteção de inventários e funis
 - Bloqueia transporte automático de itens quando o inventário de origem ou destino está dentro de território reivindicado.
 - Corrige referências de bloco nos verificadores de explosão e pistões.
