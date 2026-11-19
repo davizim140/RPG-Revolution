@@ -467,4 +467,25 @@ command /rpgitenslimpar [<text>]:
             if abs({_ix}) <= {@territory-radius} and abs({_iz}) <= {@territory-radius}:
                 delete loop-entity
                 add 1 to {_removed}
+        set {_timestamp} to "%now%"
+        set {_actor} to "%player%"
+        set {_actorUUID} to "%uuid of player%"
+        set {_worldName} to "%world of player%"
+        set {_posX} to floor(x-coordinate of player)
+        set {_posY} to floor(y-coordinate of player)
+        set {_posZ} to floor(z-coordinate of player)
+        add "%{_timestamp}% | %{_actor}% | %{_actorUUID}% | mundo=%{_worldName}% | território=%{_territory}% | posição=%{_posX}%,%{_posY}%,%{_posZ}% | removidos=%{_removed}%" to {rpg::territory-cleanup-log::*}
         send "{@prefix}&aLimpeza concluída: &e%{_removed}%&a entidades de itens removidas." to player
+        send "{@prefix}&7Ação registrada no histórico administrativo." to player
+
+# Histórico persistente das limpezas administrativas de territórios.
+command /rpgitenslog:
+    permission: rpg.admin
+    permission message: {@prefix}&cVocê não tem permissão para isso.
+    trigger:
+        if size of {rpg::territory-cleanup-log::*} is 0:
+            send "{@prefix}&7Ainda não há limpezas registradas." to player
+            stop
+        send "&6&lHISTÓRICO DE LIMPEZA DE ITENS" to player
+        loop {rpg::territory-cleanup-log::*}:
+            send "&7%loop-value%" to player
