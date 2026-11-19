@@ -1,0 +1,42 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# HUD leve via action bar vanilla; nao altera o scoreboard de outros plugins.
+# A barra e atualizada a cada 2 segundos e pode ser desligada por jogador.
+
+on join:
+    set {_id} to "%uuid of player%"
+    if {rpg::%{_id}%::hud} is not set:
+        set {rpg::%{_id}%::hud} to true
+
+every 2 seconds:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        if {rpg::%{_id}%::created} is true:
+            if {rpg::%{_id}%::hud} is true:
+                set {_level} to {rpg::%{_id}%::level}
+                set {_xp} to {rpg::%{_id}%::xp}
+                set {_needed} to {_level} * 100
+                set {_mana} to {rpg::%{_id}%::mana}
+                set {_manaMax} to {rpg::%{_id}%::mana-max}
+                if {_mana} is not set:
+                    set {_mana} to 0
+                if {_manaMax} is not set:
+                    set {_manaMax} to 0
+                send action bar "&6Nv. %{_level}% &8| &eXP %{_xp}%/%{_needed}% &8| &c❤ %health of loop-player%/%max health of loop-player% &8| &b✦ %{_mana}%/%{_manaMax}%" to loop-player
+
+command /rpghud [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is "on" or "ligar":
+            set {rpg::%{_id}%::hud} to true
+            send "{@prefix}&aHUD ativada." to player
+            stop
+        if arg-1 is "off" or "desligar":
+            set {rpg::%{_id}%::hud} to false
+            send "{@prefix}&eHUD desativada." to player
+            stop
+        if {rpg::%{_id}%::hud} is true:
+            send "{@prefix}&aHUD ativada. Use &f/rpghud off &apara desativar." to player
+        else:
+            send "{@prefix}&eHUD desativada. Use &f/rpghud on &epara ativar." to player
