@@ -17,6 +17,8 @@ on death of living entity:
             else:
                 add 5 to {rpg::season::%{_season}%::%{_id}%::score}
                 add 1 to {rpg::season::%{_season}%::%{_id}%::mob-kills}
+                add {_id} to {rpg::season::%{_season}%::participants::*}
+                set {rpg::season::%{_season}%::%{_id}%::name} to name of attacker
 
 command /rpgtemporada <text> [<text>]:
     permission: rpg.admin
@@ -61,6 +63,20 @@ command /rpgtemporada <text> [<text>]:
                 set {rpg::season::%{_season}%::champion} to "Sem campeão"
                 set {rpg::season::%{_season}%::champion-score} to 0
                 broadcast "&6&lTEMPORADA ENCERRADA! &7Nenhum jogador estava online para registrar o campeão."
+            loop {rpg::season::%{_season}%::participants::*}:
+                set {_participant-id} to loop-value
+                if {_participant-id} is not {rpg::season::%{_season}%::champion-uuid}:
+                    set {_participant-score} to {rpg::season::%{_season}%::%{_participant-id}%::score}
+                    if {_participant-score} >= 100:
+                        add 300 to {rpg::%{_participant-id}%::season-pending-coins}
+                        add 100 to {rpg::%{_participant-id}%::season-pending-xp}
+                        add 1 to {rpg::%{_participant-id}%::season-pending-count}
+            if {rpg::season::%{_season}%::champion-uuid} is set:
+                set {_champion-id} to {rpg::season::%{_season}%::champion-uuid}
+                add 2000 to {rpg::%{_champion-id}%::season-pending-coins}
+                add 500 to {rpg::%{_champion-id}%::season-pending-xp}
+                add 1 to {rpg::%{_champion-id}%::season-pending-count}
+                set {rpg::%{_champion-id}%::season-champion-title} to "Campeão da Temporada %{_season}%"
             set {rpg::season::%{_season}%::ended} to now
             set {rpg::season::active} to false
             stop
@@ -133,3 +149,26 @@ command /pontostemporada:
             set {_mobs} to 0
         send "&6&lSEU DESEMPENHO SAZONAL" to player
         send "&7Pontos: &a%{_score}% &8| &cVitórias PvP: %{_pvp}% &8| &eCriaturas: %{_mobs}%" to player
+
+command /recompensatemporada:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_coins} to {rpg::%{_id}%::season-pending-coins}
+        set {_xp} to {rpg::%{_id}%::season-pending-xp}
+        if {_coins} is not set:
+            set {_coins} to 0
+        if {_xp} is not set:
+            set {_xp} to 0
+        send "&6&lRECOMPENSAS DE TEMPORADA" to player
+        send "&7Moedas pendentes: &e%{_coins}% &8| &7XP pendente: &a%{_xp}%" to player
+        if {_coins} <= 0 and {_xp} <= 0:
+            send "&7Você não tem recompensas para resgatar." to player
+            stop
+        add {_coins} to {rpg::%{_id}%::coins}
+        delete {rpg::%{_id}%::season-pending-coins}
+        delete {rpg::%{_id}%::season-pending-xp}
+        if {_xp} > 0:
+            rpg_add_xp(player, {_xp})
+        send "&aRecompensas resgatadas! &e+%{_coins}% moedas &ae &a+%{_xp}% XP." to player
+        if {rpg::%{_id}%::season-champion-title} is set:
+            send "&6Título especial desbloqueado: &e%{rpg::%{_id}%::season-champion-title}%&6!" to player
