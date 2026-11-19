@@ -227,3 +227,11 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Com o conjunto completo equipado, `/guardialendaria` ativa Resistência e Absorção temporárias; a potência depende da soma dos níveis das peças e há recarga de 90 segundos.
 - O conjunto completo também reduz dano recebido: 1 ponto quando a soma dos níveis é 4–7 e 2 pontos a partir de 8.
 - A identificação das peças continua baseada no nome do item; renomear em bigorna pode impedir o reconhecimento. Sintaxe, efeitos e equilíbrio precisam ser validados em Paper real; Actions verifica empacotamento, não runtime Skript.
+
+
+### Artefatos lendários e conjuntos (0.64.0)
+- `/artefato loja` lista oito artefatos distribuídos em quatro espaços: anel, amuleto, relíquia e charme.
+- `/artefato comprar <nome>` desbloqueia permanentemente um artefato usando moedas; `/artefato equipar <nome>` equipa o artefato no espaço correspondente; `/artefato remover <espaco>` libera o espaço; `/artefato status` mostra os espaços e a contagem dos conjuntos.
+- Conjunto Solar: Anel Solar, Amuleto Aurora, Insígnia do Guardião e Charme do Vento. Conjunto Abissal: Anel Abissal, Amuleto Abissal, Insígnia Abissal e Charme Abissal.
+- Cada artefato concede efeitos passivos enquanto equipado. Duas peças do mesmo conjunto ativam um bônus adicional; quatro peças desbloqueiam `/despertarartefato`, com efeitos por 10 segundos e recarga de 120 segundos.
+- Artefatos são desbloqueios virtuais persistentes, não itens físicos; isso evita duplicação e perda por morte. Os efeitos, sintaxe e balanceamento precisam de validação em Paper real. GitHub Actions valida empacotamento, não execução Skript.
