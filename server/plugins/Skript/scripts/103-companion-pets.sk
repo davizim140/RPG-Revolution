@@ -161,6 +161,44 @@ on death of monster:
             else:
                 set {rpg::%{_ownerId}%::pet::xp} to 10
 
+
+# Gatos e papagaios evoluem quando o dono derrota monstros com o pet invocado.
+on death of monster:
+    attacker is a player
+    set {_ownerId} to "%uuid of attacker%"
+    if {rpg::%{_ownerId}%::pet::type} is "gato" or "papagaio":
+        if {rpg::%{_ownerId}%::pet::active} is set:
+            if {rpg::%{_ownerId}%::pet::active} is alive:
+                add 1 to {rpg::%{_ownerId}%::pet::xp}
+                set {_xp} to {rpg::%{_ownerId}%::pet::xp}
+                set {_level} to {rpg::%{_ownerId}%::pet::level}
+                if {_level} is not set:
+                    set {_level} to 1
+                if {_xp} >= 10:
+                    if {_level} < 10:
+                        remove 10 from {rpg::%{_ownerId}%::pet::xp}
+                        add 1 to {_level}
+                        set {rpg::%{_ownerId}%::pet::level} to {_level}
+                        send "&6&lPET EVOLUIU! &7Seu companheiro alcançou o nível &f%{_level}%&7." to attacker
+
+on death of cat:
+    set {_ownerId} to {rpg::pet-owner::%uuid of victim%}
+    if {_ownerId} is set:
+        loop all players:
+            if "%uuid of loop-player%" is {_ownerId}:
+                delete {rpg::%{_ownerId}%::pet::active}
+                send "&cSeu companheiro foi derrotado. Você pode invocá-lo novamente com /pet chamar." to loop-player
+        delete {rpg::pet-owner::%uuid of victim%}
+
+on death of parrot:
+    set {_ownerId} to {rpg::pet-owner::%uuid of victim%}
+    if {_ownerId} is set:
+        loop all players:
+            if "%uuid of loop-player%" is {_ownerId}:
+                delete {rpg::%{_ownerId}%::pet::active}
+                send "&cSeu companheiro foi derrotado. Você pode invocá-lo novamente com /pet chamar." to loop-player
+        delete {rpg::pet-owner::%uuid of victim%}
+
 # Ao morrer, o companheiro libera o espaço ativo; adoção e evolução são preservadas.
 on death of wolf:
     set {_ownerId} to {rpg::pet-owner::%uuid of victim%}
