@@ -159,7 +159,12 @@ on damage:
                             set {_tier} to {rpg::%{_id}%::armor::%loop-value%::tier}
                             if {_tier} is set:
                                 add {_tier} to {_total}
-                        set {_reduction} to floor({_total} / 4)
+                        if {_total} >= 8:
+                            set {_reduction} to 2
+                        else if {_total} >= 4:
+                            set {_reduction} to 1
+                        else:
+                            set {_reduction} to 0
                         if {_reduction} > 0:
                             if damage > {_reduction}:
                                 set damage to damage - {_reduction}
