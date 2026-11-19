@@ -1,0 +1,40 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+    territory-radius: 16
+
+# Estatisticas de colheita: contam apenas culturas maduras em territorios
+# pertencentes a guilda do jogador. Nao altera drops nem concede XP/moedas.
+on break:
+    if event-block is wheat or carrots or potatoes or beetroot or nether wart:
+        if age of event-block is maximum age of event-block:
+            set {_uuid} to "%uuid of player%"
+            set {_guild} to {rpg::%{_uuid}%::guild}
+            if {_guild} is not set:
+                stop
+            loop {rpg::territories::*}:
+                set {_territory} to loop-value
+                if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+                    set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+                    set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+                    if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                        if {rpg::territory::%{_territory}%::guild} is {_guild}:
+                            add 1 to {rpg::%{_uuid}%::farm::harvests}
+                            add 1 to {rpg::guild::%{_guild}%::farm::harvests}
+                        stop
+
+command /guildcolheita:
+    trigger:
+        set {_uuid} to "%uuid of player%"
+        set {_guild} to {rpg::%{_uuid}%::guild}
+        if {_guild} is not set:
+            send "{@prefix}&cVocê precisa pertencer a uma guilda." to player
+            stop
+        set {_personal} to {rpg::%{_uuid}%::farm::harvests}
+        set {_guildTotal} to {rpg::guild::%{_guild}%::farm::harvests}
+        if {_personal} is not set:
+            set {_personal} to 0
+        if {_guildTotal} is not set:
+            set {_guildTotal} to 0
+        send "&6&lESTATÍSTICAS DA FAZENDA" to player
+        send "&eSua colheita: &f%{_personal}% culturas maduras." to player
+        send "&eColheita total da guilda &6%{_guild}%&e: &f%{_guildTotal}%." to player
