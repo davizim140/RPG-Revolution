@@ -192,3 +192,16 @@ on ignite:
             if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
                 cancel event
                 stop
+
+# Bloqueia fluxo de agua/lava dentro e na borda dos territorios.
+# A margem de 1 bloco cobre a origem imediatamente externa que tenta entrar.
+on block flow:
+    if event-block is water or event-block is lava:
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+                set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} + 1 and abs({_dz}) <= {@territory-radius} + 1:
+                    cancel event
+                    stop
