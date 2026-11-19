@@ -30,10 +30,18 @@ on break:
                                 remove {_needed} from {rpg::%{_uuid}%::farm::xp}
                                 add 1 to {rpg::%{_uuid}%::farm::level}
                                 add 50 to {rpg::%{_uuid}%::coins}
+                                if {rpg::%{_uuid}%::farm::level} >= 15:
+                                    set {rpg::%{_uuid}%::farm::title} to "Mestre da Colheita"
+                                else if {rpg::%{_uuid}%::farm::level} >= 10:
+                                    set {rpg::%{_uuid}%::farm::title} to "Cultivador Veterano"
+                                else if {rpg::%{_uuid}%::farm::level} >= 5:
+                                    set {rpg::%{_uuid}%::farm::title} to "Agricultor Experiente"
+                                else:
+                                    set {rpg::%{_uuid}%::farm::title} to "Aprendiz Rural"
                                 send "{@prefix}&aAgricultura subiu para o nível &e%{rpg::%{_uuid}%::farm::level}%&a! Recompensa: &e50 moedas&a." to player
                                 if {rpg::%{_uuid}%::farm::level} mod 5 is 0:
                                     add 100 to {rpg::%{_uuid}%::coins}
-                                    send "{@prefix}&6Marco de agricultura! &e+100 moedas bônus." to player
+                                    send "{@prefix}&6Novo título: &e%{rpg::%{_uuid}%::farm::title}%&6! Bônus: &e+100 moedas." to player
                         stop
 
 command /guildcolheita:
@@ -46,6 +54,16 @@ command /guildcolheita:
         set {_personal} to {rpg::%{_uuid}%::farm::harvests}
         set {_farmLevel} to {rpg::%{_uuid}%::farm::level}
         set {_farmXp} to {rpg::%{_uuid}%::farm::xp}
+        set {_farmTitle} to {rpg::%{_uuid}%::farm::title}
+        if {_farmTitle} is not set:
+            if {_farmLevel} >= 15:
+                set {_farmTitle} to "Mestre da Colheita"
+            else if {_farmLevel} >= 10:
+                set {_farmTitle} to "Cultivador Veterano"
+            else if {_farmLevel} >= 5:
+                set {_farmTitle} to "Agricultor Experiente"
+            else:
+                set {_farmTitle} to "Aprendiz Rural"
         if {_farmLevel} is not set:
             set {_farmLevel} to 1
         if {_farmXp} is not set:
@@ -59,5 +77,6 @@ command /guildcolheita:
         send "&6&lESTATÍSTICAS DA FAZENDA" to player
         send "&eSua colheita: &f%{_personal}% culturas maduras." to player
         send "&eNível de agricultura: &f%{_farmLevel}% &8| &eXP: &f%{_farmXp}%&7/&f%{_farmNeeded}%" to player
+        send "&eTítulo agrícola: &6%{_farmTitle}%" to player
         send "&7Cada colheita madura concede 5 XP. Cada nível concede 50 moedas; níveis múltiplos de 5 dão +100 moedas bônus." to player
         send "&eColheita total da guilda &6%{_guild}%&e: &f%{_guildTotal}%." to player
