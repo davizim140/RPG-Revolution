@@ -419,3 +419,18 @@ on item merge:
         if {_firstInside} is not {_secondInside}:
             cancel event
             stop
+
+
+# Impede o desaparecimento natural de itens dropados dentro de territorios.
+# O cancelamento vale apenas enquanto o item estiver na area reivindicada;
+# fora dela, o temporizador normal de despawn continua funcionando.
+on item despawn:
+    set {_dropLocation} to location of event-entity
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if "%world of {_dropLocation}%" is {rpg::territory::%{_territory}%::world}:
+            set {_dx} to (x-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                cancel event
+                stop
