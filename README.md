@@ -145,3 +145,12 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Papagaio: Corrente (velocidade), Plumagem (resistência) e Observador (visão noturna).
 - Cada talento custa um ponto e só pode ser desbloqueado uma vez. Efeitos são aplicados enquanto o pet está invocado.
 - A implementação requer validação de sintaxe e runtime em servidor Paper real.
+
+
+### Combate montado (0.52.0)
+- Abates de monstros enquanto o jogador monta seu próprio cavalo concedem 10 XP à montaria.
+- Ataques montados contra monstros recebem bônus de dano escalonado pelo nível da montaria, limitado a +3.
+- A habilidade Investida é desbloqueada no nível 5: concede velocidade e força ao cavaleiro e velocidade e resistência ao cavalo por 8 segundos, com recarga de 60 segundos.
+- /montariacombate status mostra nível e abates montados; /montariacombate habilidade ativa a Investida.
+- O combate montado não aplica bônus de dano contra outros jogadores.
+- Requer teste de sintaxe e execução em servidor Paper real.
