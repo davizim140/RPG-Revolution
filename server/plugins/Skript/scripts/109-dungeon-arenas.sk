@@ -1,0 +1,104 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Arena instanciada lógica: não altera blocos do mundo nem constrói estruturas.
+# Cada sala é uma etapa de combate em torno do jogador que iniciou.
+command /arenadungeon [<text>]:
+    aliases: /arenamasmorra
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is "cancelar":
+            if {rpg::arena::%{_id}%::active} is not true:
+                send "{@prefix}&cVocê não tem uma arena ativa." to player
+                stop
+            loop all entities:
+                if {rpg::arena::mob-owner::%uuid of loop-entity%} is {_id}:
+                    delete {rpg::arena::mob-owner::%uuid of loop-entity%}
+                    kill loop-entity
+            delete {rpg::arena::%{_id}%::*}
+            send "{@prefix}&eArena cancelada. Nenhuma recompensa foi concedida." to player
+            stop
+        if arg-1 is "status":
+            if {rpg::arena::%{_id}%::active} is true:
+                send "{@prefix}&6Arena ativa &7| Sala &e%{rpg::arena::%{_id}%::room}%&7/3." to player
+            else:
+                send "{@prefix}&7Você não está em uma arena." to player
+            stop
+        if arg-1 is set:
+            if arg-1 is not "iniciar":
+                send "{@prefix}&e/arenadungeon iniciar|status|cancelar" to player
+                stop
+        if {rpg::%{_id}%::level} < 15:
+            send "{@prefix}&cA Arena das Ruínas exige nível 15." to player
+            stop
+        if {rpg::arena::%{_id}%::active} is true:
+            send "{@prefix}&cVocê já está em uma arena. Use /arenadungeon cancelar." to player
+            stop
+        set {rpg::arena::%{_id}%::active} to true
+        set {rpg::arena::%{_id}%::room} to 1
+        set {rpg::arena::%{_id}%::world} to world of player
+        set {rpg::arena::%{_id}%::x} to x-coordinate of player
+        set {rpg::arena::%{_id}%::y} to y-coordinate of player
+        set {rpg::arena::%{_id}%::z} to z-coordinate of player
+        loop 3 times:
+            spawn zombie at location of player
+            set {_mob} to last spawned entity
+            set name of {_mob} to "&cSentinela das Ruínas"
+            set max health of {_mob} to 35
+            set health of {_mob} to 35
+            set {rpg::arena::mob-owner::%uuid of {_mob}%} to {_id}
+        send "{@prefix}&6&lARENA DAS RUÍNAS &7- Sala 1/3: derrote as três sentinelas. Use /arenadungeon status para consultar." to player
+
+on death of living entity:
+    set {_owner} to {rpg::arena::mob-owner::%uuid of victim%}
+    if {_owner} is set:
+        delete {rpg::arena::mob-owner::%uuid of victim%}
+        if {rpg::arena::%{_owner}%::active} is true:
+            remove 1 from {rpg::arena::%{_owner}%::remaining}
+            if {rpg::arena::%{_owner}%::remaining} <= 0:
+                set {_room} to {rpg::arena::%{_owner}%::room}
+                loop all players:
+                    if "%uuid of loop-player%" is {_owner}:
+                        if {_room} is 1:
+                            add 75 to {rpg::%{_owner}%::coins}
+                            give loop-player 1 golden apple
+                            set {rpg::arena::%{_owner}%::room} to 2
+                            set {rpg::arena::%{_owner}%::remaining} to 4
+                            loop 4 times:
+                                spawn cave spider at location of loop-player
+                                set {_mob} to last spawned entity
+                                set name of {_mob} to "&5Aranha Armadilhada"
+                                set max health of {_mob} to 24
+                                set health of {_mob} to 24
+                                set {rpg::arena::mob-owner::%uuid of {_mob}%} to {_owner}
+                            send "{@prefix}&aSala 1 concluída! &eBaú de tesouro: 75 moedas e 1 maçã dourada. &5Sala 2/3: as aranhas da armadilha!" to loop-player
+                        else if {_room} is 2:
+                            add 125 to {rpg::%{_owner}%::coins}
+                            give loop-player 2 golden apples
+                            set {rpg::arena::%{_owner}%::room} to 3
+                            set {rpg::arena::%{_owner}%::remaining} to 1
+                            spawn evoker at location of loop-player
+                            set {_boss} to last spawned entity
+                            set name of {_boss} to "&4&lGUARDIÃO ARCANO"
+                            set max health of {_boss} to 220
+                            set health of {_boss} to 220
+                            apply resistance 1 to {_boss} for 999999 seconds
+                            set {rpg::arena::mob-owner::%uuid of {_boss}%} to {_owner}
+                            send "{@prefix}&aSala 2 concluída! &eBaú de tesouro: 125 moedas e 2 maçãs douradas. &4Sala 3/3: o Guardião Arcano despertou!" to loop-player
+                        else:
+                            add 300 to {rpg::%{_owner}%::coins}
+                            rpg_add_xp(loop-player, 250)
+                            give loop-player 3 diamonds
+                            give loop-player 1 enchanted golden apple
+                            rpg_give_boss_loot(loop-player)
+                            send "{@prefix}&6&lARENA CONCLUÍDA! &aTesouro final: 300 moedas, 250 XP, 3 diamantes, 1 maçã dourada encantada e equipamento de chefe!" to loop-player
+                            delete {rpg::arena::%{_owner}%::*}
+
+on quit:
+    set {_id} to "%uuid of player%"
+    if {rpg::arena::%{_id}%::active} is true:
+        loop all entities:
+            if {rpg::arena::mob-owner::%uuid of loop-entity%} is {_id}:
+                delete {rpg::arena::mob-owner::%uuid of loop-entity%}
+                kill loop-entity
+        delete {rpg::arena::%{_id}%::*}
