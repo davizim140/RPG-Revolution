@@ -135,3 +135,13 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Evolução até o nível 10; no nível 5, o lobo recebe mais força e as habilidades de gato e papagaio melhoram; no nível 10, o lobo recebe velocidade adicional.
 - O pet é recolhido quando o dono desconecta. Espécie, raridade, nível e XP permanecem salvos.
 - O sistema usa entidades vanilla e Skript, sem addons. A validação em Paper real ainda é necessária.
+
+
+### Árvore de talentos dos pets (0.51.0)
+- Pets ganham 1 ponto de talento a cada dois níveis após o nível 1; os pontos são persistentes e calculados pelo nível e talentos gastos.
+- /pettrilha mostra a árvore da espécie e os pontos disponíveis; /pettalento <nome> desbloqueia um talento compatível com lobo, gato ou papagaio.
+- Lobo: Mordida (força para o pet), Guardião (resistência ao dono) e Rastreador (velocidade ao dono).
+- Gato: Ronronar (regeneração), Reflexo (velocidade) e Vigia (visão noturna).
+- Papagaio: Corrente (velocidade), Plumagem (resistência) e Observador (visão noturna).
+- Cada talento custa um ponto e só pode ser desbloqueado uma vez. Efeitos são aplicados enquanto o pet está invocado.
+- A implementação requer validação de sintaxe e runtime em servidor Paper real.
