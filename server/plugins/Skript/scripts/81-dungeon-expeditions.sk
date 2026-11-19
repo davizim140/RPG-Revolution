@@ -78,6 +78,7 @@ on death of living entity:
                                 if "%uuid of loop-player%" is {_owner}:
                                     rpg_add_xp(loop-player, 400)
                                     give loop-player 3 diamonds
+                                    rpg_give_boss_loot(loop-player)
                                     send "{@prefix}&6&lEXPEDIÇÃO CONCLUÍDA! &a600 moedas, 400 XP e 3 diamantes." to loop-player
 
 on quit:
