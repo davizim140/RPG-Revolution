@@ -32,6 +32,9 @@ command /guildacriar <text>:
             send "{@prefix}&cJá existe uma guilda com esse nome." to player
             stop
         set {rpg::guild::%arg-1%::leader} to {_id}
+        set {rpg::guild::%arg-1%::level} to 1
+        set {rpg::guild::%arg-1%::xp} to 0
+        set {rpg::guild::%arg-1%::bank} to 0
         set {rpg::%{_id}%::guild} to arg-1
         add {_id} to {rpg::guild::%arg-1%::members::*}
         send "{@prefix}&aGuilda &e%arg-1% &acriada!" to player
@@ -77,7 +80,7 @@ command /guildasair:
             stop
         set {_guild} to {rpg::%{_id}%::guild}
         if {rpg::guild::%{_guild}%::leader} is {_id}:
-            send "{@prefix}&cO líder não pode sair: a transferência de liderança ainda não existe." to player
+            send "{@prefix}&cTransfira a liderança com /guildatransferir antes de sair." to player
             stop
         remove {_id} from {rpg::guild::%{_guild}%::members::*}
         delete {rpg::%{_id}%::guild}
