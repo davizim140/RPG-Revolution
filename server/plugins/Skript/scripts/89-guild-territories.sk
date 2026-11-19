@@ -434,3 +434,37 @@ on item despawn:
             if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
                 cancel event
                 stop
+
+
+# Limpeza manual e explicita de itens dropados no territorio atual.
+# Requer permissao administrativa e a palavra CONFIRMAR para evitar
+# apagar itens por engano. Remove somente entidades de item na area atual.
+command /rpgitenslimpar [<text>]:
+    permission: rpg.admin
+    permission message: {@prefix}&cVocê não tem permissão para isso.
+    trigger:
+        set {_found} to false
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if {rpg::territory::%{_territory}%::world} is "%world of player%":
+                set {_dx} to (floor(x-coordinate of player)) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (floor(z-coordinate of player)) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                    set {_found} to true
+                    stop loop
+        if {_found} is false:
+            send "{@prefix}&cVocê precisa estar dentro de um território reivindicado." to player
+            stop
+        if arg-1 is not "CONFIRMAR":
+            send "{@prefix}&eAtenção: isso removerá TODOS os itens dropados neste território, inclusive itens legítimos." to player
+            send "{@prefix}&ePara executar, use &c/rpgitenslimpar CONFIRMAR&e." to player
+            stop
+        set {_removed} to 0
+        loop all dropped items in player's world:
+            set {_itemLocation} to location of loop-entity
+            set {_ix} to (x-coordinate of {_itemLocation}) - {rpg::territory::%{_territory}%::x}
+            set {_iz} to (z-coordinate of {_itemLocation}) - {rpg::territory::%{_territory}%::z}
+            if abs({_ix}) <= {@territory-radius} and abs({_iz}) <= {@territory-radius}:
+                delete loop-entity
+                add 1 to {_removed}
+        send "{@prefix}&aLimpeza concluída: &e%{_removed}%&a entidades de itens removidas." to player
