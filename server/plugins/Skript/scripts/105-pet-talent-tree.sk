@@ -1,0 +1,91 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Pontos de talento: 1 ponto a cada dois níveis de pet após o nível 1.
+# Os pontos disponíveis são calculados pelo nível e pelos talentos já comprados.
+
+command /pettrilha:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::pet::type} is not set:
+            send "{@prefix}&cAdote um pet primeiro." to player
+            stop
+        set {_level} to {rpg::%{_id}%::pet::level}
+        if {_level} is not set:
+            set {_level} to 1
+        set {_earned} to floor(({_level} - 1) / 2)
+        set {_spent} to {rpg::%{_id}%::pet::talentsSpent}
+        if {_spent} is not set:
+            set {_spent} to 0
+        set {_available} to {_earned} - {_spent}
+        send "&6&lÁRVORE DE TALENTOS DO PET" to player
+        send "&7Espécie: &f%{rpg::%{_id}%::pet::type}% &8| &7Nível: &f%{_level}%" to player
+        send "&7Pontos disponíveis: &e%{_available}%" to player
+        if {rpg::%{_id}%::pet::type} is "lobo":
+            send "&c/pettalento mordida &7- Mordida: aumenta a força do lobo." to player
+            send "&c/pettalento guardiao &7- Guardião: concede resistência ao dono." to player
+            send "&c/pettalento rastreador &7- Rastreador: concede velocidade ao dono." to player
+        else if {rpg::%{_id}%::pet::type} is "gato":
+            send "&d/pettalento ronronar &7- Ronronar: regeneração ao dono." to player
+            send "&d/pettalento reflexo &7- Reflexo: velocidade ao dono." to player
+            send "&d/pettalento vigia &7- Vigia: visão noturna ao dono." to player
+        else:
+            send "&b/pettalento corrente &7- Corrente de ar: velocidade ao dono." to player
+            send "&b/pettalento plumagem &7- Plumagem: resistência ao dono." to player
+            send "&b/pettalento observador &7- Observador: visão noturna ao dono." to player
+        send "&7Cada talento custa 1 ponto e só pode ser desbloqueado uma vez." to player
+
+command /pettalento <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::pet::type} is not set:
+            send "{@prefix}&cAdote um pet primeiro." to player
+            stop
+        set {_talent} to arg-1
+        if {rpg::%{_id}%::pet::talent::%{_talent}%} is true:
+            send "{@prefix}&cEsse talento já foi desbloqueado." to player
+            stop
+        set {_type} to {rpg::%{_id}%::pet::type}
+        if {_type} is "lobo":
+            if {_talent} is not "mordida" and {_talent} is not "guardiao" and {_talent} is not "rastreador":
+                send "{@prefix}&cTalento inválido para lobo. Use /pettrilha." to player
+                stop
+        else if {_type} is "gato":
+            if {_talent} is not "ronronar" and {_talent} is not "reflexo" and {_talent} is not "vigia":
+                send "{@prefix}&cTalento inválido para gato. Use /pettrilha." to player
+                stop
+        else:
+            if {_talent} is not "corrente" and {_talent} is not "plumagem" and {_talent} is not "observador":
+                send "{@prefix}&cTalento inválido para papagaio. Use /pettrilha." to player
+                stop
+        set {_level} to {rpg::%{_id}%::pet::level}
+        if {_level} is not set:
+            set {_level} to 1
+        set {_earned} to floor(({_level} - 1) / 2)
+        set {_spent} to {rpg::%{_id}%::pet::talentsSpent}
+        if {_spent} is not set:
+            set {_spent} to 0
+        if {_earned} - {_spent} < 1:
+            send "{@prefix}&cVocê não tem pontos de talento. Evolua seu pet para ganhar pontos." to player
+            stop
+        set {rpg::%{_id}%::pet::talent::%{_talent}%} to true
+        add 1 to {rpg::%{_id}%::pet::talentsSpent}
+        send "{@prefix}&aTalento &e%{_talent}% &adesbloqueado! Use /pettrilha para consultar sua árvore." to player
+
+# Talentos são aplicados somente enquanto o companheiro está vivo e invocado.
+every 5 seconds:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        if {rpg::%{_id}%::pet::active} is set:
+            if {rpg::%{_id}%::pet::active} is alive:
+                if {rpg::%{_id}%::pet::talent::guardiao} is true or {rpg::%{_id}%::pet::talent::plumagem} is true:
+                    apply resistance 1 to loop-player for 6 seconds
+                if {rpg::%{_id}%::pet::talent::rastreador} is true or {rpg::%{_id}%::pet::talent::reflexo} is true or {rpg::%{_id}%::pet::talent::corrente} is true:
+                    apply speed 1 to loop-player for 6 seconds
+                if {rpg::%{_id}%::pet::talent::ronronar} is true:
+                    apply regeneration 1 to loop-player for 6 seconds
+                if {rpg::%{_id}%::pet::talent::vigia} is true or {rpg::%{_id}%::pet::talent::observador} is true:
+                    apply night vision 1 to loop-player for 8 seconds
+                if {rpg::%{_id}%::pet::type} is "lobo":
+                    if {rpg::%{_id}%::pet::talent::mordida} is true:
+                        apply strength 2 to {rpg::%{_id}%::pet::active} for 6 seconds
