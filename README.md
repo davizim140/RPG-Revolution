@@ -120,3 +120,13 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Cavalos nascidos por reprodução dentro do território da própria guilda têm 5% de chance de se tornarem Corcéis Raros, com bônus de vida, velocidade e salto.
 - O comando /montaria mostra nível, XP, distância registrada e raridade da montaria atual.
 - A evolução é vinculada ao UUID do cavalo e persiste após reinícios.
+
+### Pets companheiros (0.49.0)
+
+- Cada jogador pode adotar um companheiro: lobo (combate), gato (regeneração e visão noturna) ou papagaio (mobilidade).
+- A adoção tem 5% de chance de raridade Rara; pets raros fortalecem suas habilidades e recebem resistência adicional.
+- /pet chamar, /pet guardar, /pet status e /pet habilidade controlam o companheiro.
+- Lobos recebem como alvo monstros atacados pelo dono e ganham XP por abates; gatos e papagaios podem receber XP quando o dono derrota monstros enquanto estão invocados.
+- Evolução até o nível 10; o nível 5 fortalece o companheiro e o nível 10 concede velocidade adicional ao lobo.
+- O pet é recolhido quando o dono desconecta. Espécie, raridade, nível e XP permanecem salvos.
+- O sistema usa entidades vanilla e Skript, sem addons. A validação em Paper real ainda é necessária.
