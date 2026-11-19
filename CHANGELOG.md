@@ -1,3 +1,8 @@
+## 0.41.0 - Proteção contra despawn de itens em territórios
+- Cancela o desaparecimento natural de itens dropados enquanto estiverem dentro de territórios reivindicados.
+- Fora da área protegida, o temporizador normal de despawn continua funcionando.
+- Atenção: itens podem se acumular em territórios; a administração deve fazer limpeza periódica quando necessário.
+
 ## 0.40.0 - Proteção de pilhas de itens na fronteira de territórios
 - Impede que itens dropados dentro e fora de um território se fundam em uma única pilha ao se encontrarem na fronteira.
 - Mantém o comportamento normal de fusão quando os dois itens estão do mesmo lado da fronteira.
