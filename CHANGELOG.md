@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.0 - Invasão mundial
+- Adicionado evento manual de invasão com cinco inimigos resistentes.
+- Participantes que acertarem os invasores recebem 200 moedas e 100 XP quando a invasão termina.
+- Administração pode iniciar ou encerrar com /invasao iniciar|encerrar.
+
+
 ## 0.13.0 - Encontros de masmorra mais seguros
 - Adicionado /masmorra cancelar para encerrar o encontro voluntariamente.
 - O chefe é removido quando o jogador desconecta, evitando encontros órfãos.
