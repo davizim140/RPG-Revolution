@@ -1,3 +1,9 @@
+## 0.52.0 - Combate montado
+- Abates de monstros enquanto o jogador monta seu próprio cavalo concedem 10 XP à montaria.
+- Ataques montados contra monstros recebem bônus de dano conforme o nível, limitado a +3.
+- Investida desbloqueia no nível 5 e concede efeitos de combate ao cavaleiro e à montaria por 8 segundos, com recarga de 60 segundos.
+- Novo comando /montariacombate status|habilidade.
+
 ## 0.51.0 - Árvore de talentos dos pets
 - Adicionado sistema de pontos de talento: 1 ponto a cada dois níveis do pet após o nível 1.
 - Cada talento custa um ponto e pode ser adquirido uma única vez; pontos gastos e talentos são persistentes.
