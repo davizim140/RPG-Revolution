@@ -79,3 +79,9 @@ Permissão administrativa: rpg.admin.
 
 ## Validação
 O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e empacota ZIP. Isso não comprova sintaxe Skript nem execução em Paper 26.3. Teste /sk reload all e todos os sistemas em servidor de homologação antes de produção.
+
+
+### Auditoria de limpeza de territórios (0.43.0)
+- Cada execução confirmada de `/rpgitenslimpar CONFIRMAR` registra data/hora, administrador (nome e UUID), mundo, território, posição e quantidade de entidades removidas.
+- Administradores podem consultar o histórico persistente com `/rpgitenslog`.
+- O histórico fica salvo nas variáveis persistentes do Skript; não é um arquivo externo e não possui rotação automática nesta versão.
