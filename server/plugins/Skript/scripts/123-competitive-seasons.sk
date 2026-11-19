@@ -17,7 +17,8 @@ on death of living entity:
             else:
                 add 5 to {rpg::season::%{_season}%::%{_id}%::score}
                 add 1 to {rpg::season::%{_season}%::%{_id}%::mob-kills}
-                add {_id} to {rpg::season::%{_season}%::participants::*}
+                if {_id} is not in {rpg::season::%{_season}%::participants::*}:
+                    add {_id} to {rpg::season::%{_season}%::participants::*}
                 set {rpg::season::%{_season}%::%{_id}%::name} to name of attacker
 
 command /rpgtemporada <text> [<text>]:
