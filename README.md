@@ -106,3 +106,10 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Cada nível concede 50 moedas; níveis múltiplos de 5 concedem mais 100 moedas e desbloqueiam títulos: Agricultor Experiente (5), Cultivador Veterano (10) e Mestre da Colheita (15).
 - O comando /guildcolheita agora mostra nível e XP individuais, além das estatísticas da guilda.
 - A progressão é individual e persistente; somente colheitas em territórios da própria guilda contam.
+
+
+### Pecuária de guilda (0.47.0)
+- Alimentar vacas, ovelhas, cabras, coguvacas, porcos, galinhas e coelhos com seus alimentos adequados em território próprio registra alimentação e concede 2 XP de pecuária, com limite de uma contagem por animal a cada 30 segundos.
+- Reprodução de animais dentro do território próprio concede 20 XP ao jogador que realizou a reprodução e atualiza os totais pessoais e da guilda.
+- A progressão é individual: cada nível concede 25 moedas; níveis múltiplos de 5 concedem mais 75 moedas e desbloqueiam títulos nos níveis 5, 10 e 15.
+- O comando /guildpecuaria mostra nível, XP, título, alimentações e reproduções.
