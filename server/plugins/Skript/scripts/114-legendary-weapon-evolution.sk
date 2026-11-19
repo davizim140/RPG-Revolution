@@ -55,9 +55,10 @@ command /melhorararma <text>:
         else:
             set {_item} to bow
         set name of {_item} to {_expected}
-        set lore of {_item} to "&7Raridade: &6LENDÁRIA" and "&7Evolução: &f%{_tier}%/3" and "&7Maestria: &fNível %{_mastery}%" and "&7Bônus de evolução: &c+%{_tier} * 2% de dano" and "&eHabilidade: use /poderarma"
+        set {_bonus} to {_tier} * 2
+        set lore of {_item} to "&7Raridade: &6LENDÁRIA" and "&7Evolução: &f%{_tier}%/3" and "&7Maestria: &fNível %{_mastery}%" and "&7Bônus de evolução: &c+%{_bonus}% de dano" and "&eHabilidade: use /poderarma"
         set lore of player's tool to lore of {_item}
-        send "{@prefix}&6Sua arma alcançou a evolução &e%{_tier}%&6! Bônus passivo: &c+%{_tier} * 2% de dano&6." to player
+        send "{@prefix}&6Sua arma alcançou a evolução &e%{_tier}%&6! Bônus passivo: &c+%{_bonus}% de dano&6." to player
 
 command /evolucaoarma:
     trigger:
