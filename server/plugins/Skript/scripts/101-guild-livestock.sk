@@ -61,10 +61,13 @@ on right click on living entity:
             set {_dz} to (z-coordinate of {_loc}) - {rpg::territory::%{_territory}%::z}
             if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
                 if {rpg::territory::%{_territory}%::guild} is {_guild}:
+                    set {_beforeAmount} to amount of player's tool
                     set {rpg::livestock::feed-cooldown::%{_entityId}%} to true
-                    add 1 to {rpg::%{_uuid}%::livestock::feedings}
-                    rpg_livestock_xp(player, 2)
-                    send "{@prefix}&aAnimal alimentado! &e+2 XP de pecuária." to player
+                    wait 1 tick
+                    if amount of player's tool < {_beforeAmount}:
+                        add 1 to {rpg::%{_uuid}%::livestock::feedings}
+                        rpg_livestock_xp(player, 2)
+                        send "{@prefix}&aAnimal alimentado! &e+2 XP de pecuária." to player
                     wait 30 seconds
                     delete {rpg::livestock::feed-cooldown::%{_entityId}%}
                 stop
