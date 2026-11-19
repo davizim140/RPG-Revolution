@@ -73,4 +73,4 @@ command /rpgajuda:
         send "&e/fabricarclasse <cajado|adaga|arco> &7- Armas exclusivas da sua classe." to player
         send "&e/masmorra &7- Enfrentar o chefe (nível 5+)." to player
         send "&e/guilda &7- Sistema de guildas." to player
-        send "&e/regiao e /rpgmundos &7- Exploração." to player
+        send "&e/regiao e /rpgmundos &7- Exploração e nível mínimo das regiões." to player
