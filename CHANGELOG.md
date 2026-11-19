@@ -1,3 +1,9 @@
+## 0.44.0 - Proteção de plantações em territórios
+- Cancela alterações de blocos provocadas por entidades dentro de territórios, incluindo pisoteio de terreno agrícola e mudanças feitas por mobs.
+- Cancela explicitamente o evento de ovelhas comendo grama dentro das áreas protegidas.
+- Membros da guilda proprietária continuam podendo colher manualmente; a proteção geral de quebra/colocação permanece inalterada.
+- A proteção genérica também afeta Endermen e blocos móveis; requer teste de runtime no Paper.
+
 ## 0.43.0 - Auditoria de limpeza de itens
 - Limpezas confirmadas registram horário, administrador, UUID, mundo, território, posição e quantidade removida.
 - Novo comando administrativo /rpgitenslog consulta o histórico persistente.
