@@ -456,7 +456,7 @@ command /rpgitenslimpar [<text>]:
             send "{@prefix}&cVocê precisa estar dentro de um território reivindicado." to player
             stop
         if arg-1 is not "CONFIRMAR":
-            send "{@prefix}&eAtenção: isso removerá TODOS os itens dropados neste território, inclusive itens legítimos." to player
+            send "{@prefix}&eAtenção: isso removerá os itens dropados existentes neste território, inclusive itens legítimos." to player
             send "{@prefix}&ePara executar, use &c/rpgitenslimpar CONFIRMAR&e." to player
             stop
         set {_removed} to 0
