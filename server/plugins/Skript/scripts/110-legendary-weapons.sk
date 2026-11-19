@@ -167,5 +167,8 @@ on damage of living entity:
         if {_level} is not set:
             set {_level} to 1
         increase damage by 2 + {_level}
-        delete {rpg::legendary::arrow::%uuid of projectile%::*
-    }
+        delete {rpg::legendary::arrow::%uuid of projectile%::*}
+
+on projectile hit:
+    if projectile is an arrow:
+        delete {rpg::legendary::arrow::%uuid of projectile%::*}
