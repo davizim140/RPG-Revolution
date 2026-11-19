@@ -19,7 +19,11 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Missão inicial, linha de história e contrato diário de caça.
 - Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
 - Regiões configuráveis por mundo, com bloqueio de teleporte entre mundos para personagens abaixo do nível mínimo.
-- Masmorra com chefe.
+- Masmorra individual básica e expedição avançada de três etapas (duas ondas e chefe), com limpeza ao cancelar ou desconectar.
+- Chefe mundial de três fases, com servos, participação e recompensas.
+- Mercado entre jogadores com anúncios em custódia, compra e cancelamento.
+- Progressão de guildas por caça, níveis e depósito automático no banco.
+- Guerras de guildas por desafio/aceite, placar PvP e prêmio ao vencedor.
 - Guildas com convite, transferência de liderança, expulsão, chat e banco.
 - Recompensas diárias.
 - Evento manual de invasão mundial: cinco invasores, participação registrada e recompensa coletiva.
@@ -39,12 +43,12 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /saldo, /pagar
 - /missoes, /resgatar, /recompensadiaria, /contrato
 - /npc, /rpgnpc criar, /rpgnpc limpar, /missaoaceitar, /minhasmissoes, /missaoentregar
-- /rpgloja, /comprar, /rpgcraft, /fabricar
+- /rpgloja, /comprar, /mercado [listar|vender|comprar|cancelar], /rpgcraft, /fabricar
 - /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
-- /masmorra [cancelar]
+- /masmorra [cancelar], /expedicao [cancelar], /chefemundial (admin)
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
-- /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo
+- /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildanivel, /guildaguerra
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
 - /rpghud [on|off]
 - /invasao iniciar|encerrar (permissão rpg.admin)
@@ -59,10 +63,13 @@ Permissão administrativa: rpg.admin.
 - Armaduras de classe são identificadas pelo nome; conjunto Guerreiro reduz dano, Mago e Assassino aumentam dano corpo a corpo, Arqueiro recebe velocidade.
 - NPCs físicos usam aldeões vanilla e abrem os diálogos existentes ao clicar; não têm skin personalizada.
 - A proteção de regiões é aplicada a teletransportes entre mundos; movimentação/entrada por outros mecanismos precisa de validação no servidor real.
-- A masmorra continua sendo um encontro individual simples com criatura vanilla; agora permite cancelamento e limpa o chefe ao desconectar. Não há arena instanciada ou mecânicas complexas.
+- /masmorra continua sendo o encontro individual simples. /expedicao adiciona duas ondas e um chefe vanilla, mas ainda não cria arena instanciada nem salas construídas automaticamente.
 - Grupos compartilham recompensas com integrantes online no mesmo mundo e a até 16 blocos do jogador que derrotou a criatura.
-- Guildas ainda não têm guerras, cargos ou níveis.
+- Guerras e níveis de guilda foram adicionados; ainda não há cargos hierárquicos configuráveis, territórios capturáveis ou guerras com arenas isoladas.
 - Cada classe tem 3% de chance de despertar no momento da primeira escolha; não há novo sorteio para personagens que já escolheram classe. Os despertares são permanentes. O Monarca pode invocar três soldados temporários com /invocar e consultar com /sombras. Ao derrotar monstros diretamente, há 15% de chance de extrair uma sombra permanente, com limite de cinco; /exercito lista as sombras, /sombranivel <1-5> consulta o nível e XP, e /libertar <1-5> libera um espaço. Cada sombra permanente ganha XP ao derrotar monstros e evolui a cada cinco XP por nível, até o nível 10. /posturasombras agressiva|defensiva|passiva controla a seleção automática de alvos: agressiva reage a ataques do Monarca e contra ele; defensiva só protege o Monarca; passiva não escolhe alvos automaticamente. /reunirsombras teleporta os soldados vivos para perto do Monarca. As sombras permanentes são representadas por esqueletos Wither e podem ser destruídas por inimigos. O rank dos soldados temporários evolui com o nível do Monarca: C (1+), B (10+), A (25+) e S (50+), aumentando seus efeitos de combate.
+- O mercado mantém itens anunciados em custódia nas variáveis do Skript; não possui taxa, interface gráfica ou histórico de transações.
+- O chefe mundial e as expedições usam criaturas vanilla e dependem de espaço livre no local onde são iniciados.
+- Guerras de guilda usam um placar global e não isolam PvP por região; a administração deve combinar regras de arena e duração.
 - A HUD usa a action bar e pode sobrescrever mensagens de action bar enviadas por outros plugins. Os eventos mundiais são iniciados manualmente.
 
 ## Validação
