@@ -49,6 +49,8 @@ command /perfil:
         send "&6&m----------------------------------------" to player
         send "&6&lRPG REVOLUTION &8| &f%player%" to player
         send "&eNível: &f%{_level}%&7/100 &8| &dPrestígio: &f%{_prestige}%&7/10" to player
+        if {rpg::%{_id}%::title} is set:
+            send "&6Título: &f%{rpg::%{_id}%::title}%" to player
         send "&eXP: &f%{rpg::%{_id}%::xp}%&7/&f%{_needed}%" to player
         send "&6Moedas: &f%{rpg::%{_id}%::coins}%" to player
         send "&dPontos disponíveis: &f%{rpg::%{_id}%::points}%" to player
