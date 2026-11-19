@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.20.0 - Extração permanente de sombras
+- Monarca tem 15% de chance de extrair uma sombra ao derrotar diretamente um monstro.
+- Até cinco sombras permanentes por jogador; /exercito lista e /libertar <1-5> remove uma sombra.
+- Sombras permanentes seguem o Monarca, recebem alvos quando ele combate e não podem causar dano ao próprio invocador.
+- Sombras permanentes são esqueletos Wither nomeados conforme o inimigo derrotado; podem morrer em combate.
+
+
 ## 0.19.0 - Classes do Exército das Sombras
 - Invocação passa a criar três soldados especializados: Tanque (golem de ferro), Guerreiro (esqueleto wither) e Arqueiro (esqueleto com arco).
 - Cada função recebe efeitos próprios; os bônus de rank continuam escalando com o nível do Monarca.
