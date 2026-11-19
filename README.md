@@ -113,3 +113,10 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Reprodução de animais dentro do território próprio concede 20 XP ao jogador que realizou a reprodução e atualiza os totais pessoais e da guilda.
 - A progressão é individual: cada nível concede 25 moedas; níveis múltiplos de 5 concedem mais 75 moedas e desbloqueiam títulos nos níveis 5, 10 e 15.
 - O comando /guildpecuaria mostra nível, XP, título, alimentações e reproduções.
+
+### Montarias evolutivas (0.48.0)
+- Cavalos domados pelo jogador ganham 5 XP a cada 8 blocos percorridos com seu dono montado.
+- A cada nível, a velocidade e a força de salto aumentam gradualmente, respeitando limites configurados; os atributos-base individuais do cavalo são preservados.
+- Cavalos nascidos por reprodução dentro do território da própria guilda têm 5% de chance de se tornarem Corcéis Raros, com bônus de vida, velocidade e salto.
+- O comando /montaria mostra nível, XP, distância registrada e raridade da montaria atual.
+- A evolução é vinculada ao UUID do cavalo e persiste após reinícios.
