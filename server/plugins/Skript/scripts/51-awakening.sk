@@ -315,6 +315,8 @@ command /libertar <number>:
         if {rpg::%{_id}%::permanent-shadow::%{_slot}%} is alive:
             kill {rpg::%{_id}%::permanent-shadow::%{_slot}%}
         delete {rpg::%{_id}%::permanent-shadow::%{_slot}%}
+        delete {rpg::%{_id}%::permanent-shadow-level::%{_slot}%}
+        delete {rpg::%{_id}%::permanent-shadow-xp::%{_slot}%}
         send "{@prefix}&7A sombra do espaço &f%{_slot}% &7foi libertada." to player
 
 # Chance de 15% ao derrotar um monstro; cada Monarca pode manter até cinco.
@@ -345,6 +347,9 @@ on death of monster:
             set name of {_shadow} to "&5Sombra de %{_fallenName}%"
             set {rpg::%{_id}%::permanent-shadow::%{_freeSlot}%} to {_shadow}
             set {rpg::%{_id}%::permanent-shadow-owner::%uuid of {_shadow}%} to {_id}
+            set {rpg::shadow-owner::%uuid of {_shadow}%} to {_id}
+            set {rpg::%{_id}%::permanent-shadow-level::%{_freeSlot}%} to 1
+            set {rpg::%{_id}%::permanent-shadow-xp::%{_freeSlot}%} to 0
             apply resistance 1 to {_shadow} for 999999 seconds
             send "{@prefix}&5&lRESSURREIÇÃO! &7Você ergueu &f%{_fallenName}% &7como sombra permanente. (&f%{_count}%&7/5)" to attacker
 
