@@ -38,6 +38,9 @@ function raidarena_spawn(party: text, room: number):
             set {_health} to 1400
         set max health of {_boss} to {_health}
         set health of {_boss} to {_health}
+        set {rpg::raidarena::%{_party}%::phase2-threshold} to {_health} * 0.6
+        set {rpg::raidarena::%{_party}%::phase3-threshold} to {_health} * 0.25
+        set {rpg::raidarena::%{_party}%::boss-phase} to 1
         set {rpg::raidarena::mob-owner::%uuid of {_boss}%} to {_party}
         set {rpg::raidarena::mob-room::%uuid of {_boss}%} to 3
         apply resistance 1 to {_boss} for 999999 seconds
@@ -180,6 +183,24 @@ on damage:
                 if {rpg::raidarena::%{_party}%::member::%{_attacker-id}%} is true:
                     add damage to {rpg::raidarena::%{_party}%::damage::%{_attacker-id}%}
                     add damage to {rpg::raidarena::%{_party}%::total-damage}
+            if {rpg::raidarena::mob-room::%uuid of victim%} is 3:
+                set {_remaining-health} to health of victim - damage
+                if {_remaining-health} <= {rpg::raidarena::%{_party}%::phase3-threshold}:
+                    if {rpg::raidarena::%{_party}%::boss-phase} < 3:
+                        set {rpg::raidarena::%{_party}%::boss-phase} to 3
+                        apply strength 2 to victim for 999999 seconds
+                        apply speed 1 to victim for 999999 seconds
+                        loop all players:
+                            if {rpg::raidarena::%{_party}%::member::%uuid of loop-player%} is true:
+                                send "{@prefix}&4&lFASE FINAL! &cO Titã entrou em frenesi!" to loop-player
+                else if {_remaining-health} <= {rpg::raidarena::%{_party}%::phase2-threshold}:
+                    if {rpg::raidarena::%{_party}%::boss-phase} < 2:
+                        set {rpg::raidarena::%{_party}%::boss-phase} to 2
+                        apply strength 1 to victim for 999999 seconds
+                        apply speed 1 to victim for 999999 seconds
+                        loop all players:
+                            if {rpg::raidarena::%{_party}%::member::%uuid of loop-player%} is true:
+                                send "{@prefix}&6O Titã entrou na fase 2! &eSeus ataques ficaram mais rápidos." to loop-player
 
 on death:
     if victim is a zombie or victim is a skeleton or victim is a ravager:
@@ -246,3 +267,24 @@ on quit:
                 loop all players:
                     if {rpg::%uuid of loop-player%::party} is {_party}:
                         send "{@prefix}&cA arena foi encerrada porque o líder desconectou." to loop-player
+
+
+# Ataque especial periódico do Titã: golpe de impacto em área, sem alterar blocos.
+every 12 seconds:
+    loop all entities:
+        if loop-entity is a ravager:
+            set {_party} to {rpg::raidarena::mob-owner::%uuid of loop-entity%}
+            if {_party} is set:
+                if {rpg::raidarena::mob-room::%uuid of loop-entity%} is 3:
+                    loop all players:
+                        set {_member-id} to "%uuid of loop-player%"
+                        if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
+                            if world of loop-player is world of loop-entity:
+                                if distance between loop-player and loop-entity <= 8:
+                                    damage 4 to loop-player
+                                    apply slowness 2 to loop-player for 3 seconds
+                                    send "{@prefix}&cO impacto do Titã atingiu você!" to loop-player
+                    loop all players:
+                        set {_member-id} to "%uuid of loop-player%"
+                        if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
+                            send "{@prefix}&4O Titã golpeou o chão! &7Afaste-se dele para evitar o impacto." to loop-player
