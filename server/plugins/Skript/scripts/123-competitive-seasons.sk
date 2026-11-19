@@ -51,7 +51,7 @@ command /rpgtemporada <text> [<text>]:
                 set {_score} to {rpg::season::%{_season}%::%{_id}%::score}
                 if {_score} is not set:
                     set {_score} to 0
-                if {_score} > {_best-score}:
+                if {_score} > {_best-score} and {_score} > 0:
                     set {_best-score} to {_score}
                     set {_winner} to name of loop-player
                     set {_winner-id} to {_id}
