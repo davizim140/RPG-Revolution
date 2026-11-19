@@ -71,7 +71,7 @@ command /rpgajuda:
         send "&e/grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar &7- Grupos e XP compartilhado." to player
         send "&e/guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo &7- Gestão da guilda." to player
         send "&e/fabricarclasse <cajado|adaga|arco> &7- Armas exclusivas da sua classe." to player
-        send "&e/masmorra &7- Enfrentar o chefe (nível 5+)." to player
+        send "&e/masmorra [cancelar] &7- Enfrentar o chefe (nível 5+) ou desistir." to player
         send "&e/guilda &7- Sistema de guildas." to player
         send "&e/regiao e /rpgmundos &7- Exploração e nível mínimo das regiões." to player
         send "&e/rpghud [on|off] &7- Ativar ou desativar a HUD." to player
