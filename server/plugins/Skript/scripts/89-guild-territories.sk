@@ -222,6 +222,20 @@ on inventory item move:
                 cancel event
                 stop
 
+# Impede funis e carrinhos com funil de recolher itens do chao
+# quando o inventario coletor esta dentro de um territorio protegido.
+# O evento inventory pickup do Skript cobre hoppers e hopper minecarts.
+on inventory pickup:
+    set {_pickupLocation} to location at holder of event-inventory
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if "%world of {_pickupLocation}%" is {rpg::territory::%{_territory}%::world}:
+            set {_dx} to (x-coordinate of {_pickupLocation}) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of {_pickupLocation}) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                cancel event
+                stop
+
 # Protege territorios contra propagacao e inicio de fogo.
 # A regra tambem bloqueia fogo natural dentro da area protegida.
 on burn:
