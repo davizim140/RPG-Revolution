@@ -1,0 +1,38 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Estatísticas PvP e recompensas moderadas. Não altera combate em mundos protegidos.
+on death of player:
+    attacker is a player
+    if attacker is not victim:
+        set {_killer} to "%uuid of attacker%"
+        set {_victim} to "%uuid of victim%"
+        add 1 to {rpg::pvp::%{_killer}%::kills}
+        add 1 to {rpg::pvp::%{_victim}%::deaths}
+        add 25 to {rpg::%{_killer}%::coins}
+        rpg_add_xp(attacker, 15)
+        send "{@prefix}&a+25 moedas e +15 XP por vitória PvP." to attacker
+        if {rpg::pvp::%{_killer}%::kills} is 10:
+            add 150 to {rpg::%{_killer}%::coins}
+            send "{@prefix}&6Conquista PvP: Dez vitórias! Bônus de 150 moedas." to attacker
+        if {rpg::pvp::%{_killer}%::kills} is 50:
+            add 500 to {rpg::%{_killer}%::coins}
+            send "{@prefix}&6Conquista PvP: Veterano de Arena! Bônus de 500 moedas." to attacker
+
+command /pvpstatus:
+    aliases: /pvp
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_kills} to {rpg::pvp::%{_id}%::kills}
+        set {_deaths} to {rpg::pvp::%{_id}%::deaths}
+        if {_kills} is not set:
+            set {_kills} to 0
+        if {_deaths} is not set:
+            set {_deaths} to 0
+        set {_ratio} to {_kills}
+        if {_deaths} > 0:
+            set {_ratio} to {_kills} / {_deaths}
+        send "&4&lREGISTRO DE COMBATE" to player
+        send "&7Vitórias PvP: &a%{_kills}%" to player
+        send "&7Derrotas PvP: &c%{_deaths}%" to player
+        send "&7Proporção V/D: &f%{_ratio}%" to player
