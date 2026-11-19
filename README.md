@@ -235,3 +235,10 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Conjunto Solar: Anel Solar, Amuleto Aurora, Insígnia do Guardião e Charme do Vento. Conjunto Abissal: Anel Abissal, Amuleto Abissal, Insígnia Abissal e Charme Abissal.
 - Cada artefato concede efeitos passivos enquanto equipado. Duas peças do mesmo conjunto ativam um bônus adicional; quatro peças desbloqueiam `/despertarartefato`, com efeitos por 10 segundos e recarga de 120 segundos.
 - Artefatos são desbloqueios virtuais persistentes, não itens físicos; isso evita duplicação e perda por morte. Os efeitos, sintaxe e balanceamento precisam de validação em Paper real. GitHub Actions valida empacotamento, não execução Skript.
+
+
+### Árvores de talentos por classe (0.65.0)
+- Cada classe possui três talentos exclusivos, com passivas ou bônus de combate. `/arvoreclasse` consulta a árvore e `/aprenderclasse <talento>` desbloqueia um talento usando um ponto.
+- `/resgatarpontosclasse` entrega um ponto por marco de cinco níveis alcançados, sem permitir resgatar o mesmo marco duas vezes.
+- `/supremaclasse` desbloqueia no nível 30, consome 50 de mana e tem recarga de 180 segundos. Cada classe possui uma suprema própria: Avatar de Guerra, Cataclismo Arcano, Execução Sombria ou Chuva Celestial.
+- Pontos, talentos e marcos resgatados são persistentes por jogador. As habilidades usam entidades vanilla; dano em área, efeitos, balanceamento e sintaxe precisam de validação em Paper real. GitHub Actions valida estrutura e empacotamento, não runtime Skript.
