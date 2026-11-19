@@ -93,7 +93,7 @@ on death of living entity:
             remove 1 from {rpg::coop::%{_party}%::remaining}
             if {rpg::coop::%{_party}%::remaining} <= 0:
                 set {_wave} to {rpg::coop::%{_party}%::wave}
-                set {_spawnPlayer} to none
+                delete {_spawnPlayer}
                 loop all players:
                     if {rpg::coop::%{_party}%::member::%uuid of loop-player%} is true:
                         set {_spawnPlayer} to loop-player
