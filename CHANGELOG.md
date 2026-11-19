@@ -1,3 +1,8 @@
+## 0.30.0 - Proteção contra pistões externos
+- Eventos de extensão e retração verificam os blocos movidos por pistões.
+- A checagem considera a área reivindicada e uma margem de um bloco para bloquear movimentos que alcancem a borda.
+- A proteção ainda requer teste de runtime em Paper; não substitui validação de mecanismos complexos.
+
 ## 0.29.0 - Proteção contra fluxo de líquidos
 - Fluxos de água e lava são cancelados quando a origem está dentro do território ou na margem externa de um bloco.
 - A margem evita que um fluxo iniciado imediatamente fora atravesse a borda em uma etapa.
