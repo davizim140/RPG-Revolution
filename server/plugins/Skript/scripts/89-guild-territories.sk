@@ -171,6 +171,31 @@ on piston retract:
                 cancel event
                 stop
 
+# Protege blocos movidos por pistons externos que alcancem a borda.
+# "moved blocks" e uma expressao nativa do Skript para eventos de piston.
+# A margem de 1 bloco cobre a posicao de origem imediatamente externa.
+on piston extend:
+    loop moved blocks:
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if {rpg::territory::%{_territory}%::world} is "%world of loop-block%":
+                set {_dx} to (x-coordinate of loop-block) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of loop-block) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} + 1 and abs({_dz}) <= {@territory-radius} + 1:
+                    cancel event
+                    stop
+
+on piston retract:
+    loop moved blocks:
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if {rpg::territory::%{_territory}%::world} is "%world of loop-block%":
+                set {_dx} to (x-coordinate of loop-block) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of loop-block) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} + 1 and abs({_dz}) <= {@territory-radius} + 1:
+                    cancel event
+                    stop
+
 # Protege territorios contra propagacao e inicio de fogo.
 # A regra tambem bloqueia fogo natural dentro da area protegida.
 on burn:
