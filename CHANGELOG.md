@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0 - Regiões com nível mínimo
+- Regiões configuradas agora bloqueiam teletransportes entre mundos quando o personagem não atende ao nível mínimo.
+- /regiao mostra o nível exigido e o nível atual do jogador.
+- Adicionado /rpgregiao remover para retirar a configuração do mundo atual.
+
+
 ## 0.10.0 - NPCs físicos
 - Adicionado gerenciamento administrativo de NPCs com aldeões vanilla.
 - Clique com o botão direito nos NPCs para abrir os diálogos existentes de guia, ferreiro e exploradora.
