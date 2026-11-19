@@ -298,7 +298,7 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 ### Temporadas automáticas (0.73.0)
 - `/rpgtemporadaauto iniciar <dias>` inicia uma temporada e programa seu encerramento; a duração aceita é de 1 a 90 dias.
 - Ao atingir o prazo, o servidor encerra a temporada pelo fluxo normal, calcula campeão e recompensas e inicia automaticamente a próxima temporada.
-- `/rpgtemporadaauto parar` desativa a rotação futura; a temporada em andamento continua e poderá ser encerrada manualmente com `/rpgtemporada encerrar`.
+- `/rpgtemporadaauto status` mostra se a rotação está ativa e o término previsto. `/rpgtemporadaauto parar` desativa a rotação futura; a temporada em andamento continua e poderá ser encerrada manualmente com `/rpgtemporada encerrar`.
 - O encerramento possui uma trava para evitar processamento duplicado. O campeão é calculado a partir de todos os participantes registrados, inclusive quem estiver offline.
 - `/rpgtemporada iniciar <nome>` continua disponível para temporadas manuais. Temporadas automáticas usam nomes numerados.
 - O agendador verifica o prazo uma vez por minuto; o horário efetivo pode atrasar até aproximadamente um minuto.
