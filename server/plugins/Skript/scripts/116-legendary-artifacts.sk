@@ -1,0 +1,188 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Relíquias são desbloqueios persistentes por jogador; quatro espaços equipáveis.
+# Não criam itens físicos, evitando duplicação, perda ou troca indevida.
+
+command /artefato [<text>] [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is not set:
+            send "&6&lCÂMARA DE ARTEFATOS" to player
+            send "&e/artefato loja &7- Catálogo e preços" to player
+            send "&e/artefato comprar <nome> &7- Desbloquear artefato" to player
+            send "&e/artefato equipar <nome> &7- Equipar em um espaço compatível" to player
+            send "&e/artefato remover <espaco> &7- Liberar espaço" to player
+            send "&e/artefato status &7- Ver artefatos e conjunto" to player
+            stop
+        if arg-1 is "loja":
+            send "&6&lARTEFATOS DISPONÍVEIS" to player
+            send "&eanelsolar &7(anel) - 600 moedas: Força I" to player
+            send "&eamuletoaurora &7(amulet) - 600 moedas: Regeneração I" to player
+            send "&einsignia_guardiao &7(reliquia) - 700 moedas: Resistência I" to player
+            send "&echarmevento &7(charme) - 600 moedas: Velocidade I" to player
+            send "&eanelabisal &7(anel) - 800 moedas: Força I e resistência ao fogo" to player
+            send "&eamuletoabissal &7(amulet) - 800 moedas: Regeneração I e visão noturna" to player
+            send "&einsigniaabissal &7(reliquia) - 900 moedas: Resistência I" to player
+            send "&echarmeabissal &7(charme) - 800 moedas: Velocidade I e salto I" to player
+            send "&7Conjunto Solar: 2 peças = Absorção I; 4 peças = Força II por tempo curto." to player
+            send "&7Conjunto Abissal: 2 peças = Resistência ao Fogo; 4 peças = Resistência II por tempo curto." to player
+            stop
+        if arg-1 is "comprar":
+            set {_name} to arg-2
+            if {_name} is "anelsolar":
+                set {_price} to 600
+                set {_set} to "solar"
+                set {_slot} to "anel"
+            else if {_name} is "amuletoaurora":
+                set {_price} to 600
+                set {_set} to "solar"
+                set {_slot} to "amuleto"
+            else if {_name} is "insignia_guardiao":
+                set {_price} to 700
+                set {_set} to "solar"
+                set {_slot} to "reliquia"
+            else if {_name} is "charmevento":
+                set {_price} to 600
+                set {_set} to "solar"
+                set {_slot} to "charme"
+            else if {_name} is "anelabisal":
+                set {_price} to 800
+                set {_set} to "abissal"
+                set {_slot} to "anel"
+            else if {_name} is "amuletoabissal":
+                set {_price} to 800
+                set {_set} to "abissal"
+                set {_slot} to "amuleto"
+            else if {_name} is "insigniaabissal":
+                set {_price} to 900
+                set {_set} to "abissal"
+                set {_slot} to "reliquia"
+            else if {_name} is "charmeabissal":
+                set {_price} to 800
+                set {_set} to "abissal"
+                set {_slot} to "charme"
+            else:
+                send "{@prefix}&cArtefato desconhecido. Use /artefato loja." to player
+                stop
+            if {rpg::%{_id}%::artifact::owned::%{_name}%} is true:
+                send "{@prefix}&cVocê já desbloqueou esse artefato." to player
+                stop
+            if {rpg::%{_id}%::coins} < {_price}:
+                send "{@prefix}&cMoedas insuficientes. Custo: %{_price}%." to player
+                stop
+            remove {_price} from {rpg::%{_id}%::coins}
+            set {rpg::%{_id}%::artifact::owned::%{_name}%} to true
+            set {rpg::%{_id}%::artifact::set::%{_name}%} to {_set}
+            set {rpg::%{_id}%::artifact::slot::%{_name}%} to {_slot}
+            send "{@prefix}&aArtefato desbloqueado: &e%{_name}%&a. Equipe com /artefato equipar %{_name}%." to player
+            stop
+        if arg-1 is "equipar":
+            set {_name} to arg-2
+            if {rpg::%{_id}%::artifact::owned::%{_name}%} is not true:
+                send "{@prefix}&cVocê ainda não desbloqueou esse artefato." to player
+                stop
+            set {_slot} to {rpg::%{_id}%::artifact::slot::%{_name}%}
+            if {_slot} is not set:
+                send "{@prefix}&cDados do artefato inválidos." to player
+                stop
+            set {rpg::%{_id}%::artifact::equipped::%{_slot}%} to {_name}
+            send "{@prefix}&a%{_name}% equipado no espaço %{_slot}%." to player
+            stop
+        if arg-1 is "remover":
+            if arg-2 is "anel" or "amuleto" or "reliquia" or "charme":
+                delete {rpg::%{_id}%::artifact::equipped::%arg-2%}
+                send "{@prefix}&aEspaço %{arg-2}% liberado." to player
+            else:
+                send "{@prefix}&cUse anel, amuleto, reliquia ou charme." to player
+            stop
+        if arg-1 is "status":
+            set {_solar} to 0
+            set {_abyss} to 0
+            loop "anel", "amuleto", "reliquia" and "charme":
+                set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value%}
+                if {_name} is set:
+                    send "&e%loop-value%: &f%{_name}%" to player
+                    if {rpg::%{_id}%::artifact::set::%{_name}%} is "solar":
+                        add 1 to {_solar}
+                    else if {rpg::%{_id}%::artifact::set::%{_name}%} is "abissal":
+                        add 1 to {_abyss}
+                else:
+                    send "&7%loop-value%: &8Vazio" to player
+            send "&6Conjunto Solar: &f%{_solar}%/4 &8| &6Conjunto Abissal: &f%{_abyss}%/4" to player
+            stop
+        send "{@prefix}&cSubcomando inválido. Use /artefato." to player
+
+# Efeitos passivos renovados enquanto os artefatos correspondentes estiverem equipados.
+every 5 seconds:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        set {_ring} to {rpg::%{_id}%::artifact::equipped::anel}
+        set {_amulet} to {rpg::%{_id}%::artifact::equipped::amuleto}
+        set {_relic} to {rpg::%{_id}%::artifact::equipped::reliquia}
+        set {_charm} to {rpg::%{_id}%::artifact::equipped::charme}
+        if {_ring} is "anelsolar":
+            apply strength 1 to loop-player for 6 seconds
+        else if {_ring} is "anelabisal":
+            apply strength 1 to loop-player for 6 seconds
+            apply fire resistance 1 to loop-player for 6 seconds
+        if {_amulet} is "amuletoaurora":
+            apply regeneration 1 to loop-player for 6 seconds
+        else if {_amulet} is "amuletoabissal":
+            apply regeneration 1 to loop-player for 6 seconds
+            apply night vision 1 to loop-player for 6 seconds
+        if {_relic} is "insignia_guardiao" or "insigniaabissal":
+            apply resistance 1 to loop-player for 6 seconds
+        if {_charm} is "charmevento":
+            apply speed 1 to loop-player for 6 seconds
+        else if {_charm} is "charmeabissal":
+            apply speed 1 to loop-player for 6 seconds
+            apply jump boost 1 to loop-player for 6 seconds
+
+# Bônus de conjunto calculados pelos quatro espaços equipados.
+every 5 seconds:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        set {_solar} to 0
+        set {_abyss} to 0
+        loop "anel", "amuleto", "reliquia" and "charme":
+            set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value%}
+            if {_name} is set:
+                if {rpg::%{_id}%::artifact::set::%{_name}%} is "solar":
+                    add 1 to {_solar}
+                else if {rpg::%{_id}%::artifact::set::%{_name}%} is "abissal":
+                    add 1 to {_abyss}
+        if {_solar} >= 2:
+            apply absorption 1 to loop-player for 6 seconds
+        if {_abyss} >= 2:
+            apply fire resistance 1 to loop-player for 6 seconds
+
+# Ativação de bônus de conjunto de 4 peças com recarga própria.
+command /despertarartefato:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_solar} to 0
+        set {_abyss} to 0
+        loop "anel", "amuleto", "reliquia" and "charme":
+            set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value%}
+            if {_name} is set:
+                if {rpg::%{_id}%::artifact::set::%{_name}%} is "solar":
+                    add 1 to {_solar}
+                else if {rpg::%{_id}%::artifact::set::%{_name}%} is "abissal":
+                    add 1 to {_abyss}
+        if {_solar} < 4 and {_abyss} < 4:
+            send "{@prefix}&cVocê precisa equipar quatro artefatos do mesmo conjunto." to player
+            stop
+        if {rpg::%{_id}%::artifact::active-cooldown} is set:
+            if difference between now and {rpg::%{_id}%::artifact::active-cooldown} < 120 seconds:
+                send "{@prefix}&cDespertar de artefato em recarga." to player
+                stop
+        if {_solar} >= 4:
+            apply strength 2 to player for 10 seconds
+            apply absorption 2 to player for 10 seconds
+            send "{@prefix}&6Despertar Solar ativado!" to player
+        else:
+            apply resistance 2 to player for 10 seconds
+            apply fire resistance 1 to player for 10 seconds
+            send "{@prefix}&5Despertar Abissal ativado!" to player
+        set {rpg::%{_id}%::artifact::active-cooldown} to now
