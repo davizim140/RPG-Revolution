@@ -127,6 +127,6 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - A adoção tem 5% de chance de raridade Rara; pets raros fortalecem suas habilidades e recebem resistência adicional.
 - /pet chamar, /pet guardar, /pet status e /pet habilidade controlam o companheiro.
 - Lobos recebem como alvo monstros atacados pelo dono e ganham XP por abates; gatos e papagaios podem receber XP quando o dono derrota monstros enquanto estão invocados.
-- Evolução até o nível 10; o nível 5 fortalece o companheiro e o nível 10 concede velocidade adicional ao lobo.
+- Evolução até o nível 10; no nível 5, o lobo recebe mais força e as habilidades de gato e papagaio melhoram; no nível 10, o lobo recebe velocidade adicional.
 - O pet é recolhido quando o dono desconecta. Espécie, raridade, nível e XP permanecem salvos.
 - O sistema usa entidades vanilla e Skript, sem addons. A validação em Paper real ainda é necessária.
