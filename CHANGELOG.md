@@ -1,3 +1,8 @@
+## 0.45.0 - Estatísticas de fazenda de guilda
+- Adicionado contador individual e coletivo para colheitas maduras de trigo, cenoura, batata, beterraba e verruga do Nether dentro do território da própria guilda.
+- Novo comando /guildcolheita consulta os totais.
+- O recurso é apenas estatístico: não altera itens, XP ou moedas.
+
 ## 0.44.0 - Proteção de plantações em territórios
 - Cancela alterações de blocos provocadas por entidades dentro de territórios, incluindo pisoteio de terreno agrícola e mudanças feitas por mobs.
 - Cancela explicitamente o evento de ovelhas comendo grama dentro das áreas protegidas.
