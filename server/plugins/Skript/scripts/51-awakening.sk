@@ -161,12 +161,34 @@ command /invocar:
                 delete {rpg::%{_id}%::shadow::%loop-number%}
         remove 50 from {rpg::%{_id}%::mana}
         set {rpg::%{_id}%::skill-cooldown} to 60
+        set {_level} to {rpg::%{_id}%::level}
+        if {_level} >= 50:
+            set {_rank} to "S"
+            set {_rankName} to "&dElite"
+        else if {_level} >= 25:
+            set {_rank} to "A"
+            set {_rankName} to "&cVeterano"
+        else if {_level} >= 10:
+            set {_rank} to "B"
+            set {_rankName} to "&6Experiente"
+        else:
+            set {_rank} to "C"
+            set {_rankName} to "&7Novato"
         loop 2 times:
             spawn a wither skeleton at location of player
             set {_soldier} to last spawned entity
-            set name of {_soldier} to "&5Soldado das Sombras"
+            set name of {_soldier} to "&5Sombra %{_rank}% &8| %{_rankName}%"
+            apply speed 1 to {_soldier} for 45 seconds
+            if {_rank} is "B":
+                apply strength 1 to {_soldier} for 45 seconds
+            else if {_rank} is "A":
+                apply strength 2 to {_soldier} for 45 seconds
+                apply resistance 1 to {_soldier} for 45 seconds
+            else if {_rank} is "S":
+                apply strength 3 to {_soldier} for 45 seconds
+                apply resistance 2 to {_soldier} for 45 seconds
             set {rpg::%{_id}%::shadow::%loop-number%} to {_soldier}
-        send "{@prefix}&5&lEXÉRCITO DAS SOMBRAS! &7Dois soldados lutarão ao seu lado por 45 segundos." to player
+        send "{@prefix}&5&lEXÉRCITO DAS SOMBRAS! &7Soldados de rank &f%{_rank}% &7invocados por 45 segundos." to player
         wait 45 seconds
         loop 2 times:
             if {rpg::%{_id}%::shadow::%loop-number%} is set:
@@ -185,7 +207,18 @@ command /sombras:
             if {rpg::%{_id}%::shadow::%loop-number%} is set:
                 if {rpg::%{_id}%::shadow::%loop-number%} is alive:
                     add 1 to {_count}
+        set {_level} to {rpg::%{_id}%::level}
+        if {_level} >= 50:
+            set {_rank} to "S &d(Elite)"
+        else if {_level} >= 25:
+            set {_rank} to "A &c(Veterano)"
+        else if {_level} >= 10:
+            set {_rank} to "B &6(Experiente)"
+        else:
+            set {_rank} to "C &7(Novato)"
         send "&5&lEXÉRCITO DAS SOMBRAS" to player
+        send "&7Nível do Monarca: &f%{_level}%" to player
+        send "&7Evolução dos soldados: &f%{_rank}%" to player
         send "&7Soldados ativos: &f%{_count}%&7/2" to player
         send "&7Invocação: &f/invocar &7(50 mana, recarga de 60 segundos)." to player
 
