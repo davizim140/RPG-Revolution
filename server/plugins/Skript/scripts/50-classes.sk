@@ -58,7 +58,13 @@ command /classe [<text>]:
             send "{@prefix}&5Você escolheu a classe MAGO." to player
         else if arg-1 is "assassino":
             set {rpg::%{_id}%::class} to "assassino"
-            send "{@prefix}&8Você escolheu a classe ASSASSINO." to player
+            set {_awakeningRoll} to random integer between 1 and 100
+            if {_awakeningRoll} <= 3:
+                set {rpg::%{_id}%::awakening} to "monarca_sombras"
+                send "{@prefix}&5&lDESPERTAR RARO! &dVocê nasceu como o MONARCA DAS SOMBRAS!" to player
+                send "&8Seu poder oculto foi despertado. Use /despertar e /sombra." to player
+            else:
+                send "{@prefix}&8Você escolheu a classe ASSASSINO." to player
         else if arg-1 is "arqueiro":
             set {rpg::%{_id}%::class} to "arqueiro"
             send "{@prefix}&aVocê escolheu a classe ARQUEIRO." to player
