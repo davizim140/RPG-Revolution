@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.19.0 - Classes do Exército das Sombras
+- Invocação passa a criar três soldados especializados: Tanque (golem de ferro), Guerreiro (esqueleto wither) e Arqueiro (esqueleto com arco).
+- Cada função recebe efeitos próprios; os bônus de rank continuam escalando com o nível do Monarca.
+- Limite de três soldados ativos e status atualizado em /sombras.
+
+
 ## 0.18.0 - Evolução do Exército das Sombras
 - Rank dos soldados agora acompanha o nível do Monarca: C (nível 1+), B (10+), A (25+) e S (50+).
 - Cada rank aplica efeitos de combate progressivamente melhores; o rank é definido no momento da invocação.
