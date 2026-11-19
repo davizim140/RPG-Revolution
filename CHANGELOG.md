@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.21.0 - Evolução individual das sombras
+- Sombras permanentes ganham XP ao derrotar monstros.
+- Evolução individual até o nível 10, com bônus graduais de velocidade, força e resistência.
+- /sombranivel <1-5> consulta o nível e a experiência de cada sombra.
+- Dados de evolução são limpos ao libertar ou detectar a morte da sombra.
+
+
 ## 0.20.0 - Extração permanente de sombras
 - Monarca tem 15% de chance de extrair uma sombra ao derrotar diretamente um monstro.
 - Até cinco sombras permanentes por jogador; /exercito lista e /libertar <1-5> remove uma sombra.
