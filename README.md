@@ -21,6 +21,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Masmorra com chefe.
 - Guildas com convite, transferência de liderança, expulsão, chat e banco.
 - Recompensas diárias.
+- HUD leve na action bar com nível, XP, vida e mana; ativação individual por /rpghud on|off.
 
 ## Instalação
 1. Faça backup do servidor.
@@ -43,6 +44,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
 - /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
+- /rpghud [on|off]
 - /rpgxp, /rpgmoedas
 
 Permissão administrativa: rpg.admin.
@@ -53,11 +55,11 @@ Permissão administrativa: rpg.admin.
 - O bônus do Arco do Batedor precisa de validação em combate real com flechas.
 - Armaduras de classe são identificadas pelo nome; conjunto Guerreiro reduz dano, Mago e Assassino aumentam dano corpo a corpo, Arqueiro recebe velocidade.
 - NPCs físicos usam aldeões vanilla e abrem os diálogos existentes ao clicar; não têm skin personalizada.
-- Regiões exibem nível recomendado, mas ainda não bloqueiam entrada por nível.
+- A proteção de regiões é aplicada a teletransportes entre mundos; movimentação/entrada por outros mecanismos precisa de validação no servidor real.
 - A masmorra é um encontro simples com criatura vanilla, sem arena instanciada ou mecânicas complexas.
 - Grupos compartilham recompensas com integrantes online no mesmo mundo e a até 16 blocos do jogador que derrotou a criatura.
 - Guildas ainda não têm guerras, cargos ou níveis.
-- Não há HUD customizada, mapa próprio ou eventos mundiais.
+- A HUD usa a action bar e pode sobrescrever mensagens de action bar enviadas por outros plugins. Não há mapa próprio ou eventos mundiais.
 
 ## Validação
 O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e empacota ZIP. Isso não comprova sintaxe Skript nem execução em Paper 26.3. Teste /sk reload all e todos os sistemas em servidor de homologação antes de produção.
