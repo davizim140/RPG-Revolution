@@ -1,0 +1,178 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Expedições cooperativas usam o grupo existente e mantêm estado separado das expedições solo.
+command /expedicaogrupo [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_party} to {rpg::%{_id}%::party}
+        if {_party} is not set:
+            send "{@prefix}&cVocê precisa estar em um grupo. Use /grupocriar." to player
+            stop
+        if {_party} is not {_id}:
+            send "{@prefix}&cSomente o líder do grupo pode iniciar ou cancelar a expedição." to player
+            stop
+        if arg-1 is "cancelar":
+            if {rpg::coop::%{_party}%::active} is not true:
+                send "{@prefix}&cSeu grupo não tem uma expedição ativa." to player
+                stop
+            loop all entities:
+                if {rpg::coop::mob-owner::%uuid of loop-entity%} is {_party}:
+                    delete {rpg::coop::mob-owner::%uuid of loop-entity%}
+                    kill loop-entity
+            loop all players:
+                if {rpg::coop::%{_party}%::member::%uuid of loop-player%} is true:
+                    send "{@prefix}&eA expedição cooperativa foi cancelada pelo líder." to loop-player
+            delete {rpg::coop::%{_party}%::*}
+            stop
+
+        set {_difficulty} to "normal"
+        set {_multiplier} to 1
+        if arg-1 is "heroica":
+            set {_difficulty} to "heroica"
+            set {_multiplier} to 1.5
+        else if arg-1 is "pesadelo":
+            set {_difficulty} to "pesadelo"
+            set {_multiplier} to 2
+        else if arg-1 is set:
+            if arg-1 is not "normal":
+                send "{@prefix}&e/expedicaogrupo [normal|heroica|pesadelo|cancelar]" to player
+                stop
+        if {rpg::coop::%{_party}%::active} is true:
+            send "{@prefix}&cSeu grupo já está em uma expedição." to player
+            stop
+
+        delete {rpg::coop::%{_party}%::member::*}
+        set {_count} to 0
+        loop all players:
+            set {_member-id} to "%uuid of loop-player%"
+            if {rpg::%{_member-id}%::party} is {_party}:
+                if world of loop-player is world of player:
+                    if distance between loop-player and player <= 24:
+                        set {_level} to {rpg::%{_member-id}%::level}
+                        if {_level} < 10:
+                            send "{@prefix}&c%loop-player% precisa estar no nível 10 ou superior." to player
+                            stop
+                        if {_difficulty} is "heroica":
+                            if {_level} < 20:
+                                send "{@prefix}&c%loop-player% não atende ao nível 20 da dificuldade Heroica." to player
+                                stop
+                        if {_difficulty} is "pesadelo":
+                            if {_level} < 35:
+                                send "{@prefix}&c%loop-player% não atende ao nível 35 da dificuldade Pesadelo." to player
+                                stop
+                        add 1 to {_count}
+                        set {rpg::coop::%{_party}%::member::%{_member-id}%} to true
+        if {_count} < 2:
+            delete {rpg::coop::%{_party}%::member::*}
+            send "{@prefix}&cSão necessários pelo menos 2 integrantes do grupo online, no mesmo mundo e a até 24 blocos." to player
+            stop
+
+        set {rpg::coop::%{_party}%::active} to true
+        set {rpg::coop::%{_party}%::difficulty} to {_difficulty}
+        set {rpg::coop::%{_party}%::multiplier} to {_multiplier}
+        set {rpg::coop::%{_party}%::wave} to 1
+        set {rpg::coop::%{_party}%::remaining} to 3
+        loop all players:
+            if {rpg::coop::%{_party}%::member::%uuid of loop-player%} is true:
+                send "{@prefix}&6&lEXPEDIÇÃO COOPERATIVA! &7Dificuldade: &e%{_difficulty}%&7. Onda 1/3: derrotem os guardiões juntos." to loop-player
+        loop 3 times:
+            spawn zombie at location of player
+            set {_mob} to last spawned entity
+            set name of {_mob} to "&cGuardião da Expedição"
+            set {_health} to 25 * {_multiplier}
+            set max health of {_mob} to {_health}
+            set health of {_mob} to {_health}
+            set {rpg::coop::mob-owner::%uuid of {_mob}%} to {_party}
+
+on death of living entity:
+    set {_party} to {rpg::coop::mob-owner::%uuid of victim%}
+    if {_party} is set:
+        delete {rpg::coop::mob-owner::%uuid of victim%}
+        if {rpg::coop::%{_party}%::active} is true:
+            remove 1 from {rpg::coop::%{_party}%::remaining}
+            if {rpg::coop::%{_party}%::remaining} <= 0:
+                set {_wave} to {rpg::coop::%{_party}%::wave}
+                set {_spawnPlayer} to none
+                loop all players:
+                    if {rpg::coop::%{_party}%::member::%uuid of loop-player%} is true:
+                        set {_spawnPlayer} to loop-player
+                        stop loop
+                if {_spawnPlayer} is not set:
+                    loop all entities:
+                        if {rpg::coop::mob-owner::%uuid of loop-entity%} is {_party}:
+                            delete {rpg::coop::mob-owner::%uuid of loop-entity%}
+                            kill loop-entity
+                    delete {rpg::coop::%{_party}%::*}
+                    stop
+                set {_multiplier} to {rpg::coop::%{_party}%::multiplier}
+                if {_multiplier} is not set:
+                    set {_multiplier} to 1
+                if {_wave} is 1:
+                    set {rpg::coop::%{_party}%::wave} to 2
+                    set {rpg::coop::%{_party}%::remaining} to 4
+                    loop 4 times:
+                        spawn skeleton at location of {_spawnPlayer}
+                        set {_mob} to last spawned entity
+                        set name of {_mob} to "&5Arqueiro da Expedição"
+                        set {_health} to 30 * {_multiplier}
+                        set max health of {_mob} to {_health}
+                        set health of {_mob} to {_health}
+                        set {rpg::coop::mob-owner::%uuid of {_mob}%} to {_party}
+                    loop all players:
+                        if {rpg::coop::%{_party}%::member::%uuid of loop-player%} is true:
+                            send "{@prefix}&5Onda 2/3! Quatro arqueiros apareceram." to loop-player
+                else if {_wave} is 2:
+                    set {rpg::coop::%{_party}%::wave} to 3
+                    set {rpg::coop::%{_party}%::remaining} to 1
+                    spawn ravager at location of {_spawnPlayer}
+                    set {_boss} to last spawned entity
+                    set name of {_boss} to "&4&lDEVORADOR DAS RUÍNAS"
+                    set {_bossHealth} to 180 * {_multiplier}
+                    set max health of {_boss} to {_bossHealth}
+                    set health of {_boss} to {_bossHealth}
+                    apply resistance 1 to {_boss} for 999999 seconds
+                    set {rpg::coop::mob-owner::%uuid of {_boss}%} to {_party}
+                    loop all players:
+                        if {rpg::coop::%{_party}%::member::%uuid of loop-player%} is true:
+                            send "{@prefix}&4&lCHEFE FINAL! &cO Devorador das Ruínas apareceu!" to loop-player
+                else:
+                    set {_difficulty} to {rpg::coop::%{_party}%::difficulty}
+                    set {_coins} to 600
+                    set {_xp} to 400
+                    set {_diamonds} to 3
+                    set {_lootRolls} to 1
+                    if {_difficulty} is "heroica":
+                        set {_coins} to 900
+                        set {_xp} to 600
+                        set {_diamonds} to 4
+                        set {_lootRolls} to 2
+                    else if {_difficulty} is "pesadelo":
+                        set {_coins} to 1200
+                        set {_xp} to 800
+                        set {_diamonds} to 6
+                        set {_lootRolls} to 3
+                    loop all players:
+                        if {rpg::coop::%{_party}%::member::%uuid of loop-player%} is true:
+                            set {_member-id} to "%uuid of loop-player%"
+                            add {_coins} to {rpg::%{_member-id}%::coins}
+                            rpg_add_xp(loop-player, {_xp})
+                            give loop-player {_diamonds} diamonds
+                            loop {_lootRolls} times:
+                                rpg_give_boss_loot(loop-player)
+                            send "{@prefix}&6&lVITÓRIA COOPERATIVA! &a%{_coins}% moedas, %{_xp}% XP, %{_diamonds}% diamantes e %{_lootRolls}% sorteio(s). Dificuldade: %{_difficulty}%." to loop-player
+                    delete {rpg::coop::%{_party}%::*}
+
+on quit:
+    set {_id} to "%uuid of player%"
+    set {_party} to {rpg::%{_id}%::party}
+    if {_party} is {_id}:
+        if {rpg::coop::%{_party}%::active} is true:
+            loop all entities:
+                if {rpg::coop::mob-owner::%uuid of loop-entity%} is {_party}:
+                    delete {rpg::coop::mob-owner::%uuid of loop-entity%}
+                    kill loop-entity
+            loop all players:
+                if {rpg::coop::%{_party}%::member::%uuid of loop-player%} is true:
+                    send "{@prefix}&cA expedição terminou porque o líder desconectou." to loop-player
+            delete {rpg::coop::%{_party}%::*}
