@@ -218,3 +218,10 @@
 ## 0.1.0 - Fundação
 - Personagens, níveis, XP, atributos, economia e missão inicial.
 - Workflow de verificação estrutural e empacotamento ZIP.
+
+## 0.49.0 - Pets companheiros
+- Adicionados três companheiros adotáveis: lobo, gato e papagaio, cada um com função e habilidade próprias.
+- 5% de chance de adoção Rara; raridade amplia a habilidade e concede resistência adicional.
+- Comandos /pet, /pet adotar, chamar, guardar, status e habilidade.
+- Lobos auxiliam no combate ao atacar monstros enfrentados pelo dono; abates evoluem o companheiro até o nível 10.
+- Dados de espécie, raridade e evolução ficam persistidos por jogador; pets ativos são recolhidos ao desconectar.
