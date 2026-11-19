@@ -251,8 +251,9 @@ on damage:
     attacker is a player
     set {_ownerId} to "%uuid of attacker%"
     if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
-        if victim is not a player:
-            loop 3 times:
+        if {rpg::%{_ownerId}%::shadow-mode} is not "defensiva":
+            if victim is not a player:
+                loop 3 times:
                 if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
                     if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
                         set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to victim
@@ -261,8 +262,9 @@ on damage:
     victim is a player
     set {_ownerId} to "%uuid of victim%"
     if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
-        if attacker is a living entity:
-            loop 3 times:
+        if {rpg::%{_ownerId}%::shadow-mode} is not "passiva":
+            if attacker is a living entity:
+                loop 3 times:
                 if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
                     if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
                         set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to attacker
@@ -358,8 +360,9 @@ on damage:
     attacker is a player
     set {_ownerId} to "%uuid of attacker%"
     if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
-        if victim is not a player:
-            loop 5 times:
+        if {rpg::%{_ownerId}%::shadow-mode} is not "defensiva":
+            if victim is not a player:
+                loop 5 times:
                 if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is set:
                     if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is alive:
                         set target of {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} to victim
@@ -368,8 +371,9 @@ on damage:
     victim is a player
     set {_ownerId} to "%uuid of victim%"
     if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
-        if attacker is a living entity:
-            loop 5 times:
+        if {rpg::%{_ownerId}%::shadow-mode} is not "passiva":
+            if attacker is a living entity:
+                loop 5 times:
                 if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is set:
                     if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is alive:
                         set target of {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} to attacker
@@ -445,3 +449,49 @@ command /sombranivel <number>:
         send "&7Nível: &f%{_level}%&7/10" to player
         send "&7Experiência: &f%{_xp}%" to player
         send "&7Próximo nível: &f%{_level} * 5% XP total" to player
+
+# Controle do comportamento do Exército das Sombras.
+# A postura agressiva reage a ataques do Monarca e ataques contra ele.
+# Defensiva só reage quando o Monarca é atacado; passiva não escolhe alvos automaticamente.
+command /posturasombras <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::awakening} is not "monarca_sombras":
+            send "{@prefix}&cSomente o Monarca pode alterar a postura das sombras." to player
+            stop
+        if arg-1 is not "agressiva" and arg-1 is not "defensiva" and arg-1 is not "passiva":
+            send "{@prefix}&eUse: /posturasombras <agressiva|defensiva|passiva>" to player
+            stop
+        set {rpg::%{_id}%::shadow-mode} to arg-1
+        send "{@prefix}&5Postura do Exército: &f%arg-1%&7." to player
+        if arg-1 is "agressiva":
+            send "&7As sombras atacam alvos feridos por você e defendem você." to player
+        else if arg-1 is "defensiva":
+            send "&7As sombras só atacam criaturas que atacarem você." to player
+        else:
+            send "&7As sombras não recebem alvos automaticamente." to player
+
+# Reúne soldados temporários e permanentes na posição do Monarca.
+command /reunirsombras:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::awakening} is not "monarca_sombras":
+            send "{@prefix}&cSomente o Monarca pode reunir as sombras." to player
+            stop
+        set {_count} to 0
+        loop 3 times:
+            if {rpg::%{_id}%::shadow::%loop-number%} is set:
+                if {rpg::%{_id}%::shadow::%loop-number%} is alive:
+                    teleport {rpg::%{_id}%::shadow::%loop-number%} to location of player
+                    add 1 to {_count}
+                else:
+                    delete {rpg::%{_id}%::shadow::%loop-number%}
+        loop 5 times:
+            if {rpg::%{_id}%::permanent-shadow::%loop-number%} is set:
+                if {rpg::%{_id}%::permanent-shadow::%loop-number%} is alive:
+                    teleport {rpg::%{_id}%::permanent-shadow::%loop-number%} to location of player
+                    add 1 to {_count}
+                else:
+                    delete {rpg::%{_id}%::permanent-shadow::%loop-number%}
+        send "{@prefix}&5%{_count}% sombras reunidas ao seu redor." to player
+
