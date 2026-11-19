@@ -154,3 +154,13 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - /montariacombate status mostra nível e abates montados; /montariacombate habilidade ativa a Investida.
 - O combate montado não aplica bônus de dano contra outros jogadores.
 - Requer teste de sintaxe e execução em servidor Paper real.
+
+
+### Drops exclusivos de chefes (0.53.0)
+- Concluir a expedição e derrotar o Devorador das Ruínas concede um equipamento exclusivo aleatório, além das recompensas normais.
+- Cada participante registrado do Titã da Fenda recebe dois sorteios de equipamento exclusivo.
+- Lâmina do Devorador: espada de diamante com +3 de dano contra criaturas.
+- Couraça das Ruínas: peitoral de diamante que reduz 3 de dano recebido.
+- Arco do Titã: arco lendário que causa +4 de dano com flechas contra criaturas.
+- Os equipamentos são identificados por nome; renomear em bigorna pode afetar a identificação. PvP não recebe os bônus.
+- Teste de sintaxe e runtime em Paper real ainda necessário.
