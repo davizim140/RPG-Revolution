@@ -19,7 +19,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Missão inicial, linha de história e contrato diário de caça.
 - Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
 - Regiões configuráveis por mundo, com bloqueio de teleporte entre mundos para personagens abaixo do nível mínimo.
-- Masmorra individual básica e expedição avançada de três etapas (duas ondas e chefe), com limpeza ao cancelar ou desconectar.
+- Masmorra individual básica e expedição avançada em três dificuldades: Normal (nível 10+), Heroica (20+) e Pesadelo (35+). A dificuldade aumenta a vida dos inimigos e do chefe e melhora moedas, XP, diamantes e sorteios de equipamento; limpeza ao cancelar ou desconectar.
 - Chefe mundial de três fases, com servos, participação e recompensas.
 - Mercado entre jogadores com anúncios em custódia, compra e cancelamento.
 - Progressão de guildas por caça, níveis e depósito automático no banco.
@@ -164,3 +164,11 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Arco do Titã: arco lendário que causa +4 de dano com flechas contra criaturas.
 - Os equipamentos são identificados por nome; renomear em bigorna pode afetar a identificação. PvP não recebe os bônus.
 - Teste de sintaxe e runtime em Paper real ainda necessário.
+
+
+### Dificuldades de expedição (0.54.0)
+- /expedicao normal: nível 10+, inimigos com atributos base, 600 moedas, 400 XP, 3 diamantes e 1 sorteio de equipamento de chefe.
+- /expedicao heroica: nível 20+, 1,5x de vida nos inimigos, 900 moedas, 600 XP, 4 diamantes e 2 sorteios.
+- /expedicao pesadelo: nível 35+, 2x de vida nos inimigos, 1.200 moedas, 800 XP, 6 diamantes e 3 sorteios.
+- A dificuldade escolhida permanece vinculada à expedição e determina os atributos das ondas e do chefe final.
+- Necessário testar sintaxe e execução em Paper real; o workflow valida estrutura e empacotamento, não runtime.
