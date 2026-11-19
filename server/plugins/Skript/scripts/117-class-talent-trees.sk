@@ -1,0 +1,182 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Árvore de talentos: pontos resgatados a cada cinco níveis.
+# Cada talento é desbloqueado uma vez; a habilidade suprema exige nível 30.
+
+command /arvoreclasse:
+    aliases: /talentosclasse
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_class} to {rpg::%{_id}%::class}
+        if {_class} is not set or "nenhuma":
+            send "{@prefix}&cEscolha uma classe primeiro." to player
+            stop
+        set {_earned} to {rpg::%{_id}%::class-talent::earned}
+        if {_earned} is not set:
+            set {_earned} to 0
+        set {_available} to {rpg::%{_id}%::class-talent::points}
+        if {_available} is not set:
+            set {_available} to 0
+        send "&6&lÁRVORE DE TALENTOS: &e%{_class}%" to player
+        send "&7Pontos disponíveis: &f%{_available}% &8| &7Pontos gastos: &f%{_earned}%" to player
+        if {_class} is "guerreiro":
+            send "&cfortaleza &7- Resistência I passiva." to player
+            send "&cimpacto &7- +1 dano corpo a corpo." to player
+            send "&cvitalidade &7- Vida adicional temporária." to player
+        else if {_class} is "mago":
+            send "&5meditacao &7- Regeneração de mana acelerada." to player
+            send "&5arcano &7- +1 dano mágico." to player
+            send "&5barreira &7- Absorção I passiva." to player
+        else if {_class} is "assassino":
+            send "&8passos &7- Velocidade I passiva." to player
+            send "&8letalidade &7- +1 dano corpo a corpo." to player
+            send "&8evasao &7- Resistência I por breves instantes." to player
+        else if {_class} is "arqueiro":
+            send "&aprecisao &7- +1 dano com arco." to player
+            send "&amobilidade &7- Velocidade I passiva." to player
+            send "&afoco &7- Regeneração de mana acelerada." to player
+        send "&e/aprenderclasse <talento> &7- Desbloquear talento." to player
+        send "&e/resgatarpontosclasse &7- Receber 1 ponto a cada 5 níveis alcançados." to player
+        send "&e/supremaclasse &7- Suprema (nível 30+, 50 mana, recarga 180s)." to player
+        send "&7Talentos desbloqueados:" to player
+        loop "fortaleza", "impacto", "vitalidade", "meditacao", "arcano", "barreira", "passos", "letalidade", "evasao", "precisao", "mobilidade" and "foco":
+            if {rpg::%{_id}%::class-talent::%loop-value%} is true:
+                send "&a- %loop-value%" to player
+
+command /resgatarpontosclasse:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_level} to {rpg::%{_id}%::level}
+        if {_level} is not set:
+            send "{@prefix}&cPersonagem não inicializado." to player
+            stop
+        set {_next} to {rpg::%{_id}%::class-talent::next-level}
+        if {_next} is not set:
+            set {_next} to 5
+        set {_gained} to 0
+        while {_level} >= {_next}:
+            add 1 to {rpg::%{_id}%::class-talent::points}
+            add 1 to {_gained}
+            add 5 to {_next}
+        set {rpg::%{_id}%::class-talent::next-level} to {_next}
+        if {_gained} > 0:
+            send "{@prefix}&aVocê resgatou %{_gained}% ponto(s) de talento!" to player
+        else:
+            send "{@prefix}&cPróximo ponto no nível %{_next}%." to player
+
+command /aprenderclasse <text>:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_class} to {rpg::%{_id}%::class}
+        if {_class} is not set or "nenhuma":
+            send "{@prefix}&cEscolha uma classe primeiro." to player
+            stop
+        if {rpg::%{_id}%::class-talent::%arg-1%} is true:
+            send "{@prefix}&cEsse talento já foi aprendido." to player
+            stop
+        set {_valid} to false
+        if {_class} is "guerreiro":
+            if arg-1 is "fortaleza" or "impacto" or "vitalidade":
+                set {_valid} to true
+        else if {_class} is "mago":
+            if arg-1 is "meditacao" or "arcano" or "barreira":
+                set {_valid} to true
+        else if {_class} is "assassino":
+            if arg-1 is "passos" or "letalidade" or "evasao":
+                set {_valid} to true
+        else if {_class} is "arqueiro":
+            if arg-1 is "precisao" or "mobilidade" or "foco":
+                set {_valid} to true
+        if {_valid} is false:
+            send "{@prefix}&cEsse talento não pertence à sua classe." to player
+            stop
+        if {rpg::%{_id}%::class-talent::points} <= 0:
+            send "{@prefix}&cSem pontos. Resgate os pontos conquistados a cada cinco níveis." to player
+            stop
+        remove 1 from {rpg::%{_id}%::class-talent::points}
+        add 1 to {rpg::%{_id}%::class-talent::earned}
+        set {rpg::%{_id}%::class-talent::%arg-1%} to true
+        send "{@prefix}&aTalento &e%arg-1% &adesbloqueado!" to player
+
+# Passivas renovadas antes de expirarem.
+every 5 seconds:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        if {rpg::%{_id}%::class-talent::fortaleza} is true:
+            apply resistance 1 to loop-player for 6 seconds
+        if {rpg::%{_id}%::class-talent::vitalidade} is true:
+            apply health boost 1 to loop-player for 6 seconds
+        if {rpg::%{_id}%::class-talent::barreira} is true:
+            apply absorption 1 to loop-player for 6 seconds
+        if {rpg::%{_id}%::class-talent::passos} is true or {rpg::%{_id}%::class-talent::mobilidade} is true:
+            apply speed 1 to loop-player for 6 seconds
+        if {rpg::%{_id}%::class-talent::meditacao} is true or {rpg::%{_id}%::class-talent::foco} is true:
+            if {rpg::%{_id}%::mana} < {rpg::%{_id}%::mana-max}:
+                add 2 to {rpg::%{_id}%::mana}
+                if {rpg::%{_id}%::mana} > {rpg::%{_id}%::mana-max}:
+                    set {rpg::%{_id}%::mana} to {rpg::%{_id}%::mana-max}
+
+on damage:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    if {rpg::%{_id}%::class-talent::impacto} is true:
+        increase damage by 1
+    if {rpg::%{_id}%::class-talent::letalidade} is true:
+        increase damage by 1
+    if {rpg::%{_id}%::class-talent::arcano} is true:
+        if attacker's tool is not bow:
+            increase damage by 1
+    if {rpg::%{_id}%::class-talent::precisao} is true:
+        if attacker's tool is bow:
+            increase damage by 1
+
+command /supremaclasse:
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_class} to {rpg::%{_id}%::class}
+        if {rpg::%{_id}%::level} < 30:
+            send "{@prefix}&cA habilidade suprema desbloqueia no nível 30." to player
+            stop
+        if {_class} is not "guerreiro" and "mago" and "assassino" and "arqueiro":
+            send "{@prefix}&cEscolha uma classe primeiro." to player
+            stop
+        if {rpg::%{_id}%::mana} < 50:
+            send "{@prefix}&cVocê precisa de 50 de mana." to player
+            stop
+        if {rpg::%{_id}%::class-talent::ultimate-cooldown} is set:
+            if difference between now and {rpg::%{_id}%::class-talent::ultimate-cooldown} < 180 seconds:
+                send "{@prefix}&cSuprema em recarga." to player
+                stop
+        remove 50 from {rpg::%{_id}%::mana}
+        set {rpg::%{_id}%::class-talent::ultimate-cooldown} to now
+        if {_class} is "guerreiro":
+            apply resistance 2 to player for 10 seconds
+            apply strength 2 to player for 10 seconds
+            loop all living entities in radius 5 around player:
+                if loop-entity is not player:
+                    if loop-entity is not an armor stand:
+                        damage loop-entity by 12
+            send "{@prefix}&c&lAVATAR DE GUERRA! &7Sua força explode ao redor." to player
+        else if {_class} is "mago":
+            apply resistance 1 to player for 8 seconds
+            loop all living entities in radius 7 around player:
+                if loop-entity is not player:
+                    if loop-entity is not an armor stand:
+                        damage loop-entity by 16
+            send "{@prefix}&5&lCATACLISMO ARCANO! &7Uma onda de energia devasta a área." to player
+        else if {_class} is "assassino":
+            apply speed 3 to player for 10 seconds
+            apply invisibility 1 to player for 10 seconds
+            loop all living entities in radius 5 around player:
+                if loop-entity is not player:
+                    if loop-entity is not an armor stand:
+                        damage loop-entity by 14
+            send "{@prefix}&8&lEXECUÇÃO SOMBRIA! &7Você desaparece e golpeia os inimigos." to player
+        else if {_class} is "arqueiro":
+            apply speed 2 to player for 10 seconds
+            loop all living entities in radius 8 around player:
+                if loop-entity is not player:
+                    if loop-entity is not an armor stand:
+                        damage loop-entity by 10
+            send "{@prefix}&a&lCHUVA CELESTIAL! &7Uma salva atinge os inimigos próximos." to player
