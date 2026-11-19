@@ -1,0 +1,238 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Arenas cooperativas configuradas pela administração.
+# Configure os três pontos no mesmo mundo com /raidarena configurar 1|2|3.
+function raidarena_spawn(party: text, room: number):
+    set {_difficulty} to {rpg::raidarena::%{_party}%::difficulty}
+    set {_spawn} to {rpg::raidarena::point::%{_room}%}
+    set {rpg::raidarena::%{_party}%::room} to {_room}
+    if {_room} is 1:
+        set {rpg::raidarena::%{_party}%::remaining} to 3
+        loop 3 times:
+            spawn zombie at {_spawn}
+            set name of last spawned entity to "&cGuardião da Arena"
+            set {rpg::raidarena::mob-owner::%uuid of last spawned entity%} to {_party}
+            set {rpg::raidarena::mob-room::%uuid of last spawned entity%} to 1
+    else if {_room} is 2:
+        set {rpg::raidarena::%{_party}%::remaining} to 4
+        loop 4 times:
+            spawn skeleton at {_spawn}
+            set name of last spawned entity to "&6Sentinela da Arena"
+            set {rpg::raidarena::mob-owner::%uuid of last spawned entity%} to {_party}
+            set {rpg::raidarena::mob-room::%uuid of last spawned entity%} to 2
+    else if {_room} is 3:
+        set {rpg::raidarena::%{_party}%::remaining} to 1
+        spawn ravager at {_spawn}
+        set {_boss} to last spawned entity
+        set name of {_boss} to "&4&lTITÃ DA ARENA"
+        set {_health} to 500
+        if {_difficulty} is "heroica":
+            set {_health} to 900
+        else if {_difficulty} is "pesadelo":
+            set {_health} to 1400
+        set max health of {_boss} to {_health}
+        set health of {_boss} to {_health}
+        set {rpg::raidarena::mob-owner::%uuid of {_boss}%} to {_party}
+        set {rpg::raidarena::mob-room::%uuid of {_boss}%} to 3
+        apply resistance 1 to {_boss} for 999999 seconds
+    loop all players:
+        set {_member-id} to "%uuid of loop-player%"
+        if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
+            send "{@prefix}&6Sala %{_room}% iniciada! &7Derrotem todos os inimigos." to loop-player
+
+command /raidarena [<text>] [<text>]:
+    trigger:
+        if arg-1 is "configurar":
+            if player does not have permission "rpg.admin":
+                send "{@prefix}&cVocê não tem permissão." to player
+                stop
+            if arg-2 is not "1" and arg-2 is not "2" and arg-2 is not "3":
+                send "{@prefix}&e/raidarena configurar 1|2|3 &7- salva o ponto da sala na sua posição." to player
+                stop
+            set {rpg::raidarena::point::%arg-2 parsed as number%} to location of player
+            send "{@prefix}&aPonto da sala %arg-2% configurado neste local." to player
+            stop
+        set {_id} to "%uuid of player%"
+        set {_party} to {rpg::%{_id}%::party}
+        if {_party} is not set:
+            send "{@prefix}&cVocê precisa estar em um grupo." to player
+            stop
+        if {_party} is not {_id}:
+            send "{@prefix}&cSomente o líder do grupo pode iniciar, consultar ou cancelar a arena." to player
+            stop
+        if arg-1 is "status":
+            if {rpg::raidarena::%{_party}%::active} is not true:
+                send "{@prefix}&cSeu grupo não tem uma arena ativa." to player
+                stop
+            send "&6&lARENA DE RAID &7- Sala &e%{rpg::raidarena::%{_party}%::room}%&7/3" to player
+            send "&7Inimigos restantes: &f%{rpg::raidarena::%{_party}%::remaining}%" to player
+            send "&7Dificuldade: &e%{rpg::raidarena::%{_party}%::difficulty}%" to player
+            stop
+        if arg-1 is "cancelar":
+            if {rpg::raidarena::%{_party}%::active} is not true:
+                send "{@prefix}&cSeu grupo não tem uma arena ativa." to player
+                stop
+            loop all entities:
+                if {rpg::raidarena::mob-owner::%uuid of loop-entity%} is {_party}:
+                    delete {rpg::raidarena::mob-owner::%uuid of loop-entity%}
+                    delete {rpg::raidarena::mob-room::%uuid of loop-entity%}
+                    kill loop-entity
+            delete {rpg::raidarena::%{_party}%::*}
+            send "{@prefix}&cArena cancelada." to player
+            stop
+        if {rpg::raidarena::%{_party}%::active} is true:
+            send "{@prefix}&cSeu grupo já está em uma arena." to player
+            stop
+        if arg-1 is not "normal" and arg-1 is not "heroica" and arg-1 is not "pesadelo":
+            send "{@prefix}&e/raidarena normal|heroica|pesadelo|status|cancelar" to player
+            stop
+        loop 3 times:
+            if {rpg::raidarena::point::%loop-number%} is not set:
+                send "{@prefix}&cA administração ainda não configurou os três pontos da arena." to player
+                stop
+        if world of {rpg::raidarena::point::1} is not world of player:
+            send "{@prefix}&cA arena está em outro mundo." to player
+            stop
+        set {_minimum} to 10
+        if arg-1 is "heroica":
+            set {_minimum} to 20
+        else if arg-1 is "pesadelo":
+            set {_minimum} to 35
+        delete {rpg::raidarena::%{_party}%::member::*}
+        set {_count} to 0
+        loop all players:
+            set {_member-id} to "%uuid of loop-player%"
+            if {rpg::%{_member-id}%::party} is {_party}:
+                if world of loop-player is world of player:
+                    if distance between loop-player and player <= 24:
+                        set {_level} to {rpg::%{_member-id}%::level}
+                        if {_level} < {_minimum}:
+                            send "{@prefix}&c%loop-player% precisa estar no nível %{_minimum}%." to player
+                            delete {rpg::raidarena::%{_party}%::member::*}
+                            stop
+                        add 1 to {_count}
+                        set {rpg::raidarena::%{_party}%::member::%{_member-id}%} to true
+                        set {rpg::raidarena::%{_party}%::damage::%{_member-id}%} to 0
+        if {_count} < 2:
+            delete {rpg::raidarena::%{_party}%::member::*}
+            send "{@prefix}&cSão necessários pelo menos 2 membros online, próximos e no mesmo mundo." to player
+            stop
+        set {rpg::raidarena::%{_party}%::active} to true
+        set {rpg::raidarena::%{_party}%::difficulty} to arg-1
+        set {rpg::raidarena::%{_party}%::total-damage} to 0
+        set {rpg::raidarena::%{_party}%::coins} to 800
+        set {rpg::raidarena::%{_party}%::xp} to 500
+        set {rpg::raidarena::%{_party}%::diamonds} to 3
+        if arg-1 is "heroica":
+            set {rpg::raidarena::%{_party}%::coins} to 1400
+            set {rpg::raidarena::%{_party}%::xp} to 900
+            set {rpg::raidarena::%{_party}%::diamonds} to 5
+        else if arg-1 is "pesadelo":
+            set {rpg::raidarena::%{_party}%::coins} to 2400
+            set {rpg::raidarena::%{_party}%::xp} to 1500
+            set {rpg::raidarena::%{_party}%::diamonds} to 8
+        raidarena_spawn({_party}, 1)
+
+command /raidbau [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is "status":
+            send "{@prefix}&6Baús de raid disponíveis: &e%{rpg::raidarena::chests::%{_id}%}%" to player
+            stop
+        if arg-1 is not "abrir":
+            send "{@prefix}&e/raidbau abrir|status" to player
+            stop
+        if {rpg::raidarena::chests::%{_id}%} <= 0:
+            send "{@prefix}&cVocê não possui baús de raid." to player
+            stop
+        remove 1 from {rpg::raidarena::chests::%{_id}%}
+        set {_roll} to random integer between 1 and 4
+        if {_roll} is 1:
+            add 250 to {rpg::%{_id}%::coins}
+            send "{@prefix}&aBaú aberto: &e250 moedas!" to player
+        else if {_roll} is 2:
+            rpg_add_xp(player, 200)
+            send "{@prefix}&aBaú aberto: &e200 XP!" to player
+        else if {_roll} is 3:
+            give player 2 diamonds
+            send "{@prefix}&aBaú aberto: &e2 diamantes!" to player
+        else:
+            give player 1 golden apple
+            send "{@prefix}&aBaú aberto: &e1 maçã dourada!" to player
+
+on damage:
+    if victim is a zombie or victim is a skeleton or victim is a ravager:
+        set {_party} to {rpg::raidarena::mob-owner::%uuid of victim%}
+        if {_party} is set:
+            if attacker is a player:
+                set {_attacker-id} to "%uuid of attacker%"
+                if {rpg::raidarena::%{_party}%::member::%{_attacker-id}%} is true:
+                    add damage to {rpg::raidarena::%{_party}%::damage::%{_attacker-id}%}
+                    add damage to {rpg::raidarena::%{_party}%::total-damage}
+
+on death:
+    if victim is a zombie or victim is a skeleton or victim is a ravager:
+        set {_entity-id} to "%uuid of victim%"
+        set {_party} to {rpg::raidarena::mob-owner::%{_entity-id}%}
+        if {_party} is set:
+            set {_room} to {rpg::raidarena::mob-room::%{_entity-id}%}
+            delete {rpg::raidarena::mob-owner::%{_entity-id}%}
+            delete {rpg::raidarena::mob-room::%{_entity-id}%}
+            remove 1 from {rpg::raidarena::%{_party}%::remaining}
+            if {rpg::raidarena::%{_party}%::remaining} <= 0:
+                if {_room} < 3:
+                    loop all players:
+                        set {_member-id} to "%uuid of loop-player%"
+                        if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
+                            add 1 to {rpg::raidarena::chests::%{_member-id}%}
+                            send "{@prefix}&aSala concluída! Você recebeu um baú de raid. Use /raidbau abrir." to loop-player
+                    set {_next-room} to {_room} + 1
+                    raidarena_spawn({_party}, {_next-room})
+                else:
+                    set {_total} to {rpg::raidarena::%{_party}%::total-damage}
+                    if {_total} <= 0:
+                        set {_total} to 1
+                    set {_coins} to {rpg::raidarena::%{_party}%::coins}
+                    set {_xp} to {rpg::raidarena::%{_party}%::xp}
+                    set {_diamonds} to {rpg::raidarena::%{_party}%::diamonds}
+                    loop all players:
+                        set {_member-id} to "%uuid of loop-player%"
+                        if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
+                            set {_damage} to {rpg::raidarena::%{_party}%::damage::%{_member-id}%}
+                            if {_damage} > 0:
+                                set {_share} to {_damage} / {_total}
+                                set {_earned-coins} to round({_coins} * {_share})
+                                set {_earned-xp} to round({_xp} * {_share})
+                                set {_earned-diamonds} to round({_diamonds} * {_share})
+                                add {_earned-coins} to {rpg::%{_member-id}%::coins}
+                                rpg_add_xp(loop-player, {_earned-xp})
+                                if {_earned-diamonds} > 0:
+                                    give loop-player {_earned-diamonds} diamonds
+                                rpg_give_boss_loot(loop-player)
+                                add 1 to {rpg::raidarena::chests::%{_member-id}%}
+                                send "{@prefix}&6Titã derrotado! &aVocê recebeu %{_earned-coins}% moedas, %{_earned-xp}% XP, %{_earned-diamonds}% diamantes, 1 item de chefe e 1 baú." to loop-player
+                            else:
+                                send "{@prefix}&7Você não causou dano e não recebeu a recompensa final." to loop-player
+                    loop all entities:
+                        if {rpg::raidarena::mob-owner::%uuid of loop-entity%} is {_party}:
+                            delete {rpg::raidarena::mob-owner::%uuid of loop-entity%}
+                            delete {rpg::raidarena::mob-room::%uuid of loop-entity%}
+                            kill loop-entity
+                    delete {rpg::raidarena::%{_party}%::*}
+
+on quit:
+    set {_id} to "%uuid of player%"
+    set {_party} to {rpg::%{_id}%::party}
+    if {_party} is set:
+        if {rpg::raidarena::%{_party}%::active} is true:
+            if {_party} is {_id}:
+                loop all entities:
+                    if {rpg::raidarena::mob-owner::%uuid of loop-entity%} is {_party}:
+                        delete {rpg::raidarena::mob-owner::%uuid of loop-entity%}
+                        delete {rpg::raidarena::mob-room::%uuid of loop-entity%}
+                        kill loop-entity
+                delete {rpg::raidarena::%{_party}%::*}
+                loop all players:
+                    if {rpg::%uuid of loop-player%::party} is {_party}:
+                        send "{@prefix}&cA arena foi encerrada porque o líder desconectou." to loop-player
