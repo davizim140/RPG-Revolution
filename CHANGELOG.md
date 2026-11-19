@@ -1,3 +1,9 @@
+## 0.46.0 - Níveis e recompensas de agricultura
+- Cada colheita madura válida concede 5 XP de agricultura.
+- A cada nível, o jogador recebe 50 moedas; múltiplos de 5 concedem bônus adicional de 100 moedas.
+- /guildcolheita exibe nível e XP de agricultura individual.
+- XP e nível são persistidos por jogador.
+
 ## 0.45.0 - Estatísticas de fazenda de guilda
 - Adicionado contador individual e coletivo para colheitas maduras de trigo, cenoura, batata, beterraba e verruga do Nether dentro do território da própria guilda.
 - Novo comando /guildcolheita consulta os totais.
