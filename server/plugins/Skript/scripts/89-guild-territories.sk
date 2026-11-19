@@ -133,3 +133,40 @@ on right click:
                         cancel event
                         send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
                     stop
+
+
+# Protecao adicional: explosoes nao removem blocos protegidos.
+# O dano da explosao a entidades continua sendo aplicado normalmente.
+on explode:
+    loop event-blocks:
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if {rpg::territory::%{_territory}%::world} is "%world of loop-block%":
+                set {_dx} to (x-coordinate of loop-block) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of loop-block) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                    remove loop-block from event-blocks
+                    stop
+
+# Impede ativacao de pistons posicionados dentro de territorios alheios.
+# A verificacao cobre a posicao do piston; mecanismos que avancam de fora
+# para dentro da area ainda precisam de validacao em Paper real.
+on piston extend:
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                cancel event
+                stop
+
+on piston retract:
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                cancel event
+                stop
