@@ -110,11 +110,17 @@ command /pet [<text>] [<text>]:
                 apply speed 1 to player for 12 seconds
                 send "{@prefix}&c&lINSTINTO DE CAÇA! &7Seu lobo fortalece seu poder de combate." to player
             else if {rpg::%{_id}%::pet::type} is "gato":
-                apply regeneration 2 to player for 8 seconds
+                if {rpg::%{_id}%::pet::level} >= 5:
+                    apply regeneration 3 to player for 10 seconds
+                else:
+                    apply regeneration 2 to player for 8 seconds
                 apply night vision 1 to player for 30 seconds
                 send "{@prefix}&d&lBÊNÇÃO FELINA! &7Seu gato restaurou sua vitalidade." to player
             else:
-                apply speed 2 to player for 12 seconds
+                if {rpg::%{_id}%::pet::level} >= 5:
+                    apply speed 3 to player for 12 seconds
+                else:
+                    apply speed 2 to player for 12 seconds
                 apply jump boost 2 to player for 12 seconds
                 send "{@prefix}&b&lVENTO DAS ASAS! &7Seu papagaio aumentou sua mobilidade." to player
             if {rpg::%{_id}%::pet::rarity} is "Raro":
