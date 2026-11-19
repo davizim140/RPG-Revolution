@@ -73,7 +73,7 @@ command /rpgajuda:
         send "&e/pvpstatus &7- Estatísticas e conquistas PvP." to player
         send "&e/fabricarclasse <cajado|adaga|arco> &7- Armas exclusivas da sua classe." to player
         send "&e/masmorra [cancelar], /expedicao [cancelar] &7- Masmorra e expedição (nível 10+)." to player
-        send "&e/guilda &7- Sistema de guildas." to player
+        send "&e/guilda, /guildterritorio &7- Guildas e territórios." to player
         send "&e/regiao e /rpgmundos &7- Exploração e nível mínimo das regiões." to player
         send "&e/rpghud [on|off] &7- Ativar ou desativar a HUD." to player
         send "&e/invasao iniciar|encerrar, /chefemundial iniciar|encerrar &7- Eventos mundiais (admin)." to player
