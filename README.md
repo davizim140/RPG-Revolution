@@ -92,3 +92,9 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - O evento de ovelhas comerem grama também é cancelado dentro dos territórios.
 - Jogadores de fora continuam impedidos de quebrar/colocar blocos pelas proteções gerais; membros da guilda proprietária podem colher normalmente.
 - A proteção de alterações por entidades também afeta comportamentos como Endermen pegando/colocando blocos e blocos móveis; valide no Paper antes de ativar em produção.
+
+
+### Estatísticas de fazenda (0.45.0)
+- O servidor contabiliza colheitas maduras de trigo, cenoura, batata, beterraba e verruga do Nether dentro de territórios da própria guilda.
+- `/guildcolheita` mostra o total individual e o total acumulado da guilda.
+- O sistema é estatístico: não altera drops, não concede XP/moedas e não conta colheitas fora dos territórios da guilda.
