@@ -263,3 +263,10 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - `/titulos` lista títulos disponíveis e marcos necessários; `/titulo equipar <nome>` equipa e `/titulo remover` remove.
 - Aprendiz (nível 10), Veterano (25), Campeão (50), Lenda (100), Renascido (prestígio 1), Ascendente (5) e Eterno (10).
 - O título equipado aparece no `/perfil`. Os títulos são cosméticos e não concedem atributos ou vantagens de combate.
+
+
+### Conquistas (0.69.0)
+- `/conquistas` mostra o progresso de caça, construção e PvP.
+- Caça: 10, 50 e 100 criaturas derrotadas; Construção: 100 e 500 blocos quebrados; PvP: 5 e 25 vitórias.
+- Cada marco concede moedas e XP automaticamente uma única vez por jogador. Progresso e desbloqueios são persistidos nas variáveis do Skript.
+- A validação disponível no GitHub Actions é de empacotamento. Eventos, recompensas e sintaxe precisam de teste em Paper com Skript instalado.
