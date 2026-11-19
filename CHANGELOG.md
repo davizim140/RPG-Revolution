@@ -1,4 +1,4 @@
-## 0.34.0 - Proteção de inventários móveis
+## 0.35.0 - Proteção contra destruição de veículos com inventário\n- Cancela dano e destruição de veículos que expõem inventário, como carrinhos com baú ou funil, dentro de territórios reivindicados.\n- Veículos sem inventário não são afetados por esta regra.\n- A proteção usa os eventos nativos vehicle damage e vehicle destroy do Skript.\n\n## 0.34.0 - Proteção de inventários móveis
 - Bloqueia a abertura de inventários de entidades dentro de territórios por jogadores de outras guildas.
 - Inclui carrinhos com baú e outros veículos com inventário reconhecidos pelo evento de abertura do Skript.
 
