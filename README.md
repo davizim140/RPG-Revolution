@@ -17,7 +17,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Loja, receitas, itens nomeados e raridades visuais.
 - Missão inicial, linha de história e contrato diário de caça.
 - Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
-- Regiões informativas por mundo.
+- Regiões configuráveis por mundo, com bloqueio de teleporte entre mundos para personagens abaixo do nível mínimo.
 - Masmorra com chefe.
 - Guildas com convite, transferência de liderança, expulsão, chat e banco.
 - Recompensas diárias.
@@ -42,7 +42,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /masmorra
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
 - /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo
-- /regiao, /rpgmundos, /rpgregiao definir
+- /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
 - /rpgxp, /rpgmoedas
 
 Permissão administrativa: rpg.admin.
