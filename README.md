@@ -19,7 +19,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Missão inicial, linha de história e contrato diário de caça.
 - Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
 - Regiões configuráveis por mundo, com bloqueio de teleporte entre mundos para personagens abaixo do nível mínimo.
-- Masmorra individual básica, expedição avançada em três dificuldades (Normal 10+, Heroica 20+, Pesadelo 35+) e expedições cooperativas integradas aos grupos. A Arena das Ruínas (/arenadungeon) adiciona três salas de combate com sentinelas, aranhas armadilhadas e o chefe Guardião Arcano, tesouros intermediários e recompensa final; o encontro usa a área atual sem alterar blocos do mundo.
+- Masmorra individual básica, expedição avançada em três dificuldades (Normal 10+, Heroica 20+, Pesadelo 35+) e expedições cooperativas integradas aos grupos e raids de chefes com dificuldade e recompensa proporcional ao dano contribuído. A Arena das Ruínas (/arenadungeon) adiciona três salas de combate com sentinelas, aranhas armadilhadas e o chefe Guardião Arcano, tesouros intermediários e recompensa final; o encontro usa a área atual sem alterar blocos do mundo.
 - Chefe mundial de três fases, com servos, participação e recompensas. Chefes lendários invocáveis: Guardião Primordial, Lich Eterno e Draco Celestial, cada um com 400/300/350 de vida, duas transições de fase, reforços e relíquia exclusiva.
 - Mercado entre jogadores com anúncios em custódia, compra e cancelamento.
 - Progressão de guildas por caça, níveis e depósito automático no banco.
@@ -51,7 +51,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /rpgloja, /comprar, /mercado [listar|vender|comprar|cancelar], /rpgcraft, /fabricar
 - /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar, /forjarlendaria <espada|machado|arco>, /poderarma, /maestriaarma
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
-- /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin), /invocarchefe guardiao|lich|draco, /chefeslendarios encerrar (admin)
+- /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin), /invocarchefe guardiao|lich|draco, /chefeslendarios encerrar (admin), /raidchefe normal|heroica|pesadelo|status|cancelar
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
 - /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildacargo, /guildacargos, /guildterritorio, /guildterritorioguerra, /guildanivel, /guildaguerra, /pvpstatus
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
@@ -62,6 +62,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 Permissão administrativa: rpg.admin.
 
 ## Limitações conhecidas
+- As raids de chefe usam o grupo existente, exigem pelo menos dois membros online no mesmo mundo e a até 24 blocos, e têm níveis mínimos 10/20/35. O Colosso da Raid recebe 250/500/800 de vida; recompensas-base de 500/1.000/1.800 moedas, 300/600/1.000 XP e 2/4/7 diamantes são distribuídas proporcionalmente ao dano registrado, com um sorteio de item de chefe para cada participante que causou dano. O placar é consultado por /raidchefe status. Encontro usa um ravager vanilla; ainda requer teste em Paper real.
 - Chefes lendários permitem apenas um encontro global por vez. Invocação custa 8 diamantes, 1 estrela do Nether e 1.000 moedas; participantes registrados recebem 750 moedas, 500 XP e uma relíquia específica ao vencer. Os encontros usam mobs vanilla e ainda precisam de validação de sintaxe, balanceamento e runtime em Paper real.
 - Itens especiais são identificados pelo nome; bigorna ou renomeação pode afetar os bônus. Ainda não há identificador persistente NBT/PDC.
 - Raridades são visuais, exceto bônus programados nos itens descritos.
