@@ -1,0 +1,191 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Pets são companheiros temporários no mundo; espécie, raridade e evolução ficam salvas por UUID do jogador.
+# Cada jogador pode adotar um único companheiro e manter apenas um invocado.
+
+command /pet [<text>] [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is not set:
+            send "&6&lCOMPANHEIRO" to player
+            if {rpg::%{_id}%::pet::type} is set:
+                send "&7Pet: &f%{rpg::%{_id}%::pet::type}% &8| &7Raridade: &f%{rpg::%{_id}%::pet::rarity}%" to player
+                send "&7Nível: &f%{rpg::%{_id}%::pet::level}% &8| &7XP: &f%{rpg::%{_id}%::pet::xp}%&7/10" to player
+            else:
+                send "&7Você ainda não adotou um pet." to player
+            send "&e/pet adotar <lobo|gato|papagaio> &7- Adotar seu primeiro pet." to player
+            send "&e/pet chamar &7- Invocar seu companheiro." to player
+            send "&e/pet guardar &7- Recolher seu companheiro." to player
+            send "&e/pet habilidade &7- Usar a habilidade especial." to player
+            send "&e/pet status &7- Ver atributos e evolução." to player
+            stop
+        if arg-1 is "adotar":
+            if {rpg::%{_id}%::pet::type} is set:
+                send "{@prefix}&cVocê já possui um companheiro. A adoção é permanente nesta versão." to player
+                stop
+            if arg-2 is not "lobo" and arg-2 is not "gato" and arg-2 is not "papagaio":
+                send "{@prefix}&cEscolha: lobo, gato ou papagaio." to player
+                stop
+            set {rpg::%{_id}%::pet::type} to arg-2
+            set {rpg::%{_id}%::pet::level} to 1
+            set {rpg::%{_id}%::pet::xp} to 0
+            set {rpg::%{_id}%::pet::rarity} to "Comum"
+            chance of 5%:
+                set {rpg::%{_id}%::pet::rarity} to "Raro"
+            send "{@prefix}&aVocê adotou um companheiro: &f%arg-2%&a!" to player
+            if {rpg::%{_id}%::pet::rarity} is "Raro":
+                send "&6&lRARIDADE RARA! &eSeu companheiro nasceu com uma aura especial." to player
+            stop
+        if arg-1 is "chamar":
+            if {rpg::%{_id}%::pet::type} is not set:
+                send "{@prefix}&cAdote um pet primeiro: /pet adotar." to player
+                stop
+            if {rpg::%{_id}%::pet::active} is set:
+                if {rpg::%{_id}%::pet::active} is alive:
+                    send "{@prefix}&cSeu companheiro já está ao seu lado." to player
+                    stop
+                delete {rpg::%{_id}%::pet::active}
+            if {rpg::%{_id}%::pet::type} is "lobo":
+                spawn a wolf at location of player
+            else if {rpg::%{_id}%::pet::type} is "gato":
+                spawn a cat at location of player
+            else:
+                spawn a parrot at location of player
+            set {_pet} to last spawned entity
+            set owner of {_pet} to player
+            set {rpg::%{_id}%::pet::active} to {_pet}
+            set {rpg::pet-owner::%uuid of {_pet}%} to {_id}
+            set name of {_pet} to "&bCompanheiro de %player%"
+            if {rpg::%{_id}%::pet::rarity} is "Raro":
+                set name of {_pet} to "&6✦ Pet Raro de %player% ✦"
+                apply resistance 1 to {_pet} for 999999 seconds
+            if {rpg::%{_id}%::pet::type} is "lobo":
+                apply strength 1 to {_pet} for 999999 seconds
+            send "{@prefix}&aSeu companheiro foi invocado!" to player
+            stop
+        if arg-1 is "guardar":
+            if {rpg::%{_id}%::pet::active} is not set:
+                send "{@prefix}&cSeu pet não está invocado." to player
+                stop
+            if {rpg::%{_id}%::pet::active} is alive:
+                kill {rpg::%{_id}%::pet::active}
+            delete {rpg::%{_id}%::pet::active}
+            send "{@prefix}&aSeu companheiro voltou para o descanso." to player
+            stop
+        if arg-1 is "status":
+            if {rpg::%{_id}%::pet::type} is not set:
+                send "{@prefix}&cVocê ainda não possui pet." to player
+                stop
+            send "&6&lSTATUS DO COMPANHEIRO" to player
+            send "&7Espécie: &f%{rpg::%{_id}%::pet::type}%" to player
+            send "&7Raridade: &f%{rpg::%{_id}%::pet::rarity}%" to player
+            send "&7Nível: &f%{rpg::%{_id}%::pet::level}% &8| &7XP: &f%{rpg::%{_id}%::pet::xp}%&7/10" to player
+            if {rpg::%{_id}%::pet::active} is set:
+                if {rpg::%{_id}%::pet::active} is alive:
+                    send "&aEstado: invocado" to player
+                else:
+                    send "&cEstado: aguardando invocação" to player
+            else:
+                send "&cEstado: guardado" to player
+            stop
+        if arg-1 is "habilidade":
+            if {rpg::%{_id}%::pet::type} is not set:
+                send "{@prefix}&cVocê ainda não possui pet." to player
+                stop
+            if {rpg::%{_id}%::pet::active} is not set:
+                send "{@prefix}&cInvoque seu pet primeiro." to player
+                stop
+            if {rpg::%{_id}%::pet::active} is not alive:
+                delete {rpg::%{_id}%::pet::active}
+                send "{@prefix}&cSeu pet não está mais ativo. Use /pet chamar." to player
+                stop
+            if {rpg::%{_id}%::pet::cooldown} is set:
+                if {rpg::%{_id}%::pet::cooldown} > 0:
+                    send "{@prefix}&cA habilidade recarrega em %{rpg::%{_id}%::pet::cooldown}% segundos." to player
+                    stop
+            set {rpg::%{_id}%::pet::cooldown} to 60
+            if {rpg::%{_id}%::pet::type} is "lobo":
+                apply strength 1 to player for 12 seconds
+                apply speed 1 to player for 12 seconds
+                send "{@prefix}&c&lINSTINTO DE CAÇA! &7Seu lobo fortalece seu poder de combate." to player
+            else if {rpg::%{_id}%::pet::type} is "gato":
+                apply regeneration 2 to player for 8 seconds
+                apply night vision 1 to player for 30 seconds
+                send "{@prefix}&d&lBÊNÇÃO FELINA! &7Seu gato restaurou sua vitalidade." to player
+            else:
+                apply speed 2 to player for 12 seconds
+                apply jump boost 2 to player for 12 seconds
+                send "{@prefix}&b&lVENTO DAS ASAS! &7Seu papagaio aumentou sua mobilidade." to player
+            if {rpg::%{_id}%::pet::rarity} is "Raro":
+                apply resistance 1 to player for 8 seconds
+                send "&6A raridade Rara ampliou a habilidade!" to player
+            wait 60 seconds
+            set {rpg::%{_id}%::pet::cooldown} to 0
+            stop
+        send "{@prefix}&cSubcomando inválido. Use /pet." to player
+
+# O lobo companheiro recebe o alvo atacado pelo dono; pets nunca recebem alvos de jogadores.
+on damage:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    if {rpg::%{_id}%::pet::type} is "lobo":
+        if {rpg::%{_id}%::pet::active} is set:
+            if {rpg::%{_id}%::pet::active} is alive:
+                if victim is not a player:
+                    if victim is a monster:
+                        set target of {rpg::%{_id}%::pet::active} to victim
+
+# Abates feitos pelo lobo concedem XP ao companheiro do dono.
+on death of monster:
+    attacker is a wolf
+    set {_ownerId} to {rpg::pet-owner::%uuid of attacker%}
+    if {_ownerId} is set:
+        add 1 to {rpg::%{_ownerId}%::pet::xp}
+        set {_xp} to {rpg::%{_ownerId}%::pet::xp}
+        set {_level} to {rpg::%{_ownerId}%::pet::level}
+        if {_level} is not set:
+            set {_level} to 1
+        if {_xp} >= 10:
+            if {_level} < 10:
+                remove 10 from {rpg::%{_ownerId}%::pet::xp}
+                add 1 to {_level}
+                set {rpg::%{_ownerId}%::pet::level} to {_level}
+                loop all players:
+                    if "%uuid of loop-player%" is {_ownerId}:
+                        send "&6&lPET EVOLUIU! &7Seu companheiro alcançou o nível &f%{_level}%&7." to loop-player
+                        if {_level} is 5:
+                            send "&eNovo marco: seu pet recebeu um bônus de evolução." to loop-player
+                if {_level} >= 5:
+                    apply strength 2 to attacker for 999999 seconds
+                if {_level} >= 10:
+                    apply speed 1 to attacker for 999999 seconds
+            else:
+                set {rpg::%{_ownerId}%::pet::xp} to 10
+
+# Ao morrer, o companheiro libera o espaço ativo; adoção e evolução são preservadas.
+on death of wolf:
+    set {_ownerId} to {rpg::pet-owner::%uuid of victim%}
+    if {_ownerId} is set:
+        loop all players:
+            if "%uuid of loop-player%" is {_ownerId}:
+                delete {rpg::%{_ownerId}%::pet::active}
+                send "&cSeu companheiro foi derrotado. Você pode invocá-lo novamente com /pet chamar." to loop-player
+        delete {rpg::pet-owner::%uuid of victim%}
+
+# Recolhe o pet ao desconectar para evitar companheiros abandonados no mundo.
+on quit:
+    set {_id} to "%uuid of player%"
+    if {rpg::%{_id}%::pet::active} is set:
+        if {rpg::%{_id}%::pet::active} is alive:
+            kill {rpg::%{_id}%::pet::active}
+        delete {rpg::%{_id}%::pet::active}
+        delete {rpg::pet-owner::%uuid of {rpg::%{_id}%::pet::active}%}
+
+# Recarga das habilidades é persistente e diminui uma vez por segundo.
+every 1 second:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        if {rpg::%{_id}%::pet::cooldown} is set:
+            if {rpg::%{_id}%::pet::cooldown} > 0:
+                remove 1 from {rpg::%{_id}%::pet::cooldown}
