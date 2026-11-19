@@ -1,0 +1,47 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Ranking calculado entre jogadores online; não depende de banco externo.
+# Pontuação: prestígio (1.000.000 cada), nível (1.000 cada),
+# vitórias PvP (10 cada) e conquistas desbloqueadas (100 cada).
+
+command /rpgranking:
+    aliases: /rankingrpg, /toprpg
+    trigger:
+        send "&6&lRANKING RPG REVOLUTION &8| &7Jogadores online" to player
+        set {_shown} to 0
+        loop 10 times:
+            set {_best-score} to -1
+            delete {_best-id}
+            delete {_best-name}
+            loop all players:
+                set {_id} to "%uuid of loop-player%"
+                if {_id} is not in {_selected::*}:
+                    set {_level} to {rpg::%{_id}%::level}
+                    set {_prestige} to {rpg::%{_id}%::prestige}
+                    set {_kills} to {rpg::pvp::%{_id}%::kills}
+                    set {_achievements} to {rpg::%{_id}%::achievement-count}
+                    if {_level} is not set:
+                        set {_level} to 1
+                    if {_prestige} is not set:
+                        set {_prestige} to 0
+                    if {_kills} is not set:
+                        set {_kills} to 0
+                    if {_achievements} is not set:
+                        set {_achievements} to 0
+                    set {_score} to ({_prestige} * 1000000) + ({_level} * 1000) + ({_kills} * 10) + ({_achievements} * 100)
+                    if {_score} > {_best-score}:
+                        set {_best-score} to {_score}
+                        set {_best-id} to {_id}
+                        set {_best-name} to name of loop-player
+                        set {_best-level} to {_level}
+                        set {_best-prestige} to {_prestige}
+                        set {_best-kills} to {_kills}
+                        set {_best-achievements} to {_achievements}
+            if {_best-id} is set:
+                add {_best-id} to {_selected::*}
+                add 1 to {_shown}
+                send "&e%{_shown}%. &f%{_best-name}% &8| &dP%{_best-prestige}% &7Nível %{_best-level}% &8| &cPvP %{_best-kills}% &8| &6Conquistas %{_best-achievements}%" to player
+        if {_shown} is 0:
+            send "&7Nenhum jogador online com personagem registrado." to player
+        send "&8Pontuação prioriza prestígio, nível, PvP e conquistas. Apenas jogadores online entram neste ranking." to player
