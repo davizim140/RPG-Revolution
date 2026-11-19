@@ -141,9 +141,9 @@ on explode:
     loop event-blocks:
         loop {rpg::territories::*}:
             set {_territory} to loop-value
-            if {rpg::territory::%{_territory}%::world} is "%world of loop-block%":
-                set {_dx} to (x-coordinate of loop-block) - {rpg::territory::%{_territory}%::x}
-                set {_dz} to (z-coordinate of loop-block) - {rpg::territory::%{_territory}%::z}
+            if {rpg::territory::%{_territory}%::world} is "%world of {_moved}%":
+                set {_dx} to (x-coordinate of {_moved}) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of {_moved}) - {rpg::territory::%{_territory}%::z}
                 if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
                     remove loop-block from event-blocks
                     stop
@@ -176,6 +176,7 @@ on piston retract:
 # A margem de 1 bloco cobre a posicao de origem imediatamente externa.
 on piston extend:
     loop moved blocks:
+        set {_moved} to loop-block
         loop {rpg::territories::*}:
             set {_territory} to loop-value
             if {rpg::territory::%{_territory}%::world} is "%world of loop-block%":
@@ -187,6 +188,7 @@ on piston extend:
 
 on piston retract:
     loop moved blocks:
+        set {_moved} to loop-block
         loop {rpg::territories::*}:
             set {_territory} to loop-value
             if {rpg::territory::%{_territory}%::world} is "%world of loop-block%":
