@@ -14,6 +14,9 @@ on death of living entity:
                 if attacker is not victim:
                     add 25 to {rpg::season::%{_season}%::%{_id}%::score}
                     add 1 to {rpg::season::%{_season}%::%{_id}%::pvp}
+                    if {_id} is not in {rpg::season::%{_season}%::participants::*}:
+                        add {_id} to {rpg::season::%{_season}%::participants::*}
+                    set {rpg::season::%{_season}%::%{_id}%::name} to name of attacker
             else:
                 add 5 to {rpg::season::%{_season}%::%{_id}%::score}
                 add 1 to {rpg::season::%{_season}%::%{_id}%::mob-kills}
@@ -45,16 +48,18 @@ command /rpgtemporada <text> [<text>]:
                 send "{@prefix}&cNão existe temporada ativa." to sender
                 stop
             set {_season} to {rpg::season::current}
-            set {_best-score} to -1
-            loop all players:
-                set {_id} to "%uuid of loop-player%"
+            if {rpg::season::closing} is true:
+                send "{@prefix}&cA temporada já está sendo encerrada." to sender
+                stop
+            set {rpg::season::closing} to true
+            set {_best-score} to 0
+            loop {rpg::season::%{_season}%::participants::*}:
+                set {_id} to loop-value
                 set {_score} to {rpg::season::%{_season}%::%{_id}%::score}
-                if {_score} is not set:
-                    set {_score} to 0
-                if {_score} > {_best-score} and {_score} > 0:
+                if {_score} > {_best-score}:
                     set {_best-score} to {_score}
-                    set {_winner} to name of loop-player
                     set {_winner-id} to {_id}
+                    set {_winner} to {rpg::season::%{_season}%::%{_id}%::name}
             if {_winner} is set:
                 set {rpg::season::%{_season}%::champion} to {_winner}
                 set {rpg::season::%{_season}%::champion-uuid} to {_winner-id}
@@ -80,6 +85,18 @@ command /rpgtemporada <text> [<text>]:
                 set {rpg::%{_champion-id}%::season-champion-title} to "Campeão da Temporada %{_season}%"
             set {rpg::season::%{_season}%::ended} to now
             set {rpg::season::active} to false
+            set {rpg::season::closing} to false
+            delete {rpg::season::%{_season}%::ends}
+            if {rpg::season::auto::enabled} is true:
+                add 1 to {rpg::season::current}
+                set {_next-season} to {rpg::season::current}
+                set {rpg::season::%{_next-season}%::name} to "%{rpg::season::auto::name}% %{_next-season}%"
+                set {rpg::season::%{_next-season}%::started} to now
+                set {rpg::season::%{_next-season}%::ends} to now + {rpg::season::auto::days} days
+                set {rpg::season::active} to true
+                broadcast "&6&lNOVA TEMPORADA AUTOMÁTICA! &eTemporada %{_next-season}%: &f%{rpg::season::%{_next-season}%::name}%"
+                broadcast "&7Ela termina em %{rpg::season::auto::days}% dia(s). Use /rankingtemporada.";
+
             stop
         send "{@prefix}&eUse /rpgtemporada iniciar <nome> ou /rpgtemporada encerrar." to sender
 
@@ -173,3 +190,46 @@ command /recompensatemporada:
         send "&aRecompensas resgatadas! &e+%{_coins}% moedas &ae &a+%{_xp}% XP." to player
         if {rpg::%{_id}%::season-champion-title} is set:
             send "&6Título especial desbloqueado: &e%{rpg::%{_id}%::season-champion-title}%&6!" to player
+
+
+command /rpgtemporadaauto <text> [<number>]:
+    permission: rpg.admin
+    permission message: &cVocê precisa da permissão rpg.admin.
+    trigger:
+        if arg-1 is "parar":
+            set {rpg::season::auto::enabled} to false
+            delete {rpg::season::%{rpg::season::current}%::ends}
+            send "{@prefix}&eRotação automática desativada. A temporada atual continuará até ser encerrada manualmente." to sender
+            stop
+        if arg-1 is not "iniciar":
+            send "{@prefix}&eUse /rpgtemporadaauto iniciar <dias> ou /rpgtemporadaauto parar." to sender
+            stop
+        if arg-2 is not set:
+            send "{@prefix}&cInforme a duração em dias (1 a 90)." to sender
+            stop
+        if arg-2 < 1 or arg-2 > 90:
+            send "{@prefix}&cA duração deve ser de 1 a 90 dias." to sender
+            stop
+        if {rpg::season::active} is true:
+            send "{@prefix}&cEncerre a temporada atual antes de ativar a rotação automática." to sender
+            stop
+        set {rpg::season::auto::enabled} to true
+        set {rpg::season::auto::days} to arg-2
+        set {rpg::season::auto::name} to "Temporada"
+        add 1 to {rpg::season::current}
+        set {_season} to {rpg::season::current}
+        set {rpg::season::%{_season}%::name} to "Temporada Automática %{_season}%"
+        set {rpg::season::%{_season}%::started} to now
+        set {rpg::season::%{_season}%::ends} to now + arg-2 days
+        set {rpg::season::active} to true
+        broadcast "&6&lTEMPORADA AUTOMÁTICA INICIADA! &eTemporada %{_season}%"
+        broadcast "&7Duração: &f%arg-2% dia(s). &7Use /rankingtemporada."
+
+# Verificação periódica do prazo. O comando de encerramento centraliza o cálculo do campeão e as recompensas.
+every 1 minute:
+    if {rpg::season::auto::enabled} is true:
+        if {rpg::season::active} is true:
+            set {_season} to {rpg::season::current}
+            if {rpg::season::%{_season}%::ends} is set:
+                if now is after {rpg::season::%{_season}%::ends}:
+                    execute console command "rpgtemporada encerrar"
