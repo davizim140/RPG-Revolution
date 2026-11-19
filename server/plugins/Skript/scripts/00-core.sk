@@ -80,6 +80,7 @@ command /rpgajuda:
         send "&e/petacessorio &7- Comprar e equipar bônus para seu companheiro." to player
         send "&e/pettrilha e /pettalento <nome> &7- Desbloquear talentos da árvore do pet." to player
         send "&e/montariacombate &7- Combate montado e habilidade Investida." to player
+        send "&eDrops de chefes &7- Equipamentos épicos e lendários exclusivos." to player
         send "&e/regiao e /rpgmundos &7- Exploração e nível mínimo das regiões." to player
         send "&e/rpghud [on|off] &7- Ativar ou desativar a HUD." to player
         send "&e/invasao iniciar|encerrar, /chefemundial iniciar|encerrar &7- Eventos mundiais (admin)." to player
