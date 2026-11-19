@@ -62,7 +62,7 @@ Permissão administrativa: rpg.admin.
 - A masmorra continua sendo um encontro individual simples com criatura vanilla; agora permite cancelamento e limpa o chefe ao desconectar. Não há arena instanciada ou mecânicas complexas.
 - Grupos compartilham recompensas com integrantes online no mesmo mundo e a até 16 blocos do jogador que derrotou a criatura.
 - Guildas ainda não têm guerras, cargos ou níveis.
-- Cada classe tem 3% de chance de despertar no momento da primeira escolha; não há novo sorteio para personagens que já escolheram classe. Os despertares são permanentes. O Monarca pode invocar dois soldados temporários com /invocar e consultar o exército com /sombras.
+- Cada classe tem 3% de chance de despertar no momento da primeira escolha; não há novo sorteio para personagens que já escolheram classe. Os despertares são permanentes. O Monarca pode invocar dois soldados temporários com /invocar e consultar o exército com /sombras. O rank dos soldados evolui com o nível do Monarca: C (1+), B (10+), A (25+) e S (50+), aumentando seus efeitos de combate.
 - A HUD usa a action bar e pode sobrescrever mensagens de action bar enviadas por outros plugins. Os eventos mundiais são iniciados manualmente.
 
 ## Validação
