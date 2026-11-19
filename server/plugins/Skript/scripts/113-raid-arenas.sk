@@ -22,6 +22,11 @@ function raidarena_spawn(party: text, room: number):
             set {rpg::raidarena::mob-owner::%uuid of last spawned entity%} to {_party}
             set {rpg::raidarena::mob-room::%uuid of last spawned entity%} to 2
     else if {_room} is 3:
+        set {rpg::raidarena::%{_party}%::total-damage} to 0
+        loop all players:
+            set {_member-id} to "%uuid of loop-player%"
+            if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
+                set {rpg::raidarena::%{_party}%::damage::%{_member-id}%} to 0
         set {rpg::raidarena::%{_party}%::remaining} to 1
         spawn ravager at {_spawn}
         set {_boss} to last spawned entity
@@ -50,7 +55,7 @@ command /raidarena [<text>] [<text>]:
             if arg-2 is not "1" and arg-2 is not "2" and arg-2 is not "3":
                 send "{@prefix}&e/raidarena configurar 1|2|3 &7- salva o ponto da sala na sua posição." to player
                 stop
-            set {rpg::raidarena::point::%arg-2 parsed as number%} to location of player
+            set {rpg::raidarena::point::%arg-2%} to location of player
             send "{@prefix}&aPonto da sala %arg-2% configurado neste local." to player
             stop
         set {_id} to "%uuid of player%"
@@ -87,10 +92,9 @@ command /raidarena [<text>] [<text>]:
         if arg-1 is not "normal" and arg-1 is not "heroica" and arg-1 is not "pesadelo":
             send "{@prefix}&e/raidarena normal|heroica|pesadelo|status|cancelar" to player
             stop
-        loop 3 times:
-            if {rpg::raidarena::point::%loop-number%} is not set:
-                send "{@prefix}&cA administração ainda não configurou os três pontos da arena." to player
-                stop
+        if {rpg::raidarena::point::1} is not set or {rpg::raidarena::point::2} is not set or {rpg::raidarena::point::3} is not set:
+            send "{@prefix}&cA administração ainda não configurou os três pontos da arena." to player
+            stop
         if world of {rpg::raidarena::point::1} is not world of player:
             send "{@prefix}&cA arena está em outro mundo." to player
             stop
@@ -101,6 +105,7 @@ command /raidarena [<text>] [<text>]:
             set {_minimum} to 35
         delete {rpg::raidarena::%{_party}%::member::*}
         set {_count} to 0
+        set {_invalid-level} to false
         loop all players:
             set {_member-id} to "%uuid of loop-player%"
             if {rpg::%{_member-id}%::party} is {_party}:
@@ -109,11 +114,14 @@ command /raidarena [<text>] [<text>]:
                         set {_level} to {rpg::%{_member-id}%::level}
                         if {_level} < {_minimum}:
                             send "{@prefix}&c%loop-player% precisa estar no nível %{_minimum}%." to player
-                            delete {rpg::raidarena::%{_party}%::member::*}
-                            stop
-                        add 1 to {_count}
-                        set {rpg::raidarena::%{_party}%::member::%{_member-id}%} to true
-                        set {rpg::raidarena::%{_party}%::damage::%{_member-id}%} to 0
+                            set {_invalid-level} to true
+                        else:
+                            add 1 to {_count}
+                            set {rpg::raidarena::%{_party}%::member::%{_member-id}%} to true
+                            set {rpg::raidarena::%{_party}%::damage::%{_member-id}%} to 0
+        if {_invalid-level} is true:
+            delete {rpg::raidarena::%{_party}%::member::*}
+            stop
         if {_count} < 2:
             delete {rpg::raidarena::%{_party}%::member::*}
             send "{@prefix}&cSão necessários pelo menos 2 membros online, próximos e no mesmo mundo." to player
@@ -137,6 +145,8 @@ command /raidarena [<text>] [<text>]:
 command /raidbau [<text>]:
     trigger:
         set {_id} to "%uuid of player%"
+        if {rpg::raidarena::chests::%{_id}%} is not set:
+            set {rpg::raidarena::chests::%{_id}%} to 0
         if arg-1 is "status":
             send "{@prefix}&6Baús de raid disponíveis: &e%{rpg::raidarena::chests::%{_id}%}%" to player
             stop
