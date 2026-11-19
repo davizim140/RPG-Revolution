@@ -40,18 +40,21 @@ on player move:
                 set {_last} to {rpg::mount::%{_id}%::last-location::%uuid of player%}
                 add distance between {_last} and location of player to {rpg::mount::%{_id}%::distance-progress::%uuid of player%}
             set {rpg::mount::%{_id}%::last-location::%uuid of player%} to location of player
+            set {rpg::mount::rider::%uuid of player%} to {_id}
             while {rpg::mount::%{_id}%::distance-progress::%uuid of player%} >= 8:
                 remove 8 from {rpg::mount::%{_id}%::distance-progress::%uuid of player%}
-                add 5 to {rpg::mount::%{_id}%::distance::%uuid of player%}
+                add 8 to {rpg::mount::%{_id}%::distance::%uuid of player%}
                 rpg_mount_add_xp(player, {_horse}, 5)
         else:
             delete {rpg::mount::%uuid of {_horse}%::last-location::%uuid of player%}
             delete {rpg::mount::%uuid of {_horse}%::distance-progress::%uuid of player%}
     else:
         # Evita acumular distância enquanto o jogador caminha a pé.
-        loop {rpg::mount::tracked::*}:
-            delete {rpg::mount::%loop-value%::last-location::%uuid of player%}
-            delete {rpg::mount::%loop-value%::distance-progress::%uuid of player%}
+        if {rpg::mount::rider::%uuid of player%} is set:
+            set {_previousHorse} to {rpg::mount::rider::%uuid of player%}
+            delete {rpg::mount::%{_previousHorse}%::last-location::%uuid of player%}
+            delete {rpg::mount::%{_previousHorse}%::distance-progress::%uuid of player%}
+            delete {rpg::mount::rider::%uuid of player%}
 
 # Cavalos raros: chance de 5% no nascimento dentro da propriedade da guilda.
 on breeding:
@@ -78,11 +81,11 @@ on breeding:
                         set {rpg::mount::%{_id}%::rare} to true
                         set {rpg::mount::%{_id}%::level} to 1
                         set {rpg::mount::%{_id}%::xp} to 0
-                        set {rpg::mount::%{_id}%::base-speed} to generic movement speed attribute of {_foal}
-                        set {rpg::mount::%{_id}%::base-jump} to horse jump strength attribute of {_foal}
                         add 0.015 to generic movement speed attribute of {_foal}
                         add 0.08 to horse jump strength attribute of {_foal}
                         add 5 to generic max health attribute of {_foal}
+                        set {rpg::mount::%{_id}%::base-speed} to generic movement speed attribute of {_foal}
+                        set {rpg::mount::%{_id}%::base-jump} to horse jump strength attribute of {_foal}
                         heal {_foal}
                         set name of {_foal} to "&6✦ Corcel Raro ✦"
                         send "{@prefix}&6Um &eCorcel Raro &6nasceu em seu território! Chance: 5%." to {_p}
