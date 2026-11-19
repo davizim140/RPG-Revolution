@@ -20,13 +20,19 @@ on join:
 
 function rpg_add_xp(p: player, amount: number):
     set {_id} to "%uuid of {_p}%"
-    add {_amount} to {rpg::%{_id}%::xp}
-    while {rpg::%{_id}%::xp} >= ({rpg::%{_id}%::level} * 100):
+    set {_prestige} to {rpg::%{_id}%::prestige}
+    if {_prestige} is not set:
+        set {_prestige} to 0
+    set {_bonus} to 1 + ({_prestige} * 0.05)
+    add ({_amount} * {_bonus}) to {rpg::%{_id}%::xp}
+    while {rpg::%{_id}%::xp} >= ({rpg::%{_id}%::level} * 100) and {rpg::%{_id}%::level} < 100:
         set {_needed} to {rpg::%{_id}%::level} * 100
         remove {_needed} from {rpg::%{_id}%::xp}
         add 1 to {rpg::%{_id}%::level}
         add 2 to {rpg::%{_id}%::points}
         send "{@prefix}&6&lSUBIU DE NÍVEL! &eAgora você é nível &f%{rpg::%{_id}%::level}%&e. Recebeu 2 pontos de atributo." to {_p}
+    if {rpg::%{_id}%::level} >= 100:
+        set {rpg::%{_id}%::xp} to 0
 
 command /perfil:
     aliases: /profile
@@ -37,9 +43,12 @@ command /perfil:
             stop
         set {_level} to {rpg::%{_id}%::level}
         set {_needed} to {_level} * 100
+        set {_prestige} to {rpg::%{_id}%::prestige}
+        if {_prestige} is not set:
+            set {_prestige} to 0
         send "&6&m----------------------------------------" to player
         send "&6&lRPG REVOLUTION &8| &f%player%" to player
-        send "&eNível: &f%{_level}%" to player
+        send "&eNível: &f%{_level}%&7/100 &8| &dPrestígio: &f%{_prestige}%&7/10" to player
         send "&eXP: &f%{rpg::%{_id}%::xp}%&7/&f%{_needed}%" to player
         send "&6Moedas: &f%{rpg::%{_id}%::coins}%" to player
         send "&dPontos disponíveis: &f%{rpg::%{_id}%::points}%" to player
