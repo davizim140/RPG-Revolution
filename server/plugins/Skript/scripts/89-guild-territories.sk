@@ -139,27 +139,36 @@ on right click:
 # O dano da explosao a entidades continua sendo aplicado normalmente.
 on explode:
     loop event-blocks:
+        set {_explosionBlock} to loop-block
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if {rpg::territory::%{_territory}%::world} is "%world of {_explosionBlock}%":
+                set {_dx} to (x-coordinate of {_explosionBlock}) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of {_explosionBlock}) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                    remove {_explosionBlock} from event-blocks
+                    stop
+
+# Pistons: verifica a posicao do mecanismo e todos os blocos movimentados.
+on piston extend:
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                cancel event
+                stop
+    loop moved blocks:
+        set {_moved} to loop-block
         loop {rpg::territories::*}:
             set {_territory} to loop-value
             if {rpg::territory::%{_territory}%::world} is "%world of {_moved}%":
                 set {_dx} to (x-coordinate of {_moved}) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of {_moved}) - {rpg::territory::%{_territory}%::z}
                 if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                    remove loop-block from event-blocks
+                    cancel event
                     stop
-
-# Impede ativacao de pistons posicionados dentro de territorios alheios.
-# A verificacao cobre a posicao do piston; mecanismos que avancam de fora
-# para dentro da area ainda precisam de validacao em Paper real.
-on piston extend:
-    loop {rpg::territories::*}:
-        set {_territory} to loop-value
-        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
-            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
-            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
 
 on piston retract:
     loop {rpg::territories::*}:
@@ -170,33 +179,29 @@ on piston retract:
             if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
                 cancel event
                 stop
-
-# Protege blocos movidos por pistons externos que alcancem a borda.
-# "moved blocks" e uma expressao nativa do Skript para eventos de piston.
-# A margem de 1 bloco cobre a posicao de origem imediatamente externa.
-on piston extend:
     loop moved blocks:
         set {_moved} to loop-block
         loop {rpg::territories::*}:
             set {_territory} to loop-value
-            if {rpg::territory::%{_territory}%::world} is "%world of loop-block%":
-                set {_dx} to (x-coordinate of loop-block) - {rpg::territory::%{_territory}%::x}
-                set {_dz} to (z-coordinate of loop-block) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} + 1 and abs({_dz}) <= {@territory-radius} + 1:
+            if {rpg::territory::%{_territory}%::world} is "%world of {_moved}%":
+                set {_dx} to (x-coordinate of {_moved}) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of {_moved}) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
                     cancel event
                     stop
 
-on piston retract:
-    loop moved blocks:
-        set {_moved} to loop-block
-        loop {rpg::territories::*}:
-            set {_territory} to loop-value
-            if {rpg::territory::%{_territory}%::world} is "%world of loop-block%":
-                set {_dx} to (x-coordinate of loop-block) - {rpg::territory::%{_territory}%::x}
-                set {_dz} to (z-coordinate of loop-block) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} + 1 and abs({_dz}) <= {@territory-radius} + 1:
-                    cancel event
-                    stop
+# Dispensers e droppers dentro de territorios nao podem disparar itens.
+# O evento nao identifica o dono do mecanismo; a regra protege a area
+# bloqueando a ativacao de qualquer mecanismo localizado dentro dela.
+on dispense:
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                cancel event
+                stop
 
 # Protege territorios contra propagacao e inicio de fogo.
 # A regra tambem bloqueia fogo natural dentro da area protegida.
