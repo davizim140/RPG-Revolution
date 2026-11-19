@@ -262,7 +262,7 @@ on damage:
     set {_ownerId} to "%uuid of victim%"
     if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
         if attacker is a living entity:
-            loop 2 times:
+            loop 3 times:
                 if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
                     if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
                         set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to attacker
