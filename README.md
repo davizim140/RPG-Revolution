@@ -242,3 +242,11 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - `/resgatarpontosclasse` entrega um ponto por marco de cinco níveis alcançados, sem permitir resgatar o mesmo marco duas vezes.
 - `/supremaclasse` desbloqueia no nível 30, consome 50 de mana e tem recarga de 180 segundos. Cada classe possui uma suprema própria: Avatar de Guerra, Cataclismo Arcano, Execução Sombria ou Chuva Celestial.
 - Pontos, talentos e marcos resgatados são persistentes por jogador. As habilidades usam entidades vanilla; dano em área, efeitos, balanceamento e sintaxe precisam de validação em Paper real. GitHub Actions valida estrutura e empacotamento, não runtime Skript.
+
+
+### Endgame e prestígio (0.66.0)
+- Progressão principal limitada ao nível 100. A XP excedente é descartada ao atingir o limite, evitando acumular XP antes de um prestígio.
+- `/endgame` mostra nível, XP, prestígio e fichas. `/prestigio` exige nível 100 e concede um renascimento, até 10 vezes.
+- Cada prestígio reinicia nível e XP, mas preserva classe, especialização, atributos, talentos, equipamentos, pets e guilda. Recompensa: 5 pontos de atributo, 1.000 moedas e 1 ficha de prestígio.
+- Cada prestígio aumenta permanentemente a XP recebida em 5%, até +50% no prestígio 10. As fichas ficam contabilizadas para futuras recompensas de endgame; ainda não têm loja de troca.
+- A integração da nova curva precisa ser testada em Paper real. GitHub Actions verifica empacotamento, não sintaxe/runtime Skript.
