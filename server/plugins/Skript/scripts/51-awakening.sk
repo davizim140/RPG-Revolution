@@ -254,9 +254,9 @@ on damage:
         if {rpg::%{_ownerId}%::shadow-mode} is not "defensiva":
             if victim is not a player:
                 loop 3 times:
-                if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
-                    if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
-                        set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to victim
+                    if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
+                        if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
+                            set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to victim
 
 on damage:
     victim is a player
@@ -265,9 +265,9 @@ on damage:
         if {rpg::%{_ownerId}%::shadow-mode} is not "passiva":
             if attacker is a living entity:
                 loop 3 times:
-                if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
-                    if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
-                        set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to attacker
+                    if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
+                        if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
+                            set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to attacker
 
 on damage:
     attacker is an entity
@@ -363,9 +363,9 @@ on damage:
         if {rpg::%{_ownerId}%::shadow-mode} is not "defensiva":
             if victim is not a player:
                 loop 5 times:
-                if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is set:
-                    if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is alive:
-                        set target of {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} to victim
+                    if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is set:
+                        if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is alive:
+                            set target of {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} to victim
 
 on damage:
     victim is a player
@@ -374,9 +374,9 @@ on damage:
         if {rpg::%{_ownerId}%::shadow-mode} is not "passiva":
             if attacker is a living entity:
                 loop 5 times:
-                if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is set:
-                    if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is alive:
-                        set target of {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} to attacker
+                    if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is set:
+                        if {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} is alive:
+                            set target of {rpg::%{_ownerId}%::permanent-shadow::%loop-number%} to attacker
 
 # Impede que uma sombra permanente cause dano ao próprio Monarca.
 on damage:
