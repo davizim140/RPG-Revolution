@@ -121,6 +121,11 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - O comando /montaria mostra nível, XP, distância registrada e raridade da montaria atual.
 - A evolução é vinculada ao UUID do cavalo e persiste após reinícios.
 
+### Acessórios de pets (0.50.0)
+- Cada espécie possui um acessório compatível: Coleira de Caça (lobo), Amuleto Vital (gato) ou Pena Celeste (papagaio).
+- Cada acessório custa 300 moedas, é desbloqueado permanentemente e concede um bônus passivo enquanto o companheiro está invocado.
+- /petacessorio loja|comprar|equipar|remover|status administra o equipamento.
+
 ### Pets companheiros (0.49.0)
 
 - Cada jogador pode adotar um companheiro: lobo (combate), gato (regeneração e visão noturna) ou papagaio (mobilidade).
