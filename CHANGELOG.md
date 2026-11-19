@@ -1,3 +1,9 @@
+## 0.25.0 - Territórios de guilda
+- Líder pode reivindicar até três áreas quadradas de 33x33 blocos por 500 moedas do banco.
+- Áreas reivindicadas bloqueiam quebra, colocação e interação de blocos por jogadores de outras guildas.
+- /guildterritorio ajuda|reivindicar|info|abandonar.
+- Corrigido o cargo inicial do fundador: agora recebe o papel de líder.
+
 ## 0.24.0 - Hierarquia e permissões de guilda
 - Adicionados os cargos líder, oficial e membro.
 - Líder pode promover/rebaixar oficiais; oficiais podem convidar e expulsar membros comuns.
