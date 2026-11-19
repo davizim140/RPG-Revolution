@@ -12,7 +12,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 ## Sistemas implementados
 - Personagens, níveis, XP, atributos, economia e progressão.
 - Quatro classes, habilidades, mana e especializações.
-- Despertar raro de 3% ao escolher Assassino: Monarca das Sombras, com passiva de dano e habilidade temporária de velocidade, força e invisibilidade.
+- Despertares raros (3% por classe) ao escolher uma classe pela primeira vez: Assassino/Monarca das Sombras, Guerreiro/Colosso, Mago/Arquimago e Arqueiro/Olho Celestial, cada um com passiva e habilidade exclusiva.
 - Armas e armaduras exclusivas por classe, com bônus de conjunto.
 - Espada do Aprendiz e Couraça do Guardião aprimoráveis até +3.
 - Loja, receitas, itens nomeados e raridades visuais.
@@ -35,7 +35,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 
 ## Comandos principais
 - /rpgajuda, /perfil, /atributos, /upar
-- /classe, /habilidades, /habilidade, /especializar, /despertar, /sombra
+- /classe, /habilidades, /habilidade, /especializar, /despertar, /sombra, /furia, /arcano, /precisao
 - /saldo, /pagar
 - /missoes, /resgatar, /recompensadiaria, /contrato
 - /npc, /rpgnpc criar, /rpgnpc limpar, /missaoaceitar, /minhasmissoes, /missaoentregar
@@ -62,7 +62,7 @@ Permissão administrativa: rpg.admin.
 - A masmorra continua sendo um encontro individual simples com criatura vanilla; agora permite cancelamento e limpa o chefe ao desconectar. Não há arena instanciada ou mecânicas complexas.
 - Grupos compartilham recompensas com integrantes online no mesmo mundo e a até 16 blocos do jogador que derrotou a criatura.
 - Guildas ainda não têm guerras, cargos ou níveis.
-- O despertar Monarca das Sombras é exclusivo para novos personagens que escolhem Assassino e obtêm o sorteio de 3%; personagens que já escolheram classe não recebem novo sorteio.
+- Cada classe tem 3% de chance de despertar no momento da primeira escolha; não há novo sorteio para personagens que já escolheram classe. Os despertares são permanentes.
 - A HUD usa a action bar e pode sobrescrever mensagens de action bar enviadas por outros plugins. Os eventos mundiais são iniciados manualmente.
 
 ## Validação
