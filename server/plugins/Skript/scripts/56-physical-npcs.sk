@@ -1,0 +1,45 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Physical town NPCs using vanilla villagers; no Skript addons required.
+# Create them at the admin's position with /rpgnpc criar <guia|ferreiro|explorador>.
+
+command /rpgnpc <text> [<text>]:
+    permission: rpg.admin
+    permission message: {@prefix}&cVocê não tem permissão.
+    trigger:
+        if arg-1 is "criar":
+            if arg-2 is not set:
+                send "{@prefix}&cUse: /rpgnpc criar <guia|ferreiro|explorador>" to player
+                stop
+            if arg-2 is not "guia" and arg-2 is not "ferreiro" and arg-2 is not "explorador":
+                send "{@prefix}&cTipo inválido. Use guia, ferreiro ou explorador." to player
+                stop
+            spawn villager at location of player
+            if arg-2 is "guia":
+                set name of last spawned entity to "&6Elara - Guia"
+            else if arg-2 is "ferreiro":
+                set name of last spawned entity to "&6Bram - Ferreiro"
+            else:
+                set name of last spawned entity to "&6Nyra - Exploradora"
+            set {rpg::physicalnpc::%uuid of last spawned entity%} to arg-2
+            send "{@prefix}&aNPC físico criado: &f%arg-2%&a." to player
+            stop
+        if arg-1 is "limpar":
+            set {_removed} to 0
+            loop all entities:
+                set {_entityId} to "%uuid of loop-entity%"
+                if {rpg::physicalnpc::%{_entityId}%} is set:
+                    delete loop-entity
+                    delete {rpg::physicalnpc::%{_entityId}%}
+                    add 1 to {_removed}
+            send "{@prefix}&aNPCs físicos removidos: %{_removed}%." to player
+            stop
+        send "{@prefix}&eComandos: /rpgnpc criar <guia|ferreiro|explorador> ou /rpgnpc limpar." to player
+
+on right click on entity:
+    set {_entityId} to "%uuid of clicked entity%"
+    if {rpg::physicalnpc::%{_entityId}%} is set:
+        cancel event
+        set {_npcType} to {rpg::physicalnpc::%{_entityId}%}
+        make player execute command "npc %{_npcType}%"
