@@ -1,0 +1,58 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Endgame: nível máximo 100 e até 10 renascimentos de prestígio.
+# O prestígio reinicia apenas nível e XP; classe, especialização,
+# atributos, equipamentos, guilda, pets e talentos permanecem.
+
+command /prestigio:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::created} is not true:
+            send "{@prefix}&cSeu personagem ainda não foi inicializado." to player
+            stop
+        set {_prestige} to {rpg::%{_id}%::prestige}
+        if {_prestige} is not set:
+            set {_prestige} to 0
+        if {_prestige} >= 10:
+            send "{@prefix}&6Você alcançou o prestígio máximo (10)." to player
+            stop
+        if {rpg::%{_id}%::level} < 100:
+            send "{@prefix}&cVocê precisa alcançar o nível 100. Nível atual: %{rpg::%{_id}%::level}%." to player
+            stop
+        add 1 to {_prestige}
+        set {rpg::%{_id}%::prestige} to {_prestige}
+        set {rpg::%{_id}%::level} to 1
+        set {rpg::%{_id}%::xp} to 0
+        add 5 to {rpg::%{_id}%::points}
+        add 1000 to {rpg::%{_id}%::coins}
+        add 1 to {rpg::%{_id}%::prestige-tokens}
+        send "&6&lRENASCIMENTO DE PRESTÍGIO!" to player
+        send "&ePrestígio: &f%{_prestige}%&7/10" to player
+        send "&aRecompensas: &f5 pontos de atributo, 1.000 moedas e 1 ficha de prestígio." to player
+        send "&dBônus permanente de XP: +%({_prestige} * 5)%%%." to player
+        send "&7Sua classe, talentos, atributos, itens, pets e guilda foram preservados." to player
+
+command /endgame:
+    aliases: /fimdejogo
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_level} to {rpg::%{_id}%::level}
+        set {_prestige} to {rpg::%{_id}%::prestige}
+        set {_tokens} to {rpg::%{_id}%::prestige-tokens}
+        if {_prestige} is not set:
+            set {_prestige} to 0
+        if {_tokens} is not set:
+            set {_tokens} to 0
+        set {_needed} to {_level} * 100
+        if {_level} >= 100:
+            send "&6&lENDGAME &8| &aNÍVEL MÁXIMO" to player
+            send "&7Use &e/prestigio &7para renascer e continuar evoluindo." to player
+        else:
+            send "&6&lENDGAME" to player
+            send "&eProgresso: &fNível %{_level}%&7/100 &8| &f%{rpg::%{_id}%::xp}%&7/%{_needed}% XP" to player
+        send "&dPrestígio: &f%{_prestige}%&7/10" to player
+        send "&6Fichas de prestígio: &f%{_tokens}%" to player
+        send "&7Cada prestígio concede +5%% de XP permanente, 5 pontos de atributo, 1.000 moedas e 1 ficha." to player
+        send "&7Seu bônus atual de XP é +%({_prestige} * 5)%%%." to player
+        send "&7Próximo marco: &fNível 100" to player
