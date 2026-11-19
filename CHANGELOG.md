@@ -1,3 +1,10 @@
+## 0.55.0 - Expedições cooperativas
+- Adicionado /expedicaogrupo normal|heroica|pesadelo para grupos existentes, iniciado pelo líder.
+- Exige pelo menos dois integrantes online no mesmo mundo e a até 24 blocos; todos devem cumprir o nível mínimo da dificuldade.
+- Três ondas cooperativas, com recompensas individuais para participantes registrados que estiverem online ao derrotar o chefe.
+- /expedicaogrupo cancelar encerra a sessão; desconexão do líder remove os inimigos e encerra a expedição.
+- Implementação isolada da expedição solo; ainda requer teste de sintaxe e runtime em servidor Paper real.
+
 ## 0.54.0 - Dificuldades de expedição
 - /expedicao normal (nível 10+), heroica (20+) e pesadelo (35+).
 - Vida de guardiões, arqueiros e chefe final escala em 1x, 1,5x e 2x conforme a dificuldade.
