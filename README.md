@@ -277,3 +277,11 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - A pontuação combina prestígio, nível, vitórias PvP e conquistas; prestígio tem maior peso, seguido de nível.
 - O ranking é calculado em tempo real e não exige banco de dados externo. Jogadores offline não aparecem nesta versão.
 - A sintaxe e o comportamento do comando precisam de validação em Paper com Skript; o workflow do repositório valida estrutura/empacotamento, não runtime.
+
+
+### Temporadas competitivas (0.71.0)
+- Administração: `/rpgtemporada iniciar <nome>` inicia uma temporada e `/rpgtemporada encerrar` finaliza e registra o campeão entre os jogadores online naquele momento.
+- Pontuação sazonal independente das estatísticas permanentes: 25 pontos por vitória PvP e 5 por criatura derrotada.
+- `/rankingtemporada` (alias `/toptemporada`) mostra o top 10 online; `/pontostemporada` consulta os próprios pontos e `/historicotemporadas` lista campeões registrados.
+- Os dados são separados por número de temporada; iniciar outra temporada não apaga níveis, moedas, kills PvP nem pontuações anteriores.
+- Limitação: o campeão é escolhido entre jogadores online no encerramento e o ranking exibe apenas jogadores online. Não há premiação automática nesta versão. Eventos e sintaxe precisam de teste em Paper com Skript; Actions verifica estrutura/empacotamento, não runtime.
