@@ -1,3 +1,10 @@
+## 0.48.0 - Montarias evolutivas e corcéis raros
+- Cavalos domados ganham 5 XP a cada 8 blocos percorridos pelo próprio dono montado.
+- Níveis aumentam velocidade e força de salto gradualmente, preservando os atributos-base individuais e aplicando limites.
+- Reprodução de cavalos em território da própria guilda tem 5% de chance de gerar um Corcel Raro, com bônus de vida, velocidade e salto.
+- Novo comando /montaria exibe nível, XP, distância e raridade.
+- Dados de evolução são persistidos por UUID da montaria.
+
 ## 0.47.0 - Pecuária de guilda
 - Alimentar animais com alimentos correspondentes dentro do território da própria guilda registra alimentações e concede 2 XP, com limite por animal a cada 30 segundos.
 - Reproduções iniciadas por jogadores dentro do território próprio concedem 20 XP e atualizam estatísticas pessoais e coletivas.
