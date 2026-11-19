@@ -270,3 +270,10 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Caça: 10, 50 e 100 criaturas derrotadas; Construção: 100 e 500 blocos quebrados; PvP: 5 e 25 vitórias.
 - Cada marco concede moedas e XP automaticamente uma única vez por jogador. Progresso e desbloqueios são persistidos nas variáveis do Skript.
 - A validação disponível no GitHub Actions é de empacotamento. Eventos, recompensas e sintaxe precisam de teste em Paper com Skript instalado.
+
+
+### Ranking global (0.70.0)
+- `/rpgranking` (aliases `/rankingrpg` e `/toprpg`) mostra os dez melhores jogadores atualmente online.
+- A pontuação combina prestígio, nível, vitórias PvP e conquistas; prestígio tem maior peso, seguido de nível.
+- O ranking é calculado em tempo real e não exige banco de dados externo. Jogadores offline não aparecem nesta versão.
+- A sintaxe e o comportamento do comando precisam de validação em Paper com Skript; o workflow do repositório valida estrutura/empacotamento, não runtime.
