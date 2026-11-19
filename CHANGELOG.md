@@ -1,3 +1,10 @@
+## 0.57.0 - Armas lendárias e maestria
+- Adicionado /forjarlendaria espada|machado|arco, com custo de 1 barra de netherita, 8 diamantes e 1.500 moedas por arma; cada tipo é limitado a uma forja por jogador.
+- Lâmina Solar, Machado do Colosso e Arco da Tempestade possuem bônus de dano e habilidades ativas exclusivas via /poderarma.
+- Abates com a arma evoluem maestria até o nível 5; níveis aumentam dano e reduzem recarga até o mínimo de 30 segundos.
+- /maestriaarma exibe a progressão; dados são persistidos por jogador e tipo. O arco registra o projétil para aplicar bônus no impacto.
+- Itens identificados por nome; renomeação pode quebrar identificação. Requer teste em Paper real.
+
 ## 0.56.0 - Arena das Ruínas
 - Adicionado /arenadungeon iniciar|status|cancelar, com requisito de nível 15.
 - Três salas progressivas: Sentinelas das Ruínas, Aranhas Armadilhadas e chefe Guardião Arcano.
