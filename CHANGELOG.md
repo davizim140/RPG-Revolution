@@ -1,3 +1,8 @@
+## 0.27.0 - Proteção adicional de territórios
+- Explosões deixam de destruir blocos dentro de territórios reivindicados.
+- Pistões posicionados dentro de territórios não podem estender ou retrair.
+- O dano de explosões a entidades não é bloqueado; pistões externos que avançam para dentro ainda exigem validação em servidor Paper.
+
 ## 0.26.0 - Guerra por territórios
 - Abates PvP de membros das guildas em guerra dentro de um território geram progresso de captura.
 - Cinco pontos transferem o território; abates defensivos reduzem o progresso.
