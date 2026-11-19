@@ -1,6 +1,6 @@
 ## 0.46.0 - Níveis e recompensas de agricultura
 - Cada colheita madura válida concede 5 XP de agricultura.
-- A cada nível, o jogador recebe 50 moedas; múltiplos de 5 concedem bônus adicional de 100 moedas.
+- A cada nível, o jogador recebe 50 moedas; múltiplos de 5 concedem bônus adicional de 100 moedas e desbloqueiam títulos nos níveis 5, 10 e 15.
 - /guildcolheita exibe nível e XP de agricultura individual.
 - XP e nível são persistidos por jogador.
 
