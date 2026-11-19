@@ -1,0 +1,98 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Acessório permanente por jogador; não cria itens físicos, evitando duplicação.
+# Cada espécie possui um acessório próprio e apenas um pode ficar equipado.
+
+command /petacessorio [<text>] [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is not set:
+            send "&6&lACESSÓRIOS DE PET" to player
+            send "&e/petacessorio loja &7- Ver acessórios e preços." to player
+            send "&e/petacessorio comprar <coleira|amuleto|pena> &7- Comprar para sua espécie." to player
+            send "&e/petacessorio equipar <coleira|amuleto|pena> &7- Equipar acessório adquirido." to player
+            send "&e/petacessorio remover &7- Retirar o acessório." to player
+            send "&e/petacessorio status &7- Consultar equipamento." to player
+            stop
+        if arg-1 is "loja":
+            send "&6&lLOJA DE ACESSÓRIOS" to player
+            send "&cColeira de Caça &7(Lobo) - &e300 moedas &8| &7Força enquanto o pet estiver ativo." to player
+            send "&dAmuleto Vital &7(Gato) - &e300 moedas &8| &7Regeneração enquanto o pet estiver ativo." to player
+            send "&bPena Celeste &7(Papagaio) - &e300 moedas &8| &7Velocidade enquanto o pet estiver ativo." to player
+            stop
+        if arg-1 is "status":
+            if {rpg::%{_id}%::pet::accessory} is set:
+                send "{@prefix}&7Acessório equipado: &f%{rpg::%{_id}%::pet::accessory}%." to player
+            else:
+                send "{@prefix}&7Nenhum acessório equipado." to player
+            stop
+        if arg-1 is "remover":
+            delete {rpg::%{_id}%::pet::accessory}
+            send "{@prefix}&aAcessório removido." to player
+            stop
+        if arg-1 is "comprar":
+            if {rpg::%{_id}%::pet::type} is not set:
+                send "{@prefix}&cAdote um pet antes de comprar acessórios." to player
+                stop
+            if arg-2 is "coleira":
+                if {rpg::%{_id}%::pet::type} is not "lobo":
+                    send "{@prefix}&cA Coleira de Caça só serve para lobos." to player
+                    stop
+                set {_price} to 300
+            else if arg-2 is "amuleto":
+                if {rpg::%{_id}%::pet::type} is not "gato":
+                    send "{@prefix}&cO Amuleto Vital só serve para gatos." to player
+                    stop
+                set {_price} to 300
+            else if arg-2 is "pena":
+                if {rpg::%{_id}%::pet::type} is not "papagaio":
+                    send "{@prefix}&cA Pena Celeste só serve para papagaios." to player
+                    stop
+                set {_price} to 300
+            else:
+                send "{@prefix}&cEscolha coleira, amuleto ou pena." to player
+                stop
+            if {rpg::%{_id}%::pet::accessoryOwned::%arg-2%} is true:
+                send "{@prefix}&cVocê já comprou esse acessório." to player
+                stop
+            if {rpg::%{_id}%::coins} < {_price}:
+                send "{@prefix}&cMoedas insuficientes. Custo: %{_price}%." to player
+                stop
+            remove {_price} from {rpg::%{_id}%::coins}
+            set {rpg::%{_id}%::pet::accessoryOwned::%arg-2%} to true
+            send "{@prefix}&aAcessório comprado! Use /petacessorio equipar %arg-2%." to player
+            stop
+        if arg-1 is "equipar":
+            if {rpg::%{_id}%::pet::type} is not set:
+                send "{@prefix}&cAdote um pet primeiro." to player
+                stop
+            if arg-2 is "coleira" and {rpg::%{_id}%::pet::type} is "lobo":
+                set {_valid} to true
+            else if arg-2 is "amuleto" and {rpg::%{_id}%::pet::type} is "gato":
+                set {_valid} to true
+            else if arg-2 is "pena" and {rpg::%{_id}%::pet::type} is "papagaio":
+                set {_valid} to true
+            else:
+                send "{@prefix}&cEsse acessório não corresponde à espécie do seu pet." to player
+                stop
+            if {rpg::%{_id}%::pet::accessoryOwned::%arg-2%} is not true:
+                send "{@prefix}&cVocê ainda não comprou esse acessório." to player
+                stop
+            set {rpg::%{_id}%::pet::accessory} to arg-2
+            send "{@prefix}&aAcessório equipado. O bônus funciona enquanto seu pet estiver invocado." to player
+            stop
+        send "{@prefix}&cSubcomando inválido. Use /petacessorio." to player
+
+# Bônus passivo leve: duração renovada antes de expirar.
+every 5 seconds:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        if {rpg::%{_id}%::pet::active} is set:
+            if {rpg::%{_id}%::pet::active} is alive:
+                if {rpg::%{_id}%::pet::accessory} is "coleira":
+                    apply strength 1 to loop-player for 6 seconds
+                else if {rpg::%{_id}%::pet::accessory} is "amuleto":
+                    apply regeneration 1 to loop-player for 6 seconds
+                else if {rpg::%{_id}%::pet::accessory} is "pena":
+                    apply speed 1 to loop-player for 6 seconds
