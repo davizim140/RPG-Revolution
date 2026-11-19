@@ -101,7 +101,6 @@ on death of living entity:
                             set {rpg::expedition::mob-owner::%uuid of {_boss}%} to {_owner}
                             send "{@prefix}&4&lCHEFE FINAL! &cO Devorador das Ruínas apareceu!" to loop-player
                         else:
-                            delete {rpg::expedition::%{_owner}%::*}
                             set {_difficulty} to {rpg::expedition::%{_owner}%::difficulty}
                             set {_coins} to 600
                             set {_xp} to 400
@@ -117,6 +116,7 @@ on death of living entity:
                                 set {_xp} to 800
                                 set {_diamonds} to 6
                                 set {_lootRolls} to 3
+                            delete {rpg::expedition::%{_owner}%::*}
                             add {_coins} to {rpg::%{_owner}%::coins}
                             loop all players:
                                 if "%uuid of loop-player%" is {_owner}:
