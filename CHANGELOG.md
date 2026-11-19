@@ -1,3 +1,7 @@
+## 0.34.0 - Proteção de inventários móveis
+- Bloqueia a abertura de inventários de entidades dentro de territórios por jogadores de outras guildas.
+- Inclui carrinhos com baú e outros veículos com inventário reconhecidos pelo evento de abertura do Skript.
+
 ## 0.33.0 - Proteção contra coleta automática
 - Bloqueia coleta de itens do chão por funis dentro de territórios reivindicados.
 - O evento nativo do Skript também cobre carrinhos com funil.
