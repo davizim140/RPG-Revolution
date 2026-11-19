@@ -1,3 +1,10 @@
+## 0.58.0 - Chefes lendários invocáveis
+- Adicionado /invocarchefe guardiao|lich|draco; exige 8 diamantes, 1 estrela do Nether e 1.000 moedas.
+- Guardião Primordial (400 HP), Lich Eterno (300 HP) e Draco Celestial (350 HP) possuem duas transições de fase e invocam reforços.
+- Participantes registrados recebem 750 moedas, 500 XP e uma relíquia exclusiva do chefe derrotado.
+- /chefeslendarios encerrar permite à administração limpar um encontro ativo.
+- Apenas um chefe lendário global pode existir por vez; encontros usam entidades vanilla e ainda requerem teste de sintaxe e runtime em Paper real.
+
 ## 0.57.0 - Armas lendárias e maestria
 - Adicionado /forjarlendaria espada|machado|arco, com custo de 1 barra de netherita, 8 diamantes e 1.500 moedas por arma; cada tipo é limitado a uma forja por jogador.
 - Lâmina Solar, Machado do Colosso e Arco da Tempestade possuem bônus de dano e habilidades ativas exclusivas via /poderarma.
