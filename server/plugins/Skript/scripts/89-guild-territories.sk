@@ -337,3 +337,19 @@ on player pickup:
                     cancel event
                     send "{@prefix}&cOs itens desta área estão protegidos pela guilda &e%{_owner}%&c." to event-player
                 stop
+
+# Protege itens dropados contra dano por fogo, lava e explosoes.
+# O evento de dano de entidade cobre entidades de item no chao.
+# Apenas causas ambientais destrutivas sao bloqueadas; ataques de jogadores
+# continuam permitidos, respeitando as demais regras de coleta.
+on damage of item:
+    if damage was caused by fire, burning, lava, block explosion or entity explosion:
+        set {_dropLocation} to location of victim
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if "%world of {_dropLocation}%" is {rpg::territory::%{_territory}%::world}:
+                set {_dx} to (x-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
