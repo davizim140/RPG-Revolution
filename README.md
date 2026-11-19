@@ -14,7 +14,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Quatro classes, habilidades, mana e especializações.
 - Despertares raros (3% por classe) ao escolher uma classe pela primeira vez: Assassino/Monarca das Sombras, Guerreiro/Colosso, Mago/Arquimago e Arqueiro/Olho Celestial, cada um com passiva e habilidade exclusiva. O Monarca invoca três soldados temporários por 45 segundos e pode extrair até cinco sombras permanentes, que evoluem individualmente até o nível 10. O Monarca pode alternar posturas agressiva, defensiva ou passiva com /posturasombras e reunir todos os soldados com /reunirsombras.
 - Armas e armaduras exclusivas por classe, com bônus de conjunto.
-- Espada do Aprendiz e Couraça do Guardião aprimoráveis até +3.
+- Espada do Aprendiz e Couraça do Guardião aprimoráveis até +3. Três armas lendárias forjáveis (Lâmina Solar, Machado do Colosso e Arco da Tempestade) evoluem por abates até maestria 5 e possuem habilidades ativas próprias.
 - Loja, receitas, itens nomeados e raridades visuais.
 - Missão inicial, linha de história e contrato diário de caça.
 - Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
@@ -49,7 +49,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /missoes, /resgatar, /recompensadiaria, /contrato
 - /npc, /rpgnpc criar, /rpgnpc limpar, /missaoaceitar, /minhasmissoes, /missaoentregar
 - /rpgloja, /comprar, /mercado [listar|vender|comprar|cancelar], /rpgcraft, /fabricar
-- /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar
+- /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar, /forjarlendaria <espada|machado|arco>, /poderarma, /maestriaarma
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
 - /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin)
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
@@ -188,3 +188,13 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Sala 2: quatro Aranhas Armadilhadas; recompensa intermediária de 125 moedas e duas maçãs douradas.
 - Sala 3: chefe Guardião Arcano (evocador fortalecido); recompensa final de 300 moedas, 250 XP, três diamantes, uma maçã dourada encantada e um equipamento de chefe.
 - O encontro é encerrado e seus inimigos removidos ao cancelar ou desconectar. Esta versão não constrói blocos nem altera terreno; as salas são etapas de combate no local de início. Requer validação em Paper real.
+
+
+### Armas lendárias (0.57.0)
+- /forjarlendaria espada|machado|arco forja uma arma de netherita ou arco por 1 barra de netherita, 8 diamantes e 1.500 moedas; cada tipo pode ser forjado uma vez por jogador.
+- Lâmina Solar: Fúria Solar (Força II e Resistência ao Fogo por tempo curto).
+- Machado do Colosso: Vigor do Colosso (Resistência II e Força I).
+- Arco da Tempestade: Passo da Tempestade (Velocidade III e Salto II); o bônus de dano é aplicado ao impacto da flecha.
+- Abates com a arma evoluem maestria até o nível 5; cada nível aumenta o bônus de dano e reduz a recarga da habilidade, com mínimo de 30 segundos.
+- /poderarma ativa a habilidade da arma segurada; /maestriaarma consulta os níveis. Os dados de maestria ficam persistidos por jogador e tipo de arma.
+- Itens são identificados pelo nome e ainda podem ser afetados por renomeação em bigorna. Requer teste de sintaxe e runtime em Paper real.
