@@ -52,10 +52,22 @@ command /classe [<text>]:
             stop
         if arg-1 is "guerreiro":
             set {rpg::%{_id}%::class} to "guerreiro"
-            send "{@prefix}&cVocê escolheu a classe GUERREIRO." to player
+            set {_awakeningRoll} to random integer between 1 and 100
+            if {_awakeningRoll} <= 3:
+                set {rpg::%{_id}%::awakening} to "colosso"
+                send "{@prefix}&c&lDESPERTAR RARO! &6Você nasceu como o COLOSSO!" to player
+                send "&7Use /despertar e /furia para liberar seu poder." to player
+            else:
+                send "{@prefix}&cVocê escolheu a classe GUERREIRO." to player
         else if arg-1 is "mago":
             set {rpg::%{_id}%::class} to "mago"
-            send "{@prefix}&5Você escolheu a classe MAGO." to player
+            set {_awakeningRoll} to random integer between 1 and 100
+            if {_awakeningRoll} <= 3:
+                set {rpg::%{_id}%::awakening} to "arquimago"
+                send "{@prefix}&5&lDESPERTAR RARO! &dVocê nasceu como o ARQUIMAGO!" to player
+                send "&7Use /despertar e /arcano para liberar seu poder." to player
+            else:
+                send "{@prefix}&5Você escolheu a classe MAGO." to player
         else if arg-1 is "assassino":
             set {rpg::%{_id}%::class} to "assassino"
             set {_awakeningRoll} to random integer between 1 and 100
@@ -67,7 +79,13 @@ command /classe [<text>]:
                 send "{@prefix}&8Você escolheu a classe ASSASSINO." to player
         else if arg-1 is "arqueiro":
             set {rpg::%{_id}%::class} to "arqueiro"
-            send "{@prefix}&aVocê escolheu a classe ARQUEIRO." to player
+            set {_awakeningRoll} to random integer between 1 and 100
+            if {_awakeningRoll} <= 3:
+                set {rpg::%{_id}%::awakening} to "olho_celestial"
+                send "{@prefix}&a&lDESPERTAR RARO! &bVocê nasceu com o OLHO CELESTIAL!" to player
+                send "&7Use /despertar e /precisao para liberar seu poder." to player
+            else:
+                send "{@prefix}&aVocê escolheu a classe ARQUEIRO." to player
         else:
             send "{@prefix}&cClasse inválida. Opções: guerreiro, mago, assassino, arqueiro." to player
             stop
