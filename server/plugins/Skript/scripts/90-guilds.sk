@@ -36,6 +36,7 @@ command /guildacriar <text>:
         set {rpg::guild::%arg-1%::xp} to 0
         set {rpg::guild::%arg-1%::bank} to 0
         set {rpg::%{_id}%::guild} to arg-1
+        set {rpg::%{_id}%::guild-role} to "member"
         add {_id} to {rpg::guild::%arg-1%::members::*}
         send "{@prefix}&aGuilda &e%arg-1% &acriada!" to player
 
@@ -47,8 +48,9 @@ command /guildaconvidar <player>:
             stop
         set {_guild} to {rpg::%{_id}%::guild}
         if {rpg::guild::%{_guild}%::leader} is not {_id}:
-            send "{@prefix}&cSomente o líder pode convidar jogadores." to player
-            stop
+            if {rpg::%{_id}%::guild-role} is not "officer":
+                send "{@prefix}&cSomente líder ou oficial pode convidar jogadores." to player
+                stop
         set {_target} to "%uuid of arg-1%"
         if {rpg::%{_target}%::guild} is set:
             send "{@prefix}&cEsse jogador já está em uma guilda." to player
@@ -68,6 +70,7 @@ command /guildaaceitar:
             stop
         set {_guild} to {rpg::guild-invite::%{_id}%}
         set {rpg::%{_id}%::guild} to {_guild}
+        set {rpg::%{_id}%::guild-role} to "member"
         add {_id} to {rpg::guild::%{_guild}%::members::*}
         delete {rpg::guild-invite::%{_id}%}
         send "{@prefix}&aVocê entrou na guilda &e%{_guild}%&a!" to player
@@ -84,6 +87,7 @@ command /guildasair:
             stop
         remove {_id} from {rpg::guild::%{_guild}%::members::*}
         delete {rpg::%{_id}%::guild}
+        delete {rpg::%{_id}%::guild-role}
         send "{@prefix}&aVocê saiu da guilda." to player
 
 command /guildainfo:
