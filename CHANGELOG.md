@@ -1,3 +1,9 @@
+## 0.26.0 - Guerra por territórios
+- Abates PvP de membros das guildas em guerra dentro de um território geram progresso de captura.
+- Cinco pontos transferem o território; abates defensivos reduzem o progresso.
+- A guilda conquistadora recebe 250 moedas no banco, respeitando o limite de três territórios.
+- /guildterritorioguerra (alias /gtg) consulta o progresso no local.
+
 ## 0.25.0 - Territórios de guilda
 - Líder pode reivindicar até três áreas quadradas de 33x33 blocos por 500 moedas do banco.
 - Áreas reivindicadas bloqueiam quebra, colocação e interação de blocos por jogadores de outras guildas.
