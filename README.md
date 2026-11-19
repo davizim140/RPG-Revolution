@@ -24,6 +24,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Mercado entre jogadores com anúncios em custódia, compra e cancelamento.
 - Progressão de guildas por caça, níveis e depósito automático no banco.
 - Guerras de guildas por desafio/aceite, placar PvP e prêmio ao vencedor.
+- Estatísticas PvP individuais, recompensas por vitória e marcos de 10/50 eliminações.
 - Guildas com convite, transferência de liderança, expulsão, chat e banco.
 - Recompensas diárias.
 - Evento manual de invasão mundial: cinco invasores, participação registrada e recompensa coletiva.
@@ -48,7 +49,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
 - /masmorra [cancelar], /expedicao [cancelar], /chefemundial (admin)
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
-- /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildanivel, /guildaguerra
+- /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildanivel, /guildaguerra, /pvpstatus
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
 - /rpghud [on|off]
 - /invasao iniciar|encerrar (permissão rpg.admin)
@@ -69,7 +70,7 @@ Permissão administrativa: rpg.admin.
 - Cada classe tem 3% de chance de despertar no momento da primeira escolha; não há novo sorteio para personagens que já escolheram classe. Os despertares são permanentes. O Monarca pode invocar três soldados temporários com /invocar e consultar com /sombras. Ao derrotar monstros diretamente, há 15% de chance de extrair uma sombra permanente, com limite de cinco; /exercito lista as sombras, /sombranivel <1-5> consulta o nível e XP, e /libertar <1-5> libera um espaço. Cada sombra permanente ganha XP ao derrotar monstros e evolui a cada cinco XP por nível, até o nível 10. /posturasombras agressiva|defensiva|passiva controla a seleção automática de alvos: agressiva reage a ataques do Monarca e contra ele; defensiva só protege o Monarca; passiva não escolhe alvos automaticamente. /reunirsombras teleporta os soldados vivos para perto do Monarca. As sombras permanentes são representadas por esqueletos Wither e podem ser destruídas por inimigos. O rank dos soldados temporários evolui com o nível do Monarca: C (1+), B (10+), A (25+) e S (50+), aumentando seus efeitos de combate.
 - O mercado mantém itens anunciados em custódia nas variáveis do Skript; não possui taxa, interface gráfica ou histórico de transações.
 - O chefe mundial e as expedições usam criaturas vanilla e dependem de espaço livre no local onde são iniciados.
-- Guerras de guilda usam um placar global e não isolam PvP por região; a administração deve combinar regras de arena e duração.
+- Guerras de guilda usam um placar global e não isolam PvP por região; a administração deve combinar regras de arena e duração. As recompensas PvP ainda precisam de proteção contra combinação de mortes entre contas.
 - A HUD usa a action bar e pode sobrescrever mensagens de action bar enviadas por outros plugins. Os eventos mundiais são iniciados manualmente.
 
 ## Validação
