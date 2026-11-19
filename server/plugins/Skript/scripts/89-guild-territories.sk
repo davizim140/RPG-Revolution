@@ -353,3 +353,22 @@ on damage of item:
                 if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
                     cancel event
                     stop
+
+# Impede que itens dropados atravessem para fora de territorios.
+# O evento de movimento de entidades existe no Skript para Paper 1.16.5+.
+# A regra protege a fronteira independentemente de quem causou o empurrao;
+# o evento nao identifica de forma confiavel o jogador responsavel.
+on item move:
+    set {_from} to past event-location
+    set {_to} to event-location
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if "%world of {_from}%" is {rpg::territory::%{_territory}%::world}:
+            set {_dxFrom} to (x-coordinate of {_from}) - {rpg::territory::%{_territory}%::x}
+            set {_dzFrom} to (z-coordinate of {_from}) - {rpg::territory::%{_territory}%::z}
+            set {_dxTo} to (x-coordinate of {_to}) - {rpg::territory::%{_territory}%::x}
+            set {_dzTo} to (z-coordinate of {_to}) - {rpg::territory::%{_territory}%::z}
+            if abs({_dxFrom}) <= {@territory-radius} and abs({_dzFrom}) <= {@territory-radius}:
+                if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
+                    cancel event
+                    stop
