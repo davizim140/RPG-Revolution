@@ -19,7 +19,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Missão inicial, linha de história e contrato diário de caça.
 - Grupos de jogadores com convites, liderança e compartilhamento de XP/moedas por abates próximos.
 - Regiões configuráveis por mundo, com bloqueio de teleporte entre mundos para personagens abaixo do nível mínimo.
-- Masmorra individual básica e expedição avançada em três dificuldades: Normal (nível 10+), Heroica (20+) e Pesadelo (35+). A dificuldade aumenta a vida dos inimigos e do chefe e melhora moedas, XP, diamantes e sorteios de equipamento; limpeza ao cancelar ou desconectar. Expedições cooperativas usam os grupos existentes, exigem pelo menos dois integrantes próximos e entregam recompensas individuais a cada participante registrado.
+- Masmorra individual básica, expedição avançada em três dificuldades (Normal 10+, Heroica 20+, Pesadelo 35+) e expedições cooperativas integradas aos grupos. A Arena das Ruínas (/arenadungeon) adiciona três salas de combate com sentinelas, aranhas armadilhadas e o chefe Guardião Arcano, tesouros intermediários e recompensa final; o encontro usa a área atual sem alterar blocos do mundo.
 - Chefe mundial de três fases, com servos, participação e recompensas.
 - Mercado entre jogadores com anúncios em custódia, compra e cancelamento.
 - Progressão de guildas por caça, níveis e depósito automático no banco.
@@ -51,7 +51,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /rpgloja, /comprar, /mercado [listar|vender|comprar|cancelar], /rpgcraft, /fabricar
 - /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
-- /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /chefemundial (admin)
+- /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin)
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
 - /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildacargo, /guildacargos, /guildterritorio, /guildterritorioguerra, /guildanivel, /guildaguerra, /pvpstatus
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
@@ -180,3 +180,11 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - O grupo enfrenta as três ondas da expedição. Cada participante registrado que estiver online na conclusão recebe moedas, XP, diamantes e sorteios individuais conforme a dificuldade.
 - /expedicaogrupo cancelar encerra a sessão; a desconexão do líder também encerra e remove os inimigos.
 - O fluxo é separado da expedição solo. Requer teste de sintaxe e execução em servidor Paper real.
+
+
+### Arena das Ruínas (0.56.0)
+- /arenadungeon iniciar exige nível 15; /arenadungeon status consulta a sala atual e /arenadungeon cancelar encerra o encontro.
+- Sala 1: três Sentinelas das Ruínas; recompensa intermediária de 75 moedas e uma maçã dourada.
+- Sala 2: quatro Aranhas Armadilhadas; recompensa intermediária de 125 moedas e duas maçãs douradas.
+- Sala 3: chefe Guardião Arcano (evocador fortalecido); recompensa final de 300 moedas, 250 XP, três diamantes, uma maçã dourada encantada e um equipamento de chefe.
+- O encontro é encerrado e seus inimigos removidos ao cancelar ou desconectar. Esta versão não constrói blocos nem altera terreno; as salas são etapas de combate no local de início. Requer validação em Paper real.
