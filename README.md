@@ -40,7 +40,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /rpgloja, /comprar, /rpgcraft, /fabricar
 - /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
-- /masmorra
+- /masmorra [cancelar]
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
 - /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
@@ -56,7 +56,7 @@ Permissão administrativa: rpg.admin.
 - Armaduras de classe são identificadas pelo nome; conjunto Guerreiro reduz dano, Mago e Assassino aumentam dano corpo a corpo, Arqueiro recebe velocidade.
 - NPCs físicos usam aldeões vanilla e abrem os diálogos existentes ao clicar; não têm skin personalizada.
 - A proteção de regiões é aplicada a teletransportes entre mundos; movimentação/entrada por outros mecanismos precisa de validação no servidor real.
-- A masmorra é um encontro simples com criatura vanilla, sem arena instanciada ou mecânicas complexas.
+- A masmorra continua sendo um encontro individual simples com criatura vanilla; agora permite cancelamento e limpa o chefe ao desconectar. Não há arena instanciada ou mecânicas complexas.
 - Grupos compartilham recompensas com integrantes online no mesmo mundo e a até 16 blocos do jogador que derrotou a criatura.
 - Guildas ainda não têm guerras, cargos ou níveis.
 - A HUD usa a action bar e pode sobrescrever mensagens de action bar enviadas por outros plugins. Não há mapa próprio ou eventos mundiais.
