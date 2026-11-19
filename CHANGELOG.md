@@ -1,3 +1,8 @@
+## 0.31.0 - Proteção contra dispensers e droppers
+- Bloqueia ativações de dispensers e droppers instalados dentro de territórios reivindicados.
+- Corrige as referências aos blocos avaliados nos handlers de explosão e pistões.
+- Dispensers externos apontados para dentro ainda não são bloqueados; mecanismos internos também ficam bloqueados para a guilda proprietária.
+
 ## 0.30.0 - Proteção contra pistões externos
 - Eventos de extensão e retração verificam os blocos movidos por pistões.
 - A checagem considera a área reivindicada e uma margem de um bloco para bloquear movimentos que alcancem a borda.
