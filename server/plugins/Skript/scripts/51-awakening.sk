@@ -137,7 +137,7 @@ on damage:
         if attacker's tool is bow:
             increase damage by 3
 
-# Invocação de soldados de sombra: duas criaturas aliadas por 45 segundos.
+# Invocação de três soldados especializados por 45 segundos.
 command /invocar:
     trigger:
         set {_id} to "%uuid of player%"
@@ -153,7 +153,7 @@ command /invocar:
         if {rpg::%{_id}%::skill-cooldown} > 0:
             send "{@prefix}&cA habilidade recarrega em %{rpg::%{_id}%::skill-cooldown}% segundos." to player
             stop
-        loop 2 times:
+        loop 3 times:
             if {rpg::%{_id}%::shadow::%loop-number%} is set:
                 if {rpg::%{_id}%::shadow::%loop-number%} is alive:
                     send "{@prefix}&cVocê já possui soldados de sombra ativos." to player
@@ -174,23 +174,47 @@ command /invocar:
         else:
             set {_rank} to "C"
             set {_rankName} to "&7Novato"
-        loop 2 times:
-            spawn a wither skeleton at location of player
+        loop 3 times:
+            if loop-number is 1:
+                spawn an iron golem at location of player
+                set {_role} to "TANQUE"
+            else if loop-number is 2:
+                spawn a wither skeleton at location of player
+                set {_role} to "GUERREIRO"
+            else:
+                spawn a skeleton at location of player
+                set {_role} to "ARQUEIRO"
             set {_soldier} to last spawned entity
-            set name of {_soldier} to "&5Sombra %{_rank}% &8| %{_rankName}%"
+            set name of {_soldier} to "&5%{_role}% &8| &fRank %{_rank}%"
             apply speed 1 to {_soldier} for 45 seconds
-            if {_rank} is "B":
-                apply strength 1 to {_soldier} for 45 seconds
-            else if {_rank} is "A":
-                apply strength 2 to {_soldier} for 45 seconds
-                apply resistance 1 to {_soldier} for 45 seconds
-            else if {_rank} is "S":
-                apply strength 3 to {_soldier} for 45 seconds
+            if {_role} is "TANQUE":
                 apply resistance 2 to {_soldier} for 45 seconds
+                apply slowness 1 to {_soldier} for 45 seconds
+                if {_rank} is "A":
+                    apply resistance 3 to {_soldier} for 45 seconds
+                else if {_rank} is "S":
+                    apply resistance 4 to {_soldier} for 45 seconds
+            else if {_role} is "GUERREIRO":
+                if {_rank} is "B":
+                    apply strength 1 to {_soldier} for 45 seconds
+                else if {_rank} is "A":
+                    apply strength 2 to {_soldier} for 45 seconds
+                    apply resistance 1 to {_soldier} for 45 seconds
+                else if {_rank} is "S":
+                    apply strength 3 to {_soldier} for 45 seconds
+                    apply resistance 2 to {_soldier} for 45 seconds
+            else:
+                apply speed 2 to {_soldier} for 45 seconds
+                if {_rank} is "B":
+                    apply strength 1 to {_soldier} for 45 seconds
+                else if {_rank} is "A":
+                    apply strength 2 to {_soldier} for 45 seconds
+                else if {_rank} is "S":
+                    apply strength 3 to {_soldier} for 45 seconds
             set {rpg::%{_id}%::shadow::%loop-number%} to {_soldier}
-        send "{@prefix}&5&lEXÉRCITO DAS SOMBRAS! &7Soldados de rank &f%{_rank}% &7invocados por 45 segundos." to player
+        send "{@prefix}&5&lEXÉRCITO DAS SOMBRAS! &7Tanque, guerreiro e arqueiro de rank &f%{_rank}% &7invocados por 45 segundos." to player
         wait 45 seconds
-        loop 2 times:
+        loop 3 times:
             if {rpg::%{_id}%::shadow::%loop-number%} is set:
                 if {rpg::%{_id}%::shadow::%loop-number%} is alive:
                     kill {rpg::%{_id}%::shadow::%loop-number%}
@@ -203,7 +227,7 @@ command /sombras:
             send "{@prefix}&cVocê não possui o despertar Monarca das Sombras." to player
             stop
         set {_count} to 0
-        loop 2 times:
+        loop 3 times:
             if {rpg::%{_id}%::shadow::%loop-number%} is set:
                 if {rpg::%{_id}%::shadow::%loop-number%} is alive:
                     add 1 to {_count}
@@ -219,7 +243,7 @@ command /sombras:
         send "&5&lEXÉRCITO DAS SOMBRAS" to player
         send "&7Nível do Monarca: &f%{_level}%" to player
         send "&7Evolução dos soldados: &f%{_rank}%" to player
-        send "&7Soldados ativos: &f%{_count}%&7/2" to player
+        send "&7Soldados ativos: &f%{_count}%&7/3" to player
         send "&7Invocação: &f/invocar &7(50 mana, recarga de 60 segundos)." to player
 
 # Os soldados priorizam criaturas atacadas pelo Monarca ou que o atacam.
@@ -228,7 +252,7 @@ on damage:
     set {_ownerId} to "%uuid of attacker%"
     if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
         if victim is not a player:
-            loop 2 times:
+            loop 3 times:
                 if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
                     if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
                         set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to victim
@@ -244,10 +268,10 @@ on damage:
                         set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to attacker
 
 on damage:
-    attacker is a wither skeleton
+    attacker is an entity
     loop all players:
         set {_ownerId} to "%uuid of loop-player%"
-        loop 2 times:
+        loop 3 times:
             if {rpg::%{_ownerId}%::shadow::%loop-number%} is attacker:
                 if victim is loop-player:
                     cancel event
