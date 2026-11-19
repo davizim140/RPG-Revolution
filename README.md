@@ -85,3 +85,10 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Cada execução confirmada de `/rpgitenslimpar CONFIRMAR` registra data/hora, administrador (nome e UUID), mundo, território, posição e quantidade de entidades removidas.
 - Administradores podem consultar o histórico persistente com `/rpgitenslog`.
 - O histórico fica salvo nas variáveis persistentes do Skript; não é um arquivo externo e não possui rotação automática nesta versão.
+
+
+### Proteção de plantações e terreno agrícola (0.44.0)
+- Entidades não podem alterar blocos dentro de territórios reivindicados; isso bloqueia pisoteio de farmland e alterações de blocos feitas por mobs.
+- O evento de ovelhas comerem grama também é cancelado dentro dos territórios.
+- Jogadores de fora continuam impedidos de quebrar/colocar blocos pelas proteções gerais; membros da guilda proprietária podem colher normalmente.
+- A proteção de alterações por entidades também afeta comportamentos como Endermen pegando/colocando blocos e blocos móveis; valide no Paper antes de ativar em produção.
