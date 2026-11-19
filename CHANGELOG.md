@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.0 - Despertar de classe: Monarca das Sombras
+- Ao escolher Assassino pela primeira vez, o personagem tem 3% de chance de despertar.
+- Despertados recebem +2 de dano e desbloqueiam /sombra: velocidade III, força II e invisibilidade por 10 segundos, com custo de 35 mana e recarga de 30 segundos.
+- /despertar mostra o status e os poderes; o despertar é permanente.
+
+
 ## 0.14.0 - Invasão mundial
 - Adicionado evento manual de invasão com cinco inimigos resistentes.
 - Participantes que acertarem os invasores recebem 200 moedas e 100 XP quando a invasão termina.
