@@ -196,13 +196,22 @@ command /rpgtemporadaauto <text> [<number>]:
     permission: rpg.admin
     permission message: &cVocê precisa da permissão rpg.admin.
     trigger:
+        if arg-1 is "status":
+            if {rpg::season::auto::enabled} is true:
+                send "{@prefix}&aRotação automática ativa. Duração: &f%{rpg::season::auto::days}% dia(s)." to sender
+                set {_season} to {rpg::season::current}
+                if {rpg::season::%{_season}%::ends} is set:
+                    send "&7Término previsto: &f%{rpg::season::%{_season}%::ends} formatted as \"dd/MM/yyyy HH:mm\"%" to sender
+            else:
+                send "{@prefix}&7Rotação automática desativada." to sender
+            stop
         if arg-1 is "parar":
             set {rpg::season::auto::enabled} to false
             delete {rpg::season::%{rpg::season::current}%::ends}
             send "{@prefix}&eRotação automática desativada. A temporada atual continuará até ser encerrada manualmente." to sender
             stop
         if arg-1 is not "iniciar":
-            send "{@prefix}&eUse /rpgtemporadaauto iniciar <dias> ou /rpgtemporadaauto parar." to sender
+            send "{@prefix}&eUse /rpgtemporadaauto iniciar <dias>, status ou parar." to sender
             stop
         if arg-2 is not set:
             send "{@prefix}&cInforme a duração em dias (1 a 90)." to sender
@@ -231,5 +240,5 @@ every 1 minute:
         if {rpg::season::active} is true:
             set {_season} to {rpg::season::current}
             if {rpg::season::%{_season}%::ends} is set:
-                if now is after {rpg::season::%{_season}%::ends}:
+                if {rpg::season::%{_season}%::ends} has passed:
                     execute console command "rpgtemporada encerrar"
