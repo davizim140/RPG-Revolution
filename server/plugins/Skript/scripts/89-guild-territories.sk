@@ -236,6 +236,25 @@ on inventory pickup:
                 cancel event
                 stop
 
+# Protege inventarios de entidades, incluindo carrinhos com bau,
+# contra abertura por jogadores que nao pertencem a guilda proprietaria.
+on inventory open:
+    set {_holder} to holder of event-inventory
+    if {_holder} is a block or {_holder} is an entity:
+        set {_containerLocation} to location of {_holder}
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if "%world of {_containerLocation}%" is {rpg::territory::%{_territory}%::world}:
+                set {_dx} to (x-coordinate of {_containerLocation}) - {rpg::territory::%{_territory}%::x}
+                set {_dz} to (z-coordinate of {_containerLocation}) - {rpg::territory::%{_territory}%::z}
+                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                    set {_owner} to {rpg::territory::%{_territory}%::guild}
+                    set {_playerId} to "%uuid of event-player%"
+                    if {rpg::%{_playerId}%::guild} is not {_owner}:
+                        cancel event
+                        send "{@prefix}&cInventário protegido pela guilda &e%{_owner}%&c." to event-player
+                    stop
+
 # Protege territorios contra propagacao e inicio de fogo.
 # A regra tambem bloqueia fogo natural dentro da area protegida.
 on burn:
