@@ -1,0 +1,93 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Loja de prestígio: bônus permanentes comprados com fichas de renascimento.
+# Cada melhoria pode ser comprada uma única vez por personagem.
+
+command /lojaprestigio:
+    aliases: /prestigioloja
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_tokens} to {rpg::%{_id}%::prestige-tokens}
+        if {_tokens} is not set:
+            set {_tokens} to 0
+        send "&6&lLOJA DE PRESTÍGIO" to player
+        send "&7Fichas disponíveis: &e%{_tokens}%" to player
+        send "&a/vitalidadeeterna &7- 1 ficha: Regeneração I permanente." to player
+        send "&c/forcaeterna &7- 2 fichas: +2 de dano contra criaturas." to player
+        send "&b/guardiaoeterno &7- 2 fichas: Resistência I permanente." to player
+        send "&d/menteeterna &7- 3 fichas: +2 mana extra a cada ciclo de regeneração." to player
+        send "&7Cada melhoria só pode ser comprada uma vez." to player
+
+command /vitalidadeeterna:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::prestige-shop::vitality} is true:
+            send "{@prefix}&cVocê já possui esta melhoria." to player
+            stop
+        if {rpg::%{_id}%::prestige-tokens} < 1:
+            send "{@prefix}&cVocê precisa de 1 ficha de prestígio." to player
+            stop
+        remove 1 from {rpg::%{_id}%::prestige-tokens}
+        set {rpg::%{_id}%::prestige-shop::vitality} to true
+        send "{@prefix}&aVitalidade Eterna desbloqueada!" to player
+
+command /forcaeterna:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::prestige-shop::strength} is true:
+            send "{@prefix}&cVocê já possui esta melhoria." to player
+            stop
+        if {rpg::%{_id}%::prestige-tokens} < 2:
+            send "{@prefix}&cVocê precisa de 2 fichas de prestígio." to player
+            stop
+        remove 2 from {rpg::%{_id}%::prestige-tokens}
+        set {rpg::%{_id}%::prestige-shop::strength} to true
+        send "{@prefix}&aForça Eterna desbloqueada!" to player
+
+command /guardiaoeterno:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::prestige-shop::guardian} is true:
+            send "{@prefix}&cVocê já possui esta melhoria." to player
+            stop
+        if {rpg::%{_id}%::prestige-tokens} < 2:
+            send "{@prefix}&cVocê precisa de 2 fichas de prestígio." to player
+            stop
+        remove 2 from {rpg::%{_id}%::prestige-tokens}
+        set {rpg::%{_id}%::prestige-shop::guardian} to true
+        send "{@prefix}&aGuardião Eterno desbloqueado!" to player
+
+command /menteeterna:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::prestige-shop::mind} is true:
+            send "{@prefix}&cVocê já possui esta melhoria." to player
+            stop
+        if {rpg::%{_id}%::prestige-tokens} < 3:
+            send "{@prefix}&cVocê precisa de 3 fichas de prestígio." to player
+            stop
+        remove 3 from {rpg::%{_id}%::prestige-tokens}
+        set {rpg::%{_id}%::prestige-shop::mind} to true
+        send "{@prefix}&aMente Eterna desbloqueada!" to player
+
+every 5 seconds:
+    loop all players:
+        set {_id} to "%uuid of loop-player%"
+        if {rpg::%{_id}%::prestige-shop::vitality} is true:
+            apply regeneration 1 to loop-player for 6 seconds
+        if {rpg::%{_id}%::prestige-shop::guardian} is true:
+            apply resistance 1 to loop-player for 6 seconds
+        if {rpg::%{_id}%::prestige-shop::mind} is true:
+            if {rpg::%{_id}%::mana} is set:
+                if {rpg::%{_id}%::mana-max} is set:
+                    add 2 to {rpg::%{_id}%::mana}
+                    if {rpg::%{_id}%::mana} > {rpg::%{_id}%::mana-max}:
+                        set {rpg::%{_id}%::mana} to {rpg::%{_id}%::mana-max}
+
+on damage:
+    attacker is a player
+    set {_id} to "%uuid of attacker%"
+    if victim is not a player:
+        if {rpg::%{_id}%::prestige-shop::strength} is true:
+            increase damage by 2
