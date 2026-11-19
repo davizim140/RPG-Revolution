@@ -16,6 +16,7 @@ command /guildterritorio [<text>]:
             send "&6&lTERRITÓRIOS DE GUILDA" to player
             send "&e/guildterritorio reivindicar &7- Reivindica a área atual (500 moedas do banco)." to player
             send "&e/guildterritorio info &7- Mostra o território onde você está." to player
+            send "&e/guildterritorioguerra &7- Consulta o progresso de captura durante uma guerra." to player
             send "&e/guildterritorio abandonar &7- Abandona o território da sua guilda nesta posição." to player
             stop
         if arg-1 is "reivindicar":
