@@ -120,8 +120,6 @@ command /pet [<text>] [<text>]:
             if {rpg::%{_id}%::pet::rarity} is "Raro":
                 apply resistance 1 to player for 8 seconds
                 send "&6A raridade Rara ampliou a habilidade!" to player
-            wait 60 seconds
-            set {rpg::%{_id}%::pet::cooldown} to 0
             stop
         send "{@prefix}&cSubcomando inválido. Use /pet." to player
 
@@ -177,10 +175,11 @@ on death of wolf:
 on quit:
     set {_id} to "%uuid of player%"
     if {rpg::%{_id}%::pet::active} is set:
+        set {_petUuid} to "%uuid of {rpg::%{_id}%::pet::active}%"
         if {rpg::%{_id}%::pet::active} is alive:
             kill {rpg::%{_id}%::pet::active}
         delete {rpg::%{_id}%::pet::active}
-        delete {rpg::pet-owner::%uuid of {rpg::%{_id}%::pet::active}%}
+        delete {rpg::pet-owner::%{_petUuid}%}
 
 # Recarga das habilidades é persistente e diminui uma vez por segundo.
 every 1 second:
