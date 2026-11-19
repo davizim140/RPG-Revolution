@@ -25,7 +25,8 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - Progressão de guildas por caça, níveis e depósito automático no banco.
 - Guerras de guildas por desafio/aceite, placar PvP e prêmio ao vencedor.
 - Estatísticas PvP individuais, recompensas por vitória e marcos de 10/50 eliminações.
-- Guildas com convite, transferência de liderança, expulsão, chat e banco.
+- Guildas com convite, hierarquia de líder/oficial/membro, transferência de liderança, chat e banco.
+- Territórios de guilda: reivindicação de áreas 33x33 por 500 moedas do banco, limite de três por guilda e proteção contra construção/interação de não membros.
 - Recompensas diárias.
 - Evento manual de invasão mundial: cinco invasores, participação registrada e recompensa coletiva.
 - HUD leve na action bar com nível, XP, vida e mana; ativação individual por /rpghud on|off.
@@ -49,7 +50,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
 - /masmorra [cancelar], /expedicao [cancelar], /chefemundial (admin)
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
-- /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildacargo, /guildacargos, /guildanivel, /guildaguerra, /pvpstatus
+- /guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildacargo, /guildacargos, /guildterritorio, /guildanivel, /guildaguerra, /pvpstatus
 - /regiao, /rpgmundos, /rpgregiao definir, /rpgregiao remover
 - /rpghud [on|off]
 - /invasao iniciar|encerrar (permissão rpg.admin)
@@ -66,7 +67,7 @@ Permissão administrativa: rpg.admin.
 - A proteção de regiões é aplicada a teletransportes entre mundos; movimentação/entrada por outros mecanismos precisa de validação no servidor real.
 - /masmorra continua sendo o encontro individual simples. /expedicao adiciona duas ondas e um chefe vanilla, mas ainda não cria arena instanciada nem salas construídas automaticamente.
 - Grupos compartilham recompensas com integrantes online no mesmo mundo e a até 16 blocos do jogador que derrotou a criatura.
-- Cargos de guilda têm líder, oficial e membro. Oficiais podem convidar e expulsar membros comuns; somente o líder pode promover/rebaixar oficiais, expulsar oficiais, transferir liderança e sacar do banco. Ainda não há territórios capturáveis ou guerras com arenas isoladas.
+- Cargos de guilda têm líder, oficial e membro. Oficiais podem convidar e expulsar membros comuns; somente o líder pode promover/rebaixar oficiais, expulsar oficiais, transferir liderança e sacar do banco. Territórios podem ser reivindicados e abandonados pelo líder; ainda não há captura por combate, impostos, proteção contra explosões ou guerras com arenas isoladas.
 - Cada classe tem 3% de chance de despertar no momento da primeira escolha; não há novo sorteio para personagens que já escolheram classe. Os despertares são permanentes. O Monarca pode invocar três soldados temporários com /invocar e consultar com /sombras. Ao derrotar monstros diretamente, há 15% de chance de extrair uma sombra permanente, com limite de cinco; /exercito lista as sombras, /sombranivel <1-5> consulta o nível e XP, e /libertar <1-5> libera um espaço. Cada sombra permanente ganha XP ao derrotar monstros e evolui a cada cinco XP por nível, até o nível 10. /posturasombras agressiva|defensiva|passiva controla a seleção automática de alvos: agressiva reage a ataques do Monarca e contra ele; defensiva só protege o Monarca; passiva não escolhe alvos automaticamente. /reunirsombras teleporta os soldados vivos para perto do Monarca. As sombras permanentes são representadas por esqueletos Wither e podem ser destruídas por inimigos. O rank dos soldados temporários evolui com o nível do Monarca: C (1+), B (10+), A (25+) e S (50+), aumentando seus efeitos de combate.
 - O mercado mantém itens anunciados em custódia nas variáveis do Skript; não possui taxa, interface gráfica ou histórico de transações.
 - O chefe mundial e as expedições usam criaturas vanilla e dependem de espaço livre no local onde são iniciados.
