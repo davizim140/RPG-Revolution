@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.17.0 - Exército das Sombras
+- Monarca das Sombras pode invocar dois soldados (esqueletos wither) por 45 segundos com /invocar.
+- Invocação custa 50 de mana e usa recarga compartilhada de 60 segundos.
+- Soldados recebem alvos quando o Monarca ataca criaturas ou é atacado; dano dos soldados contra o próprio invocador é cancelado.
+- /sombras mostra quantos soldados ainda estão ativos.
+
+
 ## 0.16.0 - Despertares para todas as classes
 - Guerreiro: 3% de chance de despertar como Colosso; /furia concede força III e resistência II.
 - Mago: 3% de chance de despertar como Arquimago; /arcano concede regeneração II e resistência I.
