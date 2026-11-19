@@ -1,0 +1,135 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Pontuação sazonal isolada por número de temporada.
+# PvP vale 25 pontos; abates de criaturas valem 5 pontos.
+# Estatísticas permanentes do personagem nunca são zeradas.
+
+on death of living entity:
+    if {rpg::season::active} is true:
+        if attacker is a player:
+            set {_id} to "%uuid of attacker%"
+            set {_season} to {rpg::season::current}
+            if victim is a player:
+                if attacker is not victim:
+                    add 25 to {rpg::season::%{_season}%::%{_id}%::score}
+                    add 1 to {rpg::season::%{_season}%::%{_id}%::pvp}
+            else:
+                add 5 to {rpg::season::%{_season}%::%{_id}%::score}
+                add 1 to {rpg::season::%{_season}%::%{_id}%::mob-kills}
+
+command /rpgtemporada <text> [<text>]:
+    permission: rpg.admin
+    permission message: &cVocê precisa da permissão rpg.admin.
+    trigger:
+        if arg-1 is "iniciar":
+            if {rpg::season::active} is true:
+                send "{@prefix}&cJá existe uma temporada ativa." to sender
+                stop
+            if arg-2 is not set:
+                send "{@prefix}&cUse: /rpgtemporada iniciar <nome>" to sender
+                stop
+            add 1 to {rpg::season::current}
+            set {_season} to {rpg::season::current}
+            set {rpg::season::%{_season}%::name} to arg-2
+            set {rpg::season::%{_season}%::started} to now
+            set {rpg::season::active} to true
+            broadcast "&6&lNOVA TEMPORADA! &eTemporada %{_season}%: &f%arg-2%"
+            broadcast "&7Pontuação: 25 por vitória PvP e 5 por criatura derrotada. Use /rankingtemporada."
+            stop
+        if arg-1 is "encerrar":
+            if {rpg::season::active} is not true:
+                send "{@prefix}&cNão existe temporada ativa." to sender
+                stop
+            set {_season} to {rpg::season::current}
+            set {_best-score} to -1
+            loop all players:
+                set {_id} to "%uuid of loop-player%"
+                set {_score} to {rpg::season::%{_season}%::%{_id}%::score}
+                if {_score} is not set:
+                    set {_score} to 0
+                if {_score} > {_best-score}:
+                    set {_best-score} to {_score}
+                    set {_winner} to name of loop-player
+                    set {_winner-id} to {_id}
+            if {_winner} is set:
+                set {rpg::season::%{_season}%::champion} to {_winner}
+                set {rpg::season::%{_season}%::champion-uuid} to {_winner-id}
+                set {rpg::season::%{_season}%::champion-score} to {_best-score}
+                broadcast "&6&lTEMPORADA ENCERRADA! &eCampeão: &f%{_winner}% &7com %{_best-score}% pontos."
+            else:
+                set {rpg::season::%{_season}%::champion} to "Sem campeão"
+                set {rpg::season::%{_season}%::champion-score} to 0
+                broadcast "&6&lTEMPORADA ENCERRADA! &7Nenhum jogador estava online para registrar o campeão."
+            set {rpg::season::%{_season}%::ended} to now
+            set {rpg::season::active} to false
+            stop
+        send "{@prefix}&eUse /rpgtemporada iniciar <nome> ou /rpgtemporada encerrar." to sender
+
+command /rankingtemporada:
+    aliases: /toptemporada
+    trigger:
+        if {rpg::season::current} is not set:
+            send "{@prefix}&7Nenhuma temporada foi criada ainda." to player
+            stop
+        set {_season} to {rpg::season::current}
+        send "&6&lRANKING DA TEMPORADA %{_season}% &8| &f%{rpg::season::%{_season}%::name}%" to player
+        set {_shown} to 0
+        loop 10 times:
+            set {_best-score} to -1
+            delete {_best-id}
+            loop all players:
+                set {_id} to "%uuid of loop-player%"
+                if {_id} is not in {_selected::*}:
+                    set {_score} to {rpg::season::%{_season}%::%{_id}%::score}
+                    if {_score} is not set:
+                        set {_score} to 0
+                    if {_score} > {_best-score}:
+                        set {_best-score} to {_score}
+                        set {_best-id} to {_id}
+                        set {_best-name} to name of loop-player
+            if {_best-id} is set:
+                add {_best-id} to {_selected::*}
+                add 1 to {_shown}
+                send "&e%{_shown}%. &f%{_best-name}% &8- &a%{_best-score}% pontos" to player
+        if {_shown} is 0:
+            send "&7Nenhum jogador online." to player
+        if {rpg::season::active} is true:
+            send "&aTemporada em andamento." to player
+        else:
+            send "&7Temporada encerrada. Campeão registrado: &f%{rpg::season::%{_season}%::champion}%" to player
+
+command /historicotemporadas:
+    trigger:
+        set {_current} to {rpg::season::current}
+        if {_current} is not set:
+            send "&7Ainda não há temporadas registradas." to player
+            stop
+        send "&6&lHISTÓRICO DE TEMPORADAS" to player
+        loop {_current} times:
+            set {_name} to {rpg::season::%loop-number%::name}
+            set {_champion} to {rpg::season::%loop-number%::champion}
+            set {_score} to {rpg::season::%loop-number%::champion-score}
+            if {_champion} is not set:
+                set {_champion} to "Em andamento"
+                set {_score} to 0
+            send "&e#%loop-number% &f%{_name}% &8| &6Campeão: &f%{_champion}% &8| &a%{_score}% pontos" to player
+
+command /pontostemporada:
+    trigger:
+        if {rpg::season::current} is not set:
+            send "&7Nenhuma temporada criada." to player
+            stop
+        set {_id} to "%uuid of player%"
+        set {_season} to {rpg::season::current}
+        set {_score} to {rpg::season::%{_season}%::%{_id}%::score}
+        set {_pvp} to {rpg::season::%{_season}%::%{_id}%::pvp}
+        set {_mobs} to {rpg::season::%{_season}%::%{_id}%::mob-kills}
+        if {_score} is not set:
+            set {_score} to 0
+        if {_pvp} is not set:
+            set {_pvp} to 0
+        if {_mobs} is not set:
+            set {_mobs} to 0
+        send "&6&lSEU DESEMPENHO SAZONAL" to player
+        send "&7Pontos: &a%{_score}% &8| &cVitórias PvP: %{_pvp}% &8| &eCriaturas: %{_mobs}%" to player
