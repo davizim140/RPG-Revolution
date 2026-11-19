@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.16.0 - Despertares para todas as classes
+- Guerreiro: 3% de chance de despertar como Colosso; /furia concede força III e resistência II.
+- Mago: 3% de chance de despertar como Arquimago; /arcano concede regeneração II e resistência I.
+- Arqueiro: 3% de chance de despertar como Olho Celestial; /precisao concede velocidade III e visão noturna.
+- Cada despertar tem passiva de dano, custo de mana e recarga próprios; /despertar exibe os poderes.
+
+
 ## 0.15.0 - Despertar de classe: Monarca das Sombras
 - Ao escolher Assassino pela primeira vez, o personagem tem 3% de chance de despertar.
 - Despertados recebem +2 de dano e desbloqueiam /sombra: velocidade III, força II e invisibilidade por 10 segundos, com custo de 35 mana e recarga de 30 segundos.
