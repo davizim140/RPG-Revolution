@@ -72,7 +72,7 @@ command /rpgajuda:
         send "&e/guildatransferir, /guildaexpulsar, /guildchat, /guildabanco, /guildasaldo, /guildacargo, /guildacargos, /guildanivel, /guildaguerra &7- Gestão, cargos, progressão e guerras de guilda." to player
         send "&e/pvpstatus &7- Estatísticas e conquistas PvP." to player
         send "&e/fabricarclasse <cajado|adaga|arco> &7- Armas exclusivas da sua classe." to player
-        send "&e/masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar] e /expedicaogrupo [normal|heroica|pesadelo|cancelar] &7- Expedições solo e cooperativas." to player
+        send "&e/masmorra [cancelar], /expedicao, /expedicaogrupo e /arenadungeon iniciar|status|cancelar &7- Masmorras e arenas." to player
         send "&e/guilda, /guildterritorio &7- Guildas e territórios." to player
         send "&e/guildcolheita e /guildpecuaria &7- Progressão agrícola, criação e reprodução de animais." to player
         send "&e/montaria &7- Consulte a evolução do seu cavalo domado." to player
