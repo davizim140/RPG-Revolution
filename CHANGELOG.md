@@ -1,3 +1,9 @@
+## 0.24.0 - Hierarquia e permissões de guilda
+- Adicionados os cargos líder, oficial e membro.
+- Líder pode promover/rebaixar oficiais; oficiais podem convidar e expulsar membros comuns.
+- /guildacargos lista os cargos dos integrantes.
+- Ajuda corrigida e atualizada com os comandos de cargos.
+
 # Changelog
 
 ## 0.21.0 - Evolução individual das sombras
