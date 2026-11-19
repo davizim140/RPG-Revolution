@@ -49,7 +49,7 @@ RPG de mundo aberto para Minecraft Java 26.3, com sistemas implementados em Skri
 - /missoes, /resgatar, /recompensadiaria, /contrato
 - /npc, /rpgnpc criar, /rpgnpc limpar, /missaoaceitar, /minhasmissoes, /missaoentregar
 - /rpgloja, /comprar, /mercado [listar|vender|comprar|cancelar], /rpgcraft, /fabricar
-- /fabricarclasse, /fabricararmadura, /equipamento, /aprimorar, /forjarlendaria <espada|machado|arco>, /poderarma, /maestriaarma, /melhorararma <espada|machado|arco>, /evolucaoarma
+- /fabricarclasse, /fabricararmadura, /evoluirarmadura, /evolucaoarmadura, /guardialendaria, /equipamento, /aprimorar, /forjarlendaria <espada|machado|arco>, /poderarma, /maestriaarma, /melhorararma <espada|machado|arco>, /evolucaoarma
 - /grupo, /grupocriar, /grupoconvidar, /grupoaceitar, /gruposair, /grupochutar
 - /masmorra [cancelar], /expedicao [normal|heroica|pesadelo|cancelar], /expedicaogrupo [normal|heroica|pesadelo|cancelar], /arenadungeon iniciar|status|cancelar, /chefemundial (admin), /invocarchefe guardiao|lich|draco, /chefeslendarios encerrar (admin), /raidchefe normal|heroica|pesadelo|status|cancelar, /raidarena configurar 1|2|3 (admin) ou normal|heroica|pesadelo|status|cancelar, /raidbau abrir|status
 - /guilda, /guildacriar, /guildaconvidar, /guildaaceitar, /guildasair, /guildainfo
@@ -218,3 +218,12 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - Cada nível acrescenta +2 de dano contra criaturas; no arco, o nível é registrado no disparo e aplicado quando a flecha atinge uma criatura.
 - /evolucaoarma mostra o progresso das três armas. O lore da arma segurada é atualizado no aprimoramento.
 - A evolução usa variáveis persistentes do Skript; não cria identificador NBT/PDC. Renomear a arma em bigorna ainda pode impedir o reconhecimento. É necessário validar sintaxe e combate em Paper real.
+
+
+### Armaduras lendárias evolutivas (0.63.0)
+- Cada peça da armadura de classe pode evoluir até o nível III; o progresso fica salvo por jogador e peça.
+- `/evoluirarmadura capacete|peitoral|calcas|botas` exige a peça da própria classe equipada no slot correto e custa 1 barra de netherita, 2 diamantes e 500 moedas por nível.
+- `/evolucaoarmadura` consulta os níveis das quatro peças.
+- Com o conjunto completo equipado, `/guardialendaria` ativa Resistência e Absorção temporárias; a potência depende da soma dos níveis das peças e há recarga de 90 segundos.
+- O conjunto completo também reduz dano recebido: 1 ponto quando a soma dos níveis é 4–7 e 2 pontos a partir de 8.
+- A identificação das peças continua baseada no nome do item; renomear em bigorna pode impedir o reconhecimento. Sintaxe, efeitos e equilíbrio precisam ser validados em Paper real; Actions verifica empacotamento, não runtime Skript.
