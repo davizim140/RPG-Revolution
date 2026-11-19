@@ -1,3 +1,9 @@
+## 0.53.0 - Drops exclusivos de chefes
+- Devorador das Ruínas: cada conclusão de expedição concede um equipamento exclusivo aleatório.
+- Titã da Fenda: cada participante registrado recebe dois sorteios de equipamento exclusivo.
+- Lâmina do Devorador (+3 dano contra criaturas), Couraça das Ruínas (redução de 3 dano) e Arco do Titã (+4 dano de flechas contra criaturas).
+- Equipamentos identificados pelo nome; renomeação pode afetar os bônus. Requer teste em Paper real.
+
 ## 0.52.0 - Combate montado
 - Abates de monstros enquanto o jogador monta seu próprio cavalo concedem 10 XP à montaria.
 - Ataques montados contra monstros recebem bônus de dano conforme o nível, limitado a +3.
