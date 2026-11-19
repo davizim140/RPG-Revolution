@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.0 - Encontros de masmorra mais seguros
+- Adicionado /masmorra cancelar para encerrar o encontro voluntariamente.
+- O chefe é removido quando o jogador desconecta, evitando encontros órfãos.
+- O UUID do chefe continua vinculando a recompensa ao encontro individual.
+
+
 ## 0.12.0 - HUD do personagem
 - Adicionada HUD na action bar com nível, XP, vida e mana, atualizada a cada 2 segundos.
 - Adicionado /rpghud on|off para controle individual.
