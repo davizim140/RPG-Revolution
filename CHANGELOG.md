@@ -1,3 +1,8 @@
+## 0.32.0 - Proteção de inventários e funis
+- Bloqueia transporte automático de itens quando o inventário de origem ou destino está dentro de território reivindicado.
+- Corrige referências de bloco nos verificadores de explosão e pistões.
+- A interação manual com baús continua protegida pelo bloqueio de clique em blocos para jogadores de fora da guilda.
+
 ## 0.31.0 - Proteção contra dispensers e droppers
 - Bloqueia ativações de dispensers e droppers instalados dentro de territórios reivindicados.
 - Corrige as referências aos blocos avaliados nos handlers de explosão e pistões.
