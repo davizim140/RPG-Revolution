@@ -75,3 +75,4 @@ command /rpgajuda:
         send "&e/guilda &7- Sistema de guildas." to player
         send "&e/regiao e /rpgmundos &7- Exploração e nível mínimo das regiões." to player
         send "&e/rpghud [on|off] &7- Ativar ou desativar a HUD." to player
+        send "&e/invasao iniciar|encerrar &7- Evento mundial (admin)." to player
