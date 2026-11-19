@@ -136,3 +136,85 @@ on damage:
     if {rpg::%{_id}%::awakening} is "olho_celestial":
         if attacker's tool is bow:
             increase damage by 3
+
+# Invocação de soldados de sombra: duas criaturas aliadas por 45 segundos.
+command /invocar:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::class} is not "assassino":
+            send "{@prefix}&cEste poder pertence ao Assassino." to player
+            stop
+        if {rpg::%{_id}%::awakening} is not "monarca_sombras":
+            send "{@prefix}&cVocê não possui o despertar Monarca das Sombras." to player
+            stop
+        if {rpg::%{_id}%::mana} < 50:
+            send "{@prefix}&cVocê precisa de 50 de mana." to player
+            stop
+        if {rpg::%{_id}%::skill-cooldown} > 0:
+            send "{@prefix}&cA habilidade recarrega em %{rpg::%{_id}%::skill-cooldown}% segundos." to player
+            stop
+        loop 2 times:
+            if {rpg::%{_id}%::shadow::%loop-number%} is set:
+                if {rpg::%{_id}%::shadow::%loop-number%} is alive:
+                    send "{@prefix}&cVocê já possui soldados de sombra ativos." to player
+                    stop
+                delete {rpg::%{_id}%::shadow::%loop-number%}
+        remove 50 from {rpg::%{_id}%::mana}
+        set {rpg::%{_id}%::skill-cooldown} to 60
+        loop 2 times:
+            spawn a wither skeleton at location of player
+            set {_soldier} to last spawned entity
+            set name of {_soldier} to "&5Soldado das Sombras"
+            set {rpg::%{_id}%::shadow::%loop-number%} to {_soldier}
+        send "{@prefix}&5&lEXÉRCITO DAS SOMBRAS! &7Dois soldados lutarão ao seu lado por 45 segundos." to player
+        wait 45 seconds
+        loop 2 times:
+            if {rpg::%{_id}%::shadow::%loop-number%} is set:
+                if {rpg::%{_id}%::shadow::%loop-number%} is alive:
+                    kill {rpg::%{_id}%::shadow::%loop-number%}
+                delete {rpg::%{_id}%::shadow::%loop-number%}
+
+command /sombras:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if {rpg::%{_id}%::awakening} is not "monarca_sombras":
+            send "{@prefix}&cVocê não possui o despertar Monarca das Sombras." to player
+            stop
+        set {_count} to 0
+        loop 2 times:
+            if {rpg::%{_id}%::shadow::%loop-number%} is set:
+                if {rpg::%{_id}%::shadow::%loop-number%} is alive:
+                    add 1 to {_count}
+        send "&5&lEXÉRCITO DAS SOMBRAS" to player
+        send "&7Soldados ativos: &f%{_count}%&7/2" to player
+        send "&7Invocação: &f/invocar &7(50 mana, recarga de 60 segundos)." to player
+
+# Os soldados priorizam criaturas atacadas pelo Monarca ou que o atacam.
+on damage:
+    attacker is a player
+    set {_ownerId} to "%uuid of attacker%"
+    if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
+        if victim is not a player:
+            loop 2 times:
+                if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
+                    if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
+                        set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to victim
+
+on damage:
+    victim is a player
+    set {_ownerId} to "%uuid of victim%"
+    if {rpg::%{_ownerId}%::awakening} is "monarca_sombras":
+        if attacker is a living entity:
+            loop 2 times:
+                if {rpg::%{_ownerId}%::shadow::%loop-number%} is set:
+                    if {rpg::%{_ownerId}%::shadow::%loop-number%} is alive:
+                        set target of {rpg::%{_ownerId}%::shadow::%loop-number%} to attacker
+
+on damage:
+    attacker is a wither skeleton
+    loop all players:
+        set {_ownerId} to "%uuid of loop-player%"
+        loop 2 times:
+            if {rpg::%{_ownerId}%::shadow::%loop-number%} is attacker:
+                if victim is loop-player:
+                    cancel event
