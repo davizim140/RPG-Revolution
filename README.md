@@ -257,3 +257,9 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - `/vitalidadeeterna` custa 1 ficha e concede Regeneração I; `/forcaeterna` custa 2 e adiciona 2 de dano contra criaturas; `/guardiaoeterno` custa 2 e concede Resistência I; `/menteeterna` custa 3 e acelera a regeneração de mana em +2 por ciclo.
 - Cada melhoria é única por personagem. Os efeitos são aplicados enquanto o jogador está online.
 - Necessário validar os efeitos, aliases e sintaxe em uma instância Paper real; o workflow de empacotamento não executa o Skript.
+
+
+### Títulos cosméticos (0.68.0)
+- `/titulos` lista títulos disponíveis e marcos necessários; `/titulo equipar <nome>` equipa e `/titulo remover` remove.
+- Aprendiz (nível 10), Veterano (25), Campeão (50), Lenda (100), Renascido (prestígio 1), Ascendente (5) e Eterno (10).
+- O título equipado aparece no `/perfil`. Os títulos são cosméticos e não concedem atributos ou vantagens de combate.
