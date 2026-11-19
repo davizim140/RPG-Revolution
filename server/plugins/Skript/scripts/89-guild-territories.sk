@@ -394,3 +394,28 @@ on entity portal:
                     if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
                         cancel event
                         stop
+
+
+# Evita que itens de dentro e de fora de um territorio sejam fundidos
+# em uma unica pilha na fronteira, o que poderia deslocar a pilha resultante.
+# O evento e cancelado somente quando exatamente um dos itens esta protegido.
+on item merge:
+    set {_firstLocation} to location of event-entity
+    set {_secondLocation} to location of future event-entity
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        set {_firstInside} to false
+        set {_secondInside} to false
+        if "%world of {_firstLocation}%" is {rpg::territory::%{_territory}%::world}:
+            set {_dxFirst} to (x-coordinate of {_firstLocation}) - {rpg::territory::%{_territory}%::x}
+            set {_dzFirst} to (z-coordinate of {_firstLocation}) - {rpg::territory::%{_territory}%::z}
+            if abs({_dxFirst}) <= {@territory-radius} and abs({_dzFirst}) <= {@territory-radius}:
+                set {_firstInside} to true
+        if "%world of {_secondLocation}%" is {rpg::territory::%{_territory}%::world}:
+            set {_dxSecond} to (x-coordinate of {_secondLocation}) - {rpg::territory::%{_territory}%::x}
+            set {_dzSecond} to (z-coordinate of {_secondLocation}) - {rpg::territory::%{_territory}%::z}
+            if abs({_dxSecond}) <= {@territory-radius} and abs({_dzSecond}) <= {@territory-radius}:
+                set {_secondInside} to true
+        if {_firstInside} is not {_secondInside}:
+            cancel event
+            stop
