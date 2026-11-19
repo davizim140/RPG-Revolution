@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.0 - HUD do personagem
+- Adicionada HUD na action bar com nível, XP, vida e mana, atualizada a cada 2 segundos.
+- Adicionado /rpghud on|off para controle individual.
+- Corrigida a documentação do alcance atual da proteção de regiões.
+
+
 ## 0.11.0 - Regiões com nível mínimo
 - Regiões configuradas agora bloqueiam teletransportes entre mundos quando o personagem não atende ao nível mínimo.
 - /regiao mostra o nível exigido e o nível atual do jogador.
