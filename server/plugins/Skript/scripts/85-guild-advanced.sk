@@ -30,17 +30,23 @@ command /guildaexpulsar <player>:
             send "{@prefix}&cVocê não pertence a uma guilda." to player
             stop
         if {rpg::guild::%{_guild}%::leader} is not {_id}:
-            send "{@prefix}&cSomente o líder pode expulsar integrantes." to player
-            stop
+            if {rpg::%{_id}%::guild-role} is not "officer":
+                send "{@prefix}&cSomente líder ou oficial pode expulsar integrantes." to player
+                stop
         set {_target} to "%uuid of arg-1%"
         if {_target} is {_id}:
             send "{@prefix}&cUse /guildasair ou transfira a liderança." to player
             stop
+        if {rpg::%{_target}%::guild-role} is "officer":
+            if {rpg::guild::%{_guild}%::leader} is not {_id}:
+                send "{@prefix}&cSomente o líder pode expulsar um oficial." to player
+                stop
         if {rpg::%{_target}%::guild} is not {_guild}:
             send "{@prefix}&cEsse jogador não pertence à sua guilda." to player
             stop
         remove {_target} from {rpg::guild::%{_guild}%::members::*}
         delete {rpg::%{_target}%::guild}
+        delete {rpg::%{_target}%::guild-role}
         send "{@prefix}&cVocê foi removido da guilda &e%{_guild}%&c." to arg-1
         send "{@prefix}&aIntegrante removido." to player
 
