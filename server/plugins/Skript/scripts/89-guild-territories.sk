@@ -319,3 +319,21 @@ on vehicle destroy:
                 if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
                     cancel event
                     stop
+
+# Impede que jogadores de outras guildas recolham itens do chao
+# dentro de territorios reivindicados. Membros da guilda proprietaria
+# continuam podendo recolher os itens normalmente.
+on player pickup:
+    set {_dropLocation} to location of event-dropped item
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if "%world of {_dropLocation}%" is {rpg::territory::%{_territory}%::world}:
+            set {_dx} to (x-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+                set {_owner} to {rpg::territory::%{_territory}%::guild}
+                set {_playerId} to "%uuid of event-player%"
+                if {rpg::%{_playerId}%::guild} is not {_owner}:
+                    cancel event
+                    send "{@prefix}&cOs itens desta área estão protegidos pela guilda &e%{_owner}%&c." to event-player
+                stop
