@@ -1,7 +1,7 @@
 options:
     prefix: &8[&6RPG Revolution&8] &r
 
-# Each Minecraft world can represent one RPG region.
+# Each Minecraft world represents an RPG region.
 # Admin: /rpgregiao definir <nome> <nivel-minimo>
 command /rpgregiao [<text>] [<text>] [<integer>]:
     permission: rpg.admin
@@ -9,17 +9,24 @@ command /rpgregiao [<text>] [<text>] [<integer>]:
     trigger:
         if arg-1 is "definir":
             if arg-2 is not set or arg-3 is not set:
-                send "{@prefix}&cUse /rpgregiao definir <nome> <nivel-minimo>." to sender
+                send "{@prefix}&cUse /rpgregiao definir <nome> <nivel-minimo>." to player
                 stop
             if arg-3 < 1:
-                send "{@prefix}&cO nível mínimo precisa ser pelo menos 1." to sender
+                send "{@prefix}&cO nível mínimo precisa ser pelo menos 1." to player
                 stop
             set {_world} to "%world of player%"
             set {rpg::world::%{_world}%::name} to arg-2
             set {rpg::world::%{_world}%::min-level} to arg-3
-            send "{@prefix}&aRegião %{_world}% configurada como &e%arg-2%&a. Nível recomendado: &f%arg-3%&a." to player
+            send "{@prefix}&aRegião %{_world}% configurada como &e%arg-2%&a. Nível mínimo de entrada: &f%arg-3%&a." to player
             stop
-        send "{@prefix}&eUso: /rpgregiao definir <nome> <nivel-minimo>" to sender
+        if arg-1 is "remover":
+            set {_world} to "%world of player%"
+            delete {rpg::world::%{_world}%::name}
+            delete {rpg::world::%{_world}%::min-level}
+            send "{@prefix}&aA restrição da região deste mundo foi removida." to player
+            stop
+        send "{@prefix}&e/rpgregiao definir <nome> <nivel-minimo> &7- Configura este mundo." to player
+        send "{@prefix}&e/rpgregiao remover &7- Remove a configuração deste mundo." to player
 
 command /regiao:
     aliases: /regioes
@@ -28,7 +35,9 @@ command /regiao:
         if {rpg::world::%{_world}%::name} is set:
             send "&6&lREGIÃO ATUAL" to player
             send "&eRegião: &f%{rpg::world::%{_world}%::name}%" to player
-            send "&eNível recomendado: &f%{rpg::world::%{_world}%::min-level}%" to player
+            send "&eNível mínimo: &f%{rpg::world::%{_world}%::min-level}%" to player
+            set {_id} to "%uuid of player%"
+            send "&eSeu nível: &f%{rpg::%{_id}%::level}%" to player
         else:
             send "&6&lREGIÃO ATUAL" to player
             send "&eMundo: &f%{_world}%" to player
@@ -37,5 +46,20 @@ command /regiao:
 command /rpgmundos:
     trigger:
         send "&6&lGUIA DE EXPLORAÇÃO" to player
-        send "&7Cada mundo pode receber nome e nível recomendado com /rpgregiao definir."
-        send "&7O nível recomendado é informativo; não bloqueia a entrada automaticamente." to player
+        send "&7Cada mundo pode receber nome e nível mínimo com /rpgregiao definir."
+        send "&7A entrada em mundos configurados é bloqueada para personagens abaixo do nível exigido."
+
+# Deny cross-world teleports into regions when the character is under-level.
+# This covers portals and plugin/player teleports that fire the teleport event.
+on teleport:
+    if world of event-location is not world of player:
+        set {_destinationWorld} to "%world of event-location%"
+        if {rpg::world::%{_destinationWorld}%::min-level} is set:
+            set {_id} to "%uuid of player%"
+            set {_required} to {rpg::world::%{_destinationWorld}%::min-level}
+            set {_level} to {rpg::%{_id}%::level}
+            if {_level} is not set:
+                set {_level} to 1
+            if {_level} < {_required}:
+                cancel event
+                send "{@prefix}&cVocê precisa estar no nível &e%{_required}%&c para entrar em &6%{rpg::world::%{_destinationWorld}%::name}%&c. Seu nível: &f%{_level}%&c." to player
