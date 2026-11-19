@@ -1,3 +1,7 @@
+## 0.29.0 - Proteção contra fluxo de líquidos
+- Fluxos de água e lava são cancelados quando a origem está dentro do território ou na margem externa de um bloco.
+- A margem evita que um fluxo iniciado imediatamente fora atravesse a borda em uma etapa.
+
 ## 0.28.0 - Proteção contra fogo em territórios
 - Eventos de ignição e propagação de fogo são cancelados dentro de territórios reivindicados.
 - A proteção também impede fogo natural dentro da área; não altera dano de entidades.
