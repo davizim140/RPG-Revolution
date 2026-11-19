@@ -103,6 +103,6 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 ### Progressão de agricultura (0.46.0)
 - Cada colheita madura válida concede 5 XP de agricultura.
 - A experiência necessária para o próximo nível é 100 × nível atual.
-- Cada nível concede 50 moedas; níveis múltiplos de 5 concedem mais 100 moedas.
+- Cada nível concede 50 moedas; níveis múltiplos de 5 concedem mais 100 moedas e desbloqueiam títulos: Agricultor Experiente (5), Cultivador Veterano (10) e Mestre da Colheita (15).
 - O comando /guildcolheita agora mostra nível e XP individuais, além das estatísticas da guilda.
 - A progressão é individual e persistente; somente colheitas em territórios da própria guilda contam.
