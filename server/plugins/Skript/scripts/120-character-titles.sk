@@ -1,0 +1,99 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+
+# Títulos cosméticos desbloqueados por marcos de nível e prestígio.
+
+command /titulos:
+    aliases: /meustitulos
+    trigger:
+        set {_id} to "%uuid of player%"
+        set {_level} to {rpg::%{_id}%::level}
+        set {_prestige} to {rpg::%{_id}%::prestige}
+        if {_prestige} is not set:
+            set {_prestige} to 0
+        if {_level} >= 10:
+            set {rpg::%{_id}%::title-unlocked::aprendiz} to true
+        if {_level} >= 25:
+            set {rpg::%{_id}%::title-unlocked::veterano} to true
+        if {_level} >= 50:
+            set {rpg::%{_id}%::title-unlocked::campeao} to true
+        if {_level} >= 100:
+            set {rpg::%{_id}%::title-unlocked::lenda} to true
+        if {_prestige} >= 1:
+            set {rpg::%{_id}%::title-unlocked::renascido} to true
+        if {_prestige} >= 5:
+            set {rpg::%{_id}%::title-unlocked::ascendente} to true
+        if {_prestige} >= 10:
+            set {rpg::%{_id}%::title-unlocked::eterno} to true
+        send "&6&lTÍTULOS DO PERSONAGEM" to player
+        send "&7Desbloqueios por nível e prestígio:" to player
+        if {rpg::%{_id}%::title-unlocked::aprendiz} is true:
+            send "&a✓ &fAprendiz &7(/titulo equipar aprendiz)" to player
+        else:
+            send "&8✗ Aprendiz — nível 10" to player
+        if {rpg::%{_id}%::title-unlocked::veterano} is true:
+            send "&a✓ &fVeterano &7(/titulo equipar veterano)" to player
+        else:
+            send "&8✗ Veterano — nível 25" to player
+        if {rpg::%{_id}%::title-unlocked::campeao} is true:
+            send "&a✓ &6Campeão &7(/titulo equipar campeao)" to player
+        else:
+            send "&8✗ Campeão — nível 50" to player
+        if {rpg::%{_id}%::title-unlocked::lenda} is true:
+            send "&a✓ &dLenda &7(/titulo equipar lenda)" to player
+        else:
+            send "&8✗ Lenda — nível 100" to player
+        if {rpg::%{_id}%::title-unlocked::renascido} is true:
+            send "&a✓ &bRenascido &7(/titulo equipar renascido)" to player
+        else:
+            send "&8✗ Renascido — prestígio 1" to player
+        if {rpg::%{_id}%::title-unlocked::ascendente} is true:
+            send "&a✓ &5Ascendente &7(/titulo equipar ascendente)" to player
+        else:
+            send "&8✗ Ascendente — prestígio 5" to player
+        if {rpg::%{_id}%::title-unlocked::eterno} is true:
+            send "&a✓ &eEterno &7(/titulo equipar eterno)" to player
+        else:
+            send "&8✗ Eterno — prestígio 10" to player
+        set {_equipped} to {rpg::%{_id}%::title}
+        if {_equipped} is set:
+            send "&7Título equipado: &f%{_equipped}%" to player
+        else:
+            send "&7Título equipado: &8nenhum" to player
+
+command /titulo <text> [<text>]:
+    trigger:
+        set {_id} to "%uuid of player%"
+        if arg-1 is "remover":
+            delete {rpg::%{_id}%::title}
+            send "{@prefix}&aTítulo removido." to player
+            stop
+        if arg-1 is not "equipar":
+            send "{@prefix}&eUse /titulo equipar <nome> ou /titulo remover." to player
+            stop
+        if arg-2 is not set:
+            send "{@prefix}&eInforme o nome. Consulte /titulos." to player
+            stop
+        set {_level} to {rpg::%{_id}%::level}
+        set {_prestige} to {rpg::%{_id}%::prestige}
+        if {_prestige} is not set:
+            set {_prestige} to 0
+        if {_level} >= 10:
+            set {rpg::%{_id}%::title-unlocked::aprendiz} to true
+        if {_level} >= 25:
+            set {rpg::%{_id}%::title-unlocked::veterano} to true
+        if {_level} >= 50:
+            set {rpg::%{_id}%::title-unlocked::campeao} to true
+        if {_level} >= 100:
+            set {rpg::%{_id}%::title-unlocked::lenda} to true
+        if {_prestige} >= 1:
+            set {rpg::%{_id}%::title-unlocked::renascido} to true
+        if {_prestige} >= 5:
+            set {rpg::%{_id}%::title-unlocked::ascendente} to true
+        if {_prestige} >= 10:
+            set {rpg::%{_id}%::title-unlocked::eterno} to true
+        if {rpg::%{_id}%::title-unlocked::%arg-2%} is not true:
+            send "{@prefix}&cTítulo bloqueado ou inexistente. Consulte /titulos." to player
+            stop
+        set {rpg::%{_id}%::title} to arg-2
+        send "{@prefix}&aTítulo &e%arg-2% &aequipado! Ele aparece no seu /perfil." to player
