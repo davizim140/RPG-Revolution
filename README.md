@@ -303,3 +303,13 @@ O GitHub Actions verifica estrutura, ausência de marcadores de placeholder e em
 - `/rpgtemporada iniciar <nome>` continua disponível para temporadas manuais. Temporadas automáticas usam nomes numerados.
 - O agendador verifica o prazo uma vez por minuto; o horário efetivo pode atrasar até aproximadamente um minuto.
 - Requer validação em Paper/Skript real: o workflow do GitHub verifica apenas estrutura e empacotamento.
+
+
+### Modo solo da Raid Arena, /spawn, /party e menu RPG
+- A Raid Arena aceita um único participante válido; não é mais obrigatório ter dois membros online no grupo.
+- Quando apenas um jogador participa, o Titã recebe 60% da vida configurada para a dificuldade escolhida. Em grupo, a vida original permanece.
+- `/party` é um alias de `/grupo`; os demais comandos de grupo continuam disponíveis, como `/grupocriar`, `/grupoconvidar <jogador>`, `/grupoaceitar` e `/gruposair`.
+- `/spawn` teleporta o jogador ao ponto de spawn do mundo atual.
+- O primeiro acesso entrega uma bússola encantada chamada **MENU RPG**. Clique com o botão direito para abrir o menu de atalhos. `/menurpg` (alias `/menu`) abre o menu manualmente e `/menuitem` entrega uma bússola substituta caso o item seja perdido.
+- Os atalhos incluem Spawn, Perfil, Raid Arena normal, Party, Baú de Raid, Atributos e Ajuda.
+- Requer recarga e validação no Paper/Skript real; o workflow do GitHub verifica estrutura e empacotamento, não a execução dos eventos e inventários.
