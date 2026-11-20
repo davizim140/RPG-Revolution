@@ -100,15 +100,15 @@ command /artefato [<text>] [<text>]:
             set {_solar} to 0
             set {_abyss} to 0
             loop "anel", "amuleto", "reliquia" and "charme":
-                set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value-2%}
+                set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value%}
                 if {_name} is set:
-                    send "&e%loop-value-2%: &f%{_name}%" to player
+                    send "&e%loop-value%: &f%{_name}%" to player
                     if {rpg::%{_id}%::artifact::set::%{_name}%} is "solar":
                         add 1 to {_solar}
                     else if {rpg::%{_id}%::artifact::set::%{_name}%} is "abissal":
                         add 1 to {_abyss}
                 else:
-                    send "&7%loop-value-2%: &8Vazio" to player
+                    send "&7%loop-value%: &8Vazio" to player
             send "&6Conjunto Solar: &f%{_solar}%/4 &8| &6Conjunto Abissal: &f%{_abyss}%/4" to player
             stop
         send "{@prefix}&cSubcomando inválido. Use /artefato." to player
@@ -164,7 +164,7 @@ command /despertarartefato:
         set {_solar} to 0
         set {_abyss} to 0
         loop "anel", "amuleto", "reliquia" and "charme":
-            set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value-2%}
+            set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value%}
             if {_name} is set:
                 if {rpg::%{_id}%::artifact::set::%{_name}%} is "solar":
                     add 1 to {_solar}
