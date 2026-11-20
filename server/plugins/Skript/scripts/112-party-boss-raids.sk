@@ -37,7 +37,14 @@ command /raidchefe [<text>]:
         if {rpg::raidboss::%{_party}%::active} is true:
             send "{@prefix}&cSeu grupo já tem uma raid ativa." to player
             stop
-        if arg-1 is not "normal" and arg-1 is not "heroica" and arg-1 is not "pesadelo":
+        set {_validDifficulty} to false
+        if arg-1 is "normal":
+            set {_validDifficulty} to true
+        if arg-1 is "heroica":
+            set {_validDifficulty} to true
+        if arg-1 is "pesadelo":
+            set {_validDifficulty} to true
+        if {_validDifficulty} is false:
             send "{@prefix}&e/raidchefe normal|heroica|pesadelo|status|cancelar" to player
             stop
         set {_difficulty} to arg-1
