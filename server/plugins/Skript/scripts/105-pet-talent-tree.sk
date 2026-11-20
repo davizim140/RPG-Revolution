@@ -46,18 +46,31 @@ command /pettalento <text>:
             send "{@prefix}&cEsse talento já foi desbloqueado." to player
             stop
         set {_type} to {rpg::%{_id}%::pet::type}
+        set {_validTalent} to false
         if {_type} is "lobo":
-            if {_talent} is not "mordida" and {_talent} is not "guardiao" and {_talent} is not "rastreador":
-                send "{@prefix}&cTalento inválido para lobo. Use /pettrilha." to player
-                stop
+            if {_talent} is "mordida":
+                set {_validTalent} to true
+            if {_talent} is "guardiao":
+                set {_validTalent} to true
+            if {_talent} is "rastreador":
+                set {_validTalent} to true
         else if {_type} is "gato":
-            if {_talent} is not "ronronar" and {_talent} is not "reflexo" and {_talent} is not "vigia":
-                send "{@prefix}&cTalento inválido para gato. Use /pettrilha." to player
-                stop
+            if {_talent} is "ronronar":
+                set {_validTalent} to true
+            if {_talent} is "reflexo":
+                set {_validTalent} to true
+            if {_talent} is "vigia":
+                set {_validTalent} to true
         else:
-            if {_talent} is not "corrente" and {_talent} is not "plumagem" and {_talent} is not "observador":
-                send "{@prefix}&cTalento inválido para papagaio. Use /pettrilha." to player
-                stop
+            if {_talent} is "corrente":
+                set {_validTalent} to true
+            if {_talent} is "plumagem":
+                set {_validTalent} to true
+            if {_talent} is "observador":
+                set {_validTalent} to true
+        if {_validTalent} is false:
+            send "{@prefix}&cTalento inválido para sua espécie. Use /pettrilha." to player
+            stop
         set {_level} to {rpg::%{_id}%::pet::level}
         if {_level} is not set:
             set {_level} to 1
