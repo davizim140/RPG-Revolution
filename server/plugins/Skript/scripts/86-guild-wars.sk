@@ -82,9 +82,10 @@ on death of player:
     if {rpg::guildwar::active} is true:
         set {_killerGuild} to {rpg::%uuid of attacker%::guild}
         set {_victimGuild} to {rpg::%uuid of victim%::guild}
-        if {_killerGuild} is set and {_victimGuild} is set:
-            if {_killerGuild} is not {_victimGuild}:
-                if {_killerGuild} is {rpg::guildwar::challenger} or {_killerGuild} is {rpg::guildwar::defender}:
-                    if {_victimGuild} is {rpg::guildwar::challenger} or {_victimGuild} is {rpg::guildwar::defender}:
-                        add 1 to {rpg::guildwar::score::%{_killerGuild}%}
-                        broadcast "{@prefix}&c%attacker% derrotou %victim%! &7Placar: %{rpg::guildwar::score::%{rpg::guildwar::challenger}%}% x %{rpg::guildwar::score::%{rpg::guildwar::defender}%}%" 
+        if {_killerGuild} is set:
+            if {_victimGuild} is set:
+                if {_killerGuild} is not {_victimGuild}:
+                    if {_killerGuild} is {rpg::guildwar::challenger} or {_killerGuild} is {rpg::guildwar::defender}:
+                        if {_victimGuild} is {rpg::guildwar::challenger} or {_victimGuild} is {rpg::guildwar::defender}:
+                            add 1 to {rpg::guildwar::score::%{_killerGuild}%}
+                            broadcast "{@prefix}&c%attacker% derrotou %victim%! &7Placar: %{rpg::guildwar::score::%{rpg::guildwar::challenger}%}% x %{rpg::guildwar::score::%{rpg::guildwar::defender}%}%" 
