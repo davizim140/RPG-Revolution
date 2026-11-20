@@ -8,16 +8,16 @@ command /rpgregiao [<text>] [<text>] [<integer>]:
     permission message: &cVocê não tem permissão para configurar regiões.
     trigger:
         if arg-1 is "definir":
-            if arg-2 is not set or arg-3 is not set:
+            if argument 2 is not set or argument 3 is not set:
                 send "{@prefix}&cUse /rpgregiao definir <nome> <nivel-minimo>." to player
                 stop
-            if arg-3 < 1:
+            if argument 3 < 1:
                 send "{@prefix}&cO nível mínimo precisa ser pelo menos 1." to player
                 stop
             set {_world} to "%world of player%"
-            set {rpg::world::%{_world}%::name} to arg-2
-            set {rpg::world::%{_world}%::min-level} to arg-3
-            send "{@prefix}&aRegião %{_world}% configurada como &e%arg-2%&a. Nível mínimo de entrada: &f%arg-3%&a." to player
+            set {rpg::world::%{_world}%::name} to argument 2
+            set {rpg::world::%{_world}%::min-level} to argument 3
+            send "{@prefix}&aRegião %{_world}% configurada como &e%argument 2%&a. Nível mínimo de entrada: &f%argument 3%&a." to player
             stop
         if arg-1 is "remover":
             set {_world} to "%world of player%"
