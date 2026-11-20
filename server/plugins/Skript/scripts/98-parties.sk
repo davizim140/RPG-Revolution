@@ -7,11 +7,10 @@ command /grupo:
         set {_id} to "%uuid of player%"
         set {_party} to {rpg::%{_id}%::party}
         if {_party} is not set:
-            send "&6&lGRUPOS" to player
-            send "&e/grupocriar" to player
-            send "&e/grupoconvidar <jogador>" to player
-            send "&e/grupoaceitar" to player
-            send "&e/gruposair" to player
+            set {rpg::%{_id}%::party} to {_id}
+            set {rpg::party::%{_id}%::leader} to {_id}
+            add {_id} to {rpg::party::%{_id}%::members::*}
+            send "{@prefix}&aParty criada! Você é o líder. Use /grupoconvidar <jogador> para chamar alguém." to player
             stop
         send "&6&lGRUPO" to player
         send "&7Líder UUID: &f%{_party}%" to player
