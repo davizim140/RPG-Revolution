@@ -36,3 +36,14 @@
 - A rotação automática depende do relógio do sistema do servidor.
 - O teste de prazo real de um dia não é instantâneo; não altere variáveis internas manualmente em produção.
 - Só considere o sistema aprovado depois de conferir o console e os resultados dentro do servidor.
+
+
+## Teste do modo solo, comandos e menu
+1. Execute `/sk reload 98-parties`, `/sk reload 113-raid-arenas` e `/sk reload 124-spawn-party-menu`. Corrija qualquer erro antes de prosseguir.
+2. Entre sozinho, execute `/party` e confirme que o alias responde ao comando de grupo.
+3. Configure os três pontos com uma conta admin: `/raidarena configurar 1`, `/raidarena configurar 2` e `/raidarena configurar 3`.
+4. Com nível 10+, execute `/raidarena normal` sem convidar ninguém. Deve iniciar em modo solo; o Titã deve ter 300 de vida (60% dos 500 normais). Derrote as três salas e confira as recompensas e os baús.
+5. Repita em Heroica (nível 20+) e Pesadelo (nível 35+) somente depois de validar o modo normal; a vida solo esperada do Titã é 540 e 840, respectivamente.
+6. Execute `/spawn` e confirme o teleporte ao spawn do mundo atual.
+7. Confira se a bússola encantada **MENU RPG** é entregue no primeiro acesso. Clique com o botão direito e teste cada atalho. Teste também `/menurpg` e `/menuitem`.
+8. Para testar cooperação, crie um grupo com outra conta, convide-a e inicie a raid com os dois próximos no mesmo mundo. A vida normal do Titã deve ser mantida.
