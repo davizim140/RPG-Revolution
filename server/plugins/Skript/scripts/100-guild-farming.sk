@@ -40,7 +40,10 @@ on break:
                                     else:
                                         set {rpg::%{_uuid}%::farm::title} to "Aprendiz Rural"
                                     send "{@prefix}&aAgricultura subiu para o nível &e%{rpg::%{_uuid}%::farm::level}%&a! Recompensa: &e50 moedas&a." to player
-                                    if {rpg::%{_uuid}%::farm::level} mod 5 is 0:
+                                    set {_currentMilestone} to floor({rpg::%{_uuid}%::farm::level} / 5)
+                                    set {_previousLevel} to {rpg::%{_uuid}%::farm::level} - 1
+                                    set {_previousMilestone} to floor({_previousLevel} / 5)
+                                    if {_currentMilestone} > {_previousMilestone}:
                                         add 100 to {rpg::%{_uuid}%::coins}
                                         send "{@prefix}&6Novo título: &e%{rpg::%{_uuid}%::farm::title}%&6! Bônus: &e+100 moedas." to player
                             stop
