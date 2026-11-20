@@ -16,33 +16,34 @@ on break:
                 if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
                     set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
                     set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-                    if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                        if {rpg::territory::%{_territory}%::guild} is {_guild}:
-                            add 1 to {rpg::%{_uuid}%::farm::harvests}
-                            add 1 to {rpg::guild::%{_guild}%::farm::harvests}
-                            if {rpg::%{_uuid}%::farm::level} is not set:
-                                set {rpg::%{_uuid}%::farm::level} to 1
-                            if {rpg::%{_uuid}%::farm::xp} is not set:
-                                set {rpg::%{_uuid}%::farm::xp} to 0
-                            add 5 to {rpg::%{_uuid}%::farm::xp}
-                            while {rpg::%{_uuid}%::farm::xp} >= ({rpg::%{_uuid}%::farm::level} * 100):
-                                set {_needed} to {rpg::%{_uuid}%::farm::level} * 100
-                                remove {_needed} from {rpg::%{_uuid}%::farm::xp}
-                                add 1 to {rpg::%{_uuid}%::farm::level}
-                                add 50 to {rpg::%{_uuid}%::coins}
-                                if {rpg::%{_uuid}%::farm::level} >= 15:
-                                    set {rpg::%{_uuid}%::farm::title} to "Mestre da Colheita"
-                                else if {rpg::%{_uuid}%::farm::level} >= 10:
-                                    set {rpg::%{_uuid}%::farm::title} to "Cultivador Veterano"
-                                else if {rpg::%{_uuid}%::farm::level} >= 5:
-                                    set {rpg::%{_uuid}%::farm::title} to "Agricultor Experiente"
-                                else:
-                                    set {rpg::%{_uuid}%::farm::title} to "Aprendiz Rural"
-                                send "{@prefix}&aAgricultura subiu para o nível &e%{rpg::%{_uuid}%::farm::level}%&a! Recompensa: &e50 moedas&a." to player
-                                if {rpg::%{_uuid}%::farm::level} mod 5 is 0:
-                                    add 100 to {rpg::%{_uuid}%::coins}
-                                    send "{@prefix}&6Novo título: &e%{rpg::%{_uuid}%::farm::title}%&6! Bônus: &e+100 moedas." to player
-                        stop
+                    if abs({_dx}) <= {@territory-radius}:
+                        if abs({_dz}) <= {@territory-radius}:
+                            if {rpg::territory::%{_territory}%::guild} is {_guild}:
+                                add 1 to {rpg::%{_uuid}%::farm::harvests}
+                                add 1 to {rpg::guild::%{_guild}%::farm::harvests}
+                                if {rpg::%{_uuid}%::farm::level} is not set:
+                                    set {rpg::%{_uuid}%::farm::level} to 1
+                                if {rpg::%{_uuid}%::farm::xp} is not set:
+                                    set {rpg::%{_uuid}%::farm::xp} to 0
+                                add 5 to {rpg::%{_uuid}%::farm::xp}
+                                while {rpg::%{_uuid}%::farm::xp} >= ({rpg::%{_uuid}%::farm::level} * 100):
+                                    set {_needed} to {rpg::%{_uuid}%::farm::level} * 100
+                                    remove {_needed} from {rpg::%{_uuid}%::farm::xp}
+                                    add 1 to {rpg::%{_uuid}%::farm::level}
+                                    add 50 to {rpg::%{_uuid}%::coins}
+                                    if {rpg::%{_uuid}%::farm::level} >= 15:
+                                        set {rpg::%{_uuid}%::farm::title} to "Mestre da Colheita"
+                                    else if {rpg::%{_uuid}%::farm::level} >= 10:
+                                        set {rpg::%{_uuid}%::farm::title} to "Cultivador Veterano"
+                                    else if {rpg::%{_uuid}%::farm::level} >= 5:
+                                        set {rpg::%{_uuid}%::farm::title} to "Agricultor Experiente"
+                                    else:
+                                        set {rpg::%{_uuid}%::farm::title} to "Aprendiz Rural"
+                                    send "{@prefix}&aAgricultura subiu para o nível &e%{rpg::%{_uuid}%::farm::level}%&a! Recompensa: &e50 moedas&a." to player
+                                    if {rpg::%{_uuid}%::farm::level} mod 5 is 0:
+                                        add 100 to {rpg::%{_uuid}%::coins}
+                                        send "{@prefix}&6Novo título: &e%{rpg::%{_uuid}%::farm::title}%&6! Bônus: &e+100 moedas." to player
+                            stop
 
 command /guildcolheita:
     trigger:
