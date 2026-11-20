@@ -38,9 +38,10 @@ command /guildterritorio [<text>]:
                 if {rpg::territory::%{_territory}%::world} is {_world}:
                     set {_dx} to {_x} - {rpg::territory::%{_territory}%::x}
                     set {_dz} to {_z} - {rpg::territory::%{_territory}%::z}
-                    if abs({_dx}) <= 32 and abs({_dz}) <= 32:
-                        send "{@prefix}&cJá existe um território próximo. Escolha outra área." to player
-                        stop
+                    if abs({_dx}) <= 32:
+                        if abs({_dz}) <= 32:
+                            send "{@prefix}&cJá existe um território próximo. Escolha outra área." to player
+                            stop
             set {_key} to "%{_world}%:%{_x}%:%{_z}%"
             if {rpg::territory::%{_key}%::guild} is set:
                 send "{@prefix}&cEsta área já foi reivindicada." to player
@@ -61,11 +62,12 @@ command /guildterritorio [<text>]:
                 if {rpg::territory::%{_territory}%::world} is "%world of player%":
                     set {_dx} to (floor(x-coordinate of player)) - {rpg::territory::%{_territory}%::x}
                     set {_dz} to (floor(z-coordinate of player)) - {rpg::territory::%{_territory}%::z}
-                    if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                        set {_owner} to {rpg::territory::%{_territory}%::guild}
-                        send "{@prefix}&eTerritório pertencente à guilda &6%{_owner}%&e." to player
-                        set {_found} to true
-                        stop
+                    if abs({_dx}) <= {@territory-radius}:
+                        if abs({_dz}) <= {@territory-radius}:
+                            set {_owner} to {rpg::territory::%{_territory}%::guild}
+                            send "{@prefix}&eTerritório pertencente à guilda &6%{_owner}%&e." to player
+                            set {_found} to true
+                            stop
             if {_found} is false:
                 send "{@prefix}&7Esta área não pertence a nenhuma guilda." to player
             stop
@@ -79,13 +81,14 @@ command /guildterritorio [<text>]:
                 if {rpg::territory::%{_territory}%::world} is "%world of player%":
                     set {_dx} to (floor(x-coordinate of player)) - {rpg::territory::%{_territory}%::x}
                     set {_dz} to (floor(z-coordinate of player)) - {rpg::territory::%{_territory}%::z}
-                    if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                        remove {_territory} from {rpg::territories::*}
-                        remove {_territory} from {rpg::guild::%{_guild}%::territories::*}
-                        delete {rpg::territory::%{_territory}%::*}
-                        send "{@prefix}&aTerritório abandonado. O custo não é reembolsado." to player
-                        set {_found} to true
-                        stop
+                    if abs({_dx}) <= {@territory-radius}:
+                        if abs({_dz}) <= {@territory-radius}:
+                            remove {_territory} from {rpg::territories::*}
+                            remove {_territory} from {rpg::guild::%{_guild}%::territories::*}
+                            delete {rpg::territory::%{_territory}%::*}
+                            send "{@prefix}&aTerritório abandonado. O custo não é reembolsado." to player
+                            set {_found} to true
+                            stop
             if {_found} is false:
                 send "{@prefix}&cSua guilda não possui território nesta posição." to player
             stop
@@ -97,13 +100,14 @@ on break:
         if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
             set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                set {_owner} to {rpg::territory::%{_territory}%::guild}
-                set {_id} to "%uuid of player%"
-                if {rpg::%{_id}%::guild} is not {_owner}:
-                    cancel event
-                    send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    set {_owner} to {rpg::territory::%{_territory}%::guild}
+                    set {_id} to "%uuid of player%"
+                    if {rpg::%{_id}%::guild} is not {_owner}:
+                        cancel event
+                        send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
+                    stop
 
 on place:
     loop {rpg::territories::*}:
@@ -111,13 +115,14 @@ on place:
         if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
             set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                set {_owner} to {rpg::territory::%{_territory}%::guild}
-                set {_id} to "%uuid of player%"
-                if {rpg::%{_id}%::guild} is not {_owner}:
-                    cancel event
-                    send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    set {_owner} to {rpg::territory::%{_territory}%::guild}
+                    set {_id} to "%uuid of player%"
+                    if {rpg::%{_id}%::guild} is not {_owner}:
+                        cancel event
+                        send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
+                    stop
 
 on right click:
     if clicked block is set:
@@ -126,27 +131,29 @@ on right click:
             if {rpg::territory::%{_territory}%::world} is "%world of clicked block%":
                 set {_dx} to (x-coordinate of clicked block) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of clicked block) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                    set {_owner} to {rpg::territory::%{_territory}%::guild}
-                    set {_id} to "%uuid of player%"
-                    if {rpg::%{_id}%::guild} is not {_owner}:
-                        cancel event
-                        send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
-                    stop
+                if abs({_dx}) <= {@territory-radius}:
+                    if abs({_dz}) <= {@territory-radius}:
+                        set {_owner} to {rpg::territory::%{_territory}%::guild}
+                        set {_id} to "%uuid of player%"
+                        if {rpg::%{_id}%::guild} is not {_owner}:
+                            cancel event
+                            send "{@prefix}&cÁrea protegida pela guilda &e%{_owner}%&c." to player
+                        stop
 
 
 # Explosoes nao removem blocos protegidos.
 on explode:
-    loop event-blocks:
+    loop exploded blocks:
         set {_explosionBlock} to loop-block
         loop {rpg::territories::*}:
             set {_territory} to loop-value
             if {rpg::territory::%{_territory}%::world} is "%world of {_explosionBlock}%":
                 set {_dx} to (x-coordinate of {_explosionBlock}) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of {_explosionBlock}) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                    remove {_explosionBlock} from event-blocks
-                    stop
+                if abs({_dx}) <= {@territory-radius}:
+                    if abs({_dz}) <= {@territory-radius}:
+                        remove {_explosionBlock} from exploded blocks
+                        stop
 
 # Pistons nao podem movimentar blocos para dentro ou para fora de territorios.
 on piston extend:
@@ -155,19 +162,21 @@ on piston extend:
         if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
             set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
     loop moved blocks:
         set {_moved} to loop-block
         loop {rpg::territories::*}:
-            set {_territory} to loop-value
+            set {_territory} to loop-value-2
             if {rpg::territory::%{_territory}%::world} is "%world of {_moved}%":
                 set {_dx} to (x-coordinate of {_moved}) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of {_moved}) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                    cancel event
-                    stop
+                if abs({_dx}) <= {@territory-radius}:
+                    if abs({_dz}) <= {@territory-radius}:
+                        cancel event
+                        stop
 
 on piston retract:
     loop {rpg::territories::*}:
@@ -175,9 +184,10 @@ on piston retract:
         if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
             set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
     loop moved blocks:
         set {_moved} to loop-block
         loop {rpg::territories::*}:
@@ -185,9 +195,10 @@ on piston retract:
             if {rpg::territory::%{_territory}%::world} is "%world of {_moved}%":
                 set {_dx} to (x-coordinate of {_moved}) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of {_moved}) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                    cancel event
-                    stop
+                if abs({_dx}) <= {@territory-radius}:
+                    if abs({_dz}) <= {@territory-radius}:
+                        cancel event
+                        stop
 
 # Dispensers e droppers dentro de territorios nao podem disparar itens.
 # O evento nao identifica o dono do mecanismo; a regra protege a area
@@ -198,9 +209,10 @@ on dispense:
         if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
             set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
 
 # Bloqueia transporte automatico de itens por funis entre inventarios
 # quando a origem ou o destino estiver dentro de um territorio.
@@ -212,15 +224,17 @@ on inventory item move:
         if world of {_source} is world "%{rpg::territory::%{_territory}%::world}%":
             set {_dx} to (x-coordinate of {_source}) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of {_source}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
         if world of {_destination} is world "%{rpg::territory::%{_territory}%::world}%":
             set {_dx} to (x-coordinate of {_destination}) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of {_destination}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
 
 # Impede funis e carrinhos com funil de recolher itens do chao
 # quando o inventario coletor esta dentro de um territorio protegido.
@@ -232,22 +246,23 @@ on inventory pickup:
         if "%world of {_pickupLocation}%" is {rpg::territory::%{_territory}%::world}:
             set {_dx} to (x-coordinate of {_pickupLocation}) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of {_pickupLocation}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
 
 # Protege inventarios de entidades, incluindo carrinhos com bau,
 # contra abertura por jogadores que nao pertencem a guilda proprietaria.
 on inventory open:
     set {_holder} to holder of event-inventory
-    if {_holder} is a block or {_holder} is an entity:
-        set {_containerLocation} to location of {_holder}
-        loop {rpg::territories::*}:
-            set {_territory} to loop-value
-            if "%world of {_containerLocation}%" is {rpg::territory::%{_territory}%::world}:
-                set {_dx} to (x-coordinate of {_containerLocation}) - {rpg::territory::%{_territory}%::x}
-                set {_dz} to (z-coordinate of {_containerLocation}) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
+    set {_containerLocation} to location of {_holder}
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if "%world of {_containerLocation}%" is {rpg::territory::%{_territory}%::world}:
+            set {_dx} to (x-coordinate of {_containerLocation}) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of {_containerLocation}) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
                     set {_owner} to {rpg::territory::%{_territory}%::guild}
                     set {_playerId} to "%uuid of event-player%"
                     if {rpg::%{_playerId}%::guild} is not {_owner}:
@@ -263,9 +278,10 @@ on burn:
         if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
             set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
 
 on ignite:
     loop {rpg::territories::*}:
@@ -273,20 +289,33 @@ on ignite:
         if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
             set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
 
 # Bloqueia fluxo de agua/lava dentro e na borda dos territorios.
 # A margem de 1 bloco cobre a origem imediatamente externa que tenta entrar.
 on block flow:
-    if event-block is water or event-block is lava:
+    if type of event-block is water:
         loop {rpg::territories::*}:
             set {_territory} to loop-value
             if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
                 set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} + 1 and abs({_dz}) <= {@territory-radius} + 1:
+                if abs({_dx}) <= {@territory-radius} + 1:
+                    if abs({_dz}) <= {@territory-radius} + 1:
+                        cancel event
+                        stop
+
+    else if type of event-block is lava:
+    loop {rpg::territories::*}:
+        set {_territory} to loop-value
+        if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
+            set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
+            set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
+            if abs({_dx}) <= {@territory-radius} + 1:
+                if abs({_dz}) <= {@territory-radius} + 1:
                     cancel event
                     stop
 
@@ -302,9 +331,10 @@ on vehicle damage:
             if "%world of {_vehicleLocation}%" is {rpg::territory::%{_territory}%::world}:
                 set {_dx} to (x-coordinate of {_vehicleLocation}) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of {_vehicleLocation}) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                    cancel event
-                    stop
+                if abs({_dx}) <= {@territory-radius}:
+                    if abs({_dz}) <= {@territory-radius}:
+                        cancel event
+                        stop
 
 # Salvaguarda no evento final de destruicao, inclusive para danos
 # causados por fontes que nao sejam jogadores.
@@ -316,9 +346,10 @@ on vehicle destroy:
             if "%world of {_vehicleLocation}%" is {rpg::territory::%{_territory}%::world}:
                 set {_dx} to (x-coordinate of {_vehicleLocation}) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of {_vehicleLocation}) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                    cancel event
-                    stop
+                if abs({_dx}) <= {@territory-radius}:
+                    if abs({_dz}) <= {@territory-radius}:
+                        cancel event
+                        stop
 
 # Impede que jogadores de outras guildas recolham itens do chao
 # dentro de territorios reivindicados. Membros da guilda proprietaria
@@ -330,48 +361,53 @@ on player pickup:
         if "%world of {_dropLocation}%" is {rpg::territory::%{_territory}%::world}:
             set {_dx} to (x-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                set {_owner} to {rpg::territory::%{_territory}%::guild}
-                set {_playerId} to "%uuid of event-player%"
-                if {rpg::%{_playerId}%::guild} is not {_owner}:
-                    cancel event
-                    send "{@prefix}&cOs itens desta área estão protegidos pela guilda &e%{_owner}%&c." to event-player
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    set {_owner} to {rpg::territory::%{_territory}%::guild}
+                    set {_playerId} to "%uuid of event-player%"
+                    if {rpg::%{_playerId}%::guild} is not {_owner}:
+                        cancel event
+                        send "{@prefix}&cOs itens desta área estão protegidos pela guilda &e%{_owner}%&c." to event-player
+                    stop
 
 # Protege itens dropados contra dano por fogo, lava e explosoes.
 # O evento de dano de entidade cobre entidades de item no chao.
 # Apenas causas ambientais destrutivas sao bloqueadas; ataques de jogadores
 # continuam permitidos, respeitando as demais regras de coleta.
-on damage of item:
-    if damage was caused by fire, burning, lava, block explosion or entity explosion:
-        set {_dropLocation} to location of victim
-        loop {rpg::territories::*}:
-            set {_territory} to loop-value
-            if "%world of {_dropLocation}%" is {rpg::territory::%{_territory}%::world}:
-                set {_dx} to (x-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::x}
-                set {_dz} to (z-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                    cancel event
-                    stop
+on damage:
+    if victim is an item:
+            if damage was caused by fire, burning, lava, block explosion or entity explosion:
+            set {_dropLocation} to location of victim
+            loop {rpg::territories::*}:
+                set {_territory} to loop-value
+                if "%world of {_dropLocation}%" is {rpg::territory::%{_territory}%::world}:
+                    set {_dx} to (x-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::x}
+                    set {_dz} to (z-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::z}
+                    if abs({_dx}) <= {@territory-radius}:
+                        if abs({_dz}) <= {@territory-radius}:
+                            cancel event
+                            stop
 
 # Impede que itens dropados atravessem para fora de territorios.
 # O evento de movimento de entidades existe no Skript para Paper 1.16.5+.
 # A regra protege a fronteira independentemente de quem causou o empurrao;
 # o evento nao identifica de forma confiavel o jogador responsavel.
-on item move:
-    set {_from} to past event-location
-    set {_to} to event-location
-    loop {rpg::territories::*}:
-        set {_territory} to loop-value
-        if "%world of {_from}%" is {rpg::territory::%{_territory}%::world}:
-            set {_dxFrom} to (x-coordinate of {_from}) - {rpg::territory::%{_territory}%::x}
-            set {_dzFrom} to (z-coordinate of {_from}) - {rpg::territory::%{_territory}%::z}
-            set {_dxTo} to (x-coordinate of {_to}) - {rpg::territory::%{_territory}%::x}
-            set {_dzTo} to (z-coordinate of {_to}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dxFrom}) <= {@territory-radius} and abs({_dzFrom}) <= {@territory-radius}:
-                if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
-                    cancel event
-                    stop
+on entity move:
+    if event-entity is an item:
+            set {_from} to past event-location
+        set {_to} to event-location
+        loop {rpg::territories::*}:
+            set {_territory} to loop-value
+            if "%world of {_from}%" is {rpg::territory::%{_territory}%::world}:
+                set {_dxFrom} to (x-coordinate of {_from}) - {rpg::territory::%{_territory}%::x}
+                set {_dzFrom} to (z-coordinate of {_from}) - {rpg::territory::%{_territory}%::z}
+                set {_dxTo} to (x-coordinate of {_to}) - {rpg::territory::%{_territory}%::x}
+                set {_dzTo} to (z-coordinate of {_to}) - {rpg::territory::%{_territory}%::z}
+                if abs({_dxFrom}) <= {@territory-radius}:
+                    if abs({_dzFrom}) <= {@territory-radius}:
+                        if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
+                            cancel event
+                            stop
 
 # Impede que itens dropados dentro de territorios sejam transportados
 # por portais do Nether ou do End para fora da area reivindicada.
@@ -387,13 +423,14 @@ on entity portal:
                 set {_dzFrom} to (z-coordinate of {_from}) - {rpg::territory::%{_territory}%::z}
                 set {_dxTo} to (x-coordinate of {_to}) - {rpg::territory::%{_territory}%::x}
                 set {_dzTo} to (z-coordinate of {_to}) - {rpg::territory::%{_territory}%::z}
-                if abs({_dxFrom}) <= {@territory-radius} and abs({_dzFrom}) <= {@territory-radius}:
-                    if "%world of {_to}%" is not {rpg::territory::%{_territory}%::world}:
-                        cancel event
-                        stop
-                    if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
-                        cancel event
-                        stop
+                if abs({_dxFrom}) <= {@territory-radius}:
+                    if abs({_dzFrom}) <= {@territory-radius}:
+                        if "%world of {_to}%" is not {rpg::territory::%{_territory}%::world}:
+                            cancel event
+                            stop
+                        if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
+                            cancel event
+                            stop
 
 
 # Evita que itens de dentro e de fora de um territorio sejam fundidos
@@ -409,13 +446,15 @@ on item merge:
         if "%world of {_firstLocation}%" is {rpg::territory::%{_territory}%::world}:
             set {_dxFirst} to (x-coordinate of {_firstLocation}) - {rpg::territory::%{_territory}%::x}
             set {_dzFirst} to (z-coordinate of {_firstLocation}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dxFirst}) <= {@territory-radius} and abs({_dzFirst}) <= {@territory-radius}:
-                set {_firstInside} to true
+            if abs({_dxFirst}) <= {@territory-radius}:
+                if abs({_dzFirst}) <= {@territory-radius}:
+                    set {_firstInside} to true
         if "%world of {_secondLocation}%" is {rpg::territory::%{_territory}%::world}:
             set {_dxSecond} to (x-coordinate of {_secondLocation}) - {rpg::territory::%{_territory}%::x}
             set {_dzSecond} to (z-coordinate of {_secondLocation}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dxSecond}) <= {@territory-radius} and abs({_dzSecond}) <= {@territory-radius}:
-                set {_secondInside} to true
+            if abs({_dxSecond}) <= {@territory-radius}:
+                if abs({_dzSecond}) <= {@territory-radius}:
+                    set {_secondInside} to true
         if {_firstInside} is not {_secondInside}:
             cancel event
             stop
@@ -431,9 +470,10 @@ on item despawn:
         if "%world of {_dropLocation}%" is {rpg::territory::%{_territory}%::world}:
             set {_dx} to (x-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of {_dropLocation}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
 
 
 # Limpeza manual e explicita de itens dropados no territorio atual.
@@ -449,9 +489,10 @@ command /rpgitenslimpar [<text>]:
             if {rpg::territory::%{_territory}%::world} is "%world of player%":
                 set {_dx} to (floor(x-coordinate of player)) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (floor(z-coordinate of player)) - {rpg::territory::%{_territory}%::z}
-                if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                    set {_found} to true
-                    stop loop
+                if abs({_dx}) <= {@territory-radius}:
+                    if abs({_dz}) <= {@territory-radius}:
+                        set {_found} to true
+                        stop loop
         if {_found} is false:
             send "{@prefix}&cVocê precisa estar dentro de um território reivindicado." to player
             stop
@@ -464,9 +505,10 @@ command /rpgitenslimpar [<text>]:
             set {_itemLocation} to location of loop-entity
             set {_ix} to (x-coordinate of {_itemLocation}) - {rpg::territory::%{_territory}%::x}
             set {_iz} to (z-coordinate of {_itemLocation}) - {rpg::territory::%{_territory}%::z}
-            if abs({_ix}) <= {@territory-radius} and abs({_iz}) <= {@territory-radius}:
-                delete loop-entity
-                add 1 to {_removed}
+            if abs({_ix}) <= {@territory-radius}:
+                if abs({_iz}) <= {@territory-radius}:
+                    delete loop-entity
+                    add 1 to {_removed}
         set {_timestamp} to "%now%"
         set {_actor} to "%player%"
         set {_actorUUID} to "%uuid of player%"
@@ -500,9 +542,10 @@ on entity changing block:
         if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
             set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
 
 # Protecao explicita para o evento de ovelhas comerem blocos de grama.
 on sheep eat:
@@ -511,6 +554,7 @@ on sheep eat:
         if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
             set {_dx} to (x-coordinate of event-block) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of event-block) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                cancel event
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    cancel event
+                    stop
