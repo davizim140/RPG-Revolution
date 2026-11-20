@@ -78,13 +78,30 @@ every 5 seconds:
         set {_id} to "%uuid of loop-player%"
         if {rpg::%{_id}%::pet::active} is set:
             if {rpg::%{_id}%::pet::active} is alive:
-                if {rpg::%{_id}%::pet::talent::guardiao} is true or {rpg::%{_id}%::pet::talent::plumagem} is true:
+                set {_resistanceTalent} to false
+                if {rpg::%{_id}%::pet::talent::guardiao} is true:
+                    set {_resistanceTalent} to true
+                if {rpg::%{_id}%::pet::talent::plumagem} is true:
+                    set {_resistanceTalent} to true
+                if {_resistanceTalent} is true:
                     apply resistance 1 to loop-player for 6 seconds
-                if {rpg::%{_id}%::pet::talent::rastreador} is true or {rpg::%{_id}%::pet::talent::reflexo} is true or {rpg::%{_id}%::pet::talent::corrente} is true:
+                set {_speedTalent} to false
+                if {rpg::%{_id}%::pet::talent::rastreador} is true:
+                    set {_speedTalent} to true
+                if {rpg::%{_id}%::pet::talent::reflexo} is true:
+                    set {_speedTalent} to true
+                if {rpg::%{_id}%::pet::talent::corrente} is true:
+                    set {_speedTalent} to true
+                if {_speedTalent} is true:
                     apply speed 1 to loop-player for 6 seconds
                 if {rpg::%{_id}%::pet::talent::ronronar} is true:
                     apply regeneration 1 to loop-player for 6 seconds
-                if {rpg::%{_id}%::pet::talent::vigia} is true or {rpg::%{_id}%::pet::talent::observador} is true:
+                set {_nightVisionTalent} to false
+                if {rpg::%{_id}%::pet::talent::vigia} is true:
+                    set {_nightVisionTalent} to true
+                if {rpg::%{_id}%::pet::talent::observador} is true:
+                    set {_nightVisionTalent} to true
+                if {_nightVisionTalent} is true:
                     apply night vision 1 to loop-player for 8 seconds
                 if {rpg::%{_id}%::pet::type} is "lobo":
                     if {rpg::%{_id}%::pet::talent::mordida} is true:
