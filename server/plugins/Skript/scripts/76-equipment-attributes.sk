@@ -72,14 +72,14 @@ command /aprimorar:
             set {_coins} to 150
 
         set {_id} to "%uuid of player%"
-        if player's inventory does not contain {_cost} diamonds:
+        if amount of diamonds in player's inventory < {_cost}:
             send "{@prefix}&cVocê precisa de %{_cost}% diamantes." to player
             stop
         if {rpg::%{_id}%::coins} < {_coins}:
             send "{@prefix}&cVocê precisa de %{_coins}% moedas." to player
             stop
 
-        remove {_cost} diamonds from player's inventory
+        remove {_cost} of diamonds from player's inventory
         remove {_coins} from {rpg::%{_id}%::coins}
         if {_kind} is "espada":
             set name of player's tool to "&bEspada do Aprendiz +%{_next}%"
