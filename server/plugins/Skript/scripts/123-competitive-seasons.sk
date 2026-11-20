@@ -219,7 +219,10 @@ command /rpgtemporadaauto <text> [<number>]:
         if argument 2 is not set:
             send "{@prefix}&cInforme a duração em dias (1 a 90)." to sender
             stop
-        if argument 2 < 1 or argument 2 > 90:
+        if argument 2 < 1:
+            send "{@prefix}&cA duração deve ser de 1 a 90 dias." to sender
+            stop
+        if argument 2 > 90:
             send "{@prefix}&cA duração deve ser de 1 a 90 dias." to sender
             stop
         if {rpg::season::active} is true:
