@@ -100,15 +100,15 @@ command /artefato [<text>] [<text>]:
             set {_solar} to 0
             set {_abyss} to 0
             loop "anel", "amuleto", "reliquia" and "charme":
-                set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value%}
+                set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value-2%}
                 if {_name} is set:
-                    send "&e%loop-value%: &f%{_name}%" to player
+                    send "&e%loop-value-2%: &f%{_name}%" to player
                     if {rpg::%{_id}%::artifact::set::%{_name}%} is "solar":
                         add 1 to {_solar}
                     else if {rpg::%{_id}%::artifact::set::%{_name}%} is "abissal":
                         add 1 to {_abyss}
                 else:
-                    send "&7%loop-value%: &8Vazio" to player
+                    send "&7%loop-value-2%: &8Vazio" to player
             send "&6Conjunto Solar: &f%{_solar}%/4 &8| &6Conjunto Abissal: &f%{_abyss}%/4" to player
             stop
         send "{@prefix}&cSubcomando inválido. Use /artefato." to player
@@ -146,7 +146,7 @@ every 5 seconds:
         set {_solar} to 0
         set {_abyss} to 0
         loop "anel", "amuleto", "reliquia" and "charme":
-            set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value%}
+            set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value-2%}
             if {_name} is set:
                 if {rpg::%{_id}%::artifact::set::%{_name}%} is "solar":
                     add 1 to {_solar}
@@ -164,15 +164,16 @@ command /despertarartefato:
         set {_solar} to 0
         set {_abyss} to 0
         loop "anel", "amuleto", "reliquia" and "charme":
-            set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value%}
+            set {_name} to {rpg::%{_id}%::artifact::equipped::%loop-value-2%}
             if {_name} is set:
                 if {rpg::%{_id}%::artifact::set::%{_name}%} is "solar":
                     add 1 to {_solar}
                 else if {rpg::%{_id}%::artifact::set::%{_name}%} is "abissal":
                     add 1 to {_abyss}
-        if {_solar} < 4 and {_abyss} < 4:
-            send "{@prefix}&cVocê precisa equipar quatro artefatos do mesmo conjunto." to player
-            stop
+        if {_solar} < 4:
+            if {_abyss} < 4:
+                send "{@prefix}&cVocê precisa equipar quatro artefatos do mesmo conjunto." to player
+                stop
         if {rpg::%{_id}%::artifact::active-cooldown} is set:
             if difference between now and {rpg::%{_id}%::artifact::active-cooldown} < 120 seconds:
                 send "{@prefix}&cDespertar de artefato em recarga." to player
