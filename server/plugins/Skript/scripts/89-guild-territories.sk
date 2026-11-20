@@ -12,7 +12,14 @@ command /guildterritorio [<text>]:
         if {_guild} is not set:
             send "{@prefix}&cVocê precisa pertencer a uma guilda." to player
             stop
-        if arg-1 is not set or arg-1 is "ajuda":
+        if arg-1 is not set:
+            send "&6&lTERRITÓRIOS DE GUILDA" to player
+            send "&e/guildterritorio reivindicar &7- Reivindica a área atual (500 moedas do banco)." to player
+            send "&e/guildterritorio info &7- Mostra o território onde você está." to player
+            send "&e/guildterritorioguerra &7- Consulta o progresso de captura durante uma guerra." to player
+            send "&e/guildterritorio abandonar &7- Abandona o território da sua guilda nesta posição." to player
+            stop
+        if arg-1 is "ajuda":
             send "&6&lTERRITÓRIOS DE GUILDA" to player
             send "&e/guildterritorio reivindicar &7- Reivindica a área atual (500 moedas do banco)." to player
             send "&e/guildterritorio info &7- Mostra o território onde você está." to player
@@ -146,7 +153,7 @@ on explode:
     loop exploded blocks:
         set {_explosionBlock} to loop-block
         loop {rpg::territories::*}:
-            set {_territory} to loop-value
+            set {_territory} to loop-value-2
             if {rpg::territory::%{_territory}%::world} is "%world of {_explosionBlock}%":
                 set {_dx} to (x-coordinate of {_explosionBlock}) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of {_explosionBlock}) - {rpg::territory::%{_territory}%::z}
@@ -191,7 +198,7 @@ on piston retract:
     loop moved blocks:
         set {_moved} to loop-block
         loop {rpg::territories::*}:
-            set {_territory} to loop-value
+            set {_territory} to loop-value-2
             if {rpg::territory::%{_territory}%::world} is "%world of {_moved}%":
                 set {_dx} to (x-coordinate of {_moved}) - {rpg::territory::%{_territory}%::x}
                 set {_dz} to (z-coordinate of {_moved}) - {rpg::territory::%{_territory}%::z}
@@ -307,7 +314,7 @@ on block flow:
                     if abs({_dz}) <= {@territory-radius} + 1:
                         cancel event
                         stop
-    else if type of event-block is lava:
+    else if type of event-block is lava block:
         loop {rpg::territories::*}:
             set {_territory} to loop-value
             if {rpg::territory::%{_territory}%::world} is "%world of event-block%":
@@ -404,7 +411,10 @@ on entity move:
                 set {_dzTo} to (z-coordinate of {_to}) - {rpg::territory::%{_territory}%::z}
                 if abs({_dxFrom}) <= {@territory-radius}:
                     if abs({_dzFrom}) <= {@territory-radius}:
-                        if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
+                        if abs({_dxTo}) > {@territory-radius}:
+                            cancel event
+                            stop
+                        if abs({_dzTo}) > {@territory-radius}:
                             cancel event
                             stop
 
@@ -427,7 +437,10 @@ on entity portal:
                         if "%world of {_to}%" is not {rpg::territory::%{_territory}%::world}:
                             cancel event
                             stop
-                        if abs({_dxTo}) > {@territory-radius} or abs({_dzTo}) > {@territory-radius}:
+                        if abs({_dxTo}) > {@territory-radius}:
+                            cancel event
+                            stop
+                        if abs({_dzTo}) > {@territory-radius}:
                             cancel event
                             stop
 
