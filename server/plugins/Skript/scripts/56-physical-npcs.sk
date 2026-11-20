@@ -9,21 +9,28 @@ command /rpgnpc <text> [<text>]:
     permission message: {@prefix}&cVocê não tem permissão.
     trigger:
         if arg-1 is "criar":
-            if arg-2 is not set:
+            if argument 2 is not set:
                 send "{@prefix}&cUse: /rpgnpc criar <guia|ferreiro|explorador>" to player
                 stop
-            if arg-2 is not "guia" and arg-2 is not "ferreiro" and arg-2 is not "explorador":
+            set {_validNpc} to false
+            if argument 2 is "guia":
+                set {_validNpc} to true
+            if argument 2 is "ferreiro":
+                set {_validNpc} to true
+            if argument 2 is "explorador":
+                set {_validNpc} to true
+            if {_validNpc} is false:
                 send "{@prefix}&cTipo inválido. Use guia, ferreiro ou explorador." to player
                 stop
             spawn villager at location of player
-            if arg-2 is "guia":
+            if argument 2 is "guia":
                 set name of last spawned entity to "&6Elara - Guia"
-            else if arg-2 is "ferreiro":
+            else if argument 2 is "ferreiro":
                 set name of last spawned entity to "&6Bram - Ferreiro"
             else:
                 set name of last spawned entity to "&6Nyra - Exploradora"
-            set {rpg::physicalnpc::%uuid of last spawned entity%} to arg-2
-            send "{@prefix}&aNPC físico criado: &f%arg-2%&a." to player
+            set {rpg::physicalnpc::%uuid of last spawned entity%} to argument 2
+            send "{@prefix}&aNPC físico criado: &f%argument 2%&a." to player
             stop
         if arg-1 is "limpar":
             set {_removed} to 0
