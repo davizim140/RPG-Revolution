@@ -9,7 +9,10 @@ command /arvoreclasse:
     trigger:
         set {_id} to "%uuid of player%"
         set {_class} to {rpg::%{_id}%::class}
-        if {_class} is not set or "nenhuma":
+        if {_class} is not set:
+            send "{@prefix}&cEscolha uma classe primeiro." to player
+            stop
+        if {_class} is "nenhuma":
             send "{@prefix}&cEscolha uma classe primeiro." to player
             stop
         set {_earned} to {rpg::%{_id}%::class-talent::earned}
@@ -69,7 +72,10 @@ command /aprenderclasse <text>:
     trigger:
         set {_id} to "%uuid of player%"
         set {_class} to {rpg::%{_id}%::class}
-        if {_class} is not set or "nenhuma":
+        if {_class} is not set:
+            send "{@prefix}&cEscolha uma classe primeiro." to player
+            stop
+        if {_class} is "nenhuma":
             send "{@prefix}&cEscolha uma classe primeiro." to player
             stop
         if {rpg::%{_id}%::class-talent::%arg-1%} is true:
