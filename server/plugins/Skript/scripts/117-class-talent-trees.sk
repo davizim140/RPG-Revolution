@@ -115,9 +115,19 @@ every 5 seconds:
             apply health boost 1 to loop-player for 6 seconds
         if {rpg::%{_id}%::class-talent::barreira} is true:
             apply absorption 1 to loop-player for 6 seconds
-        if {rpg::%{_id}%::class-talent::passos} is true or {rpg::%{_id}%::class-talent::mobilidade} is true:
+        set {_speedTalent} to false
+        if {rpg::%{_id}%::class-talent::passos} is true:
+            set {_speedTalent} to true
+        if {rpg::%{_id}%::class-talent::mobilidade} is true:
+            set {_speedTalent} to true
+        if {_speedTalent} is true:
             apply speed 1 to loop-player for 6 seconds
-        if {rpg::%{_id}%::class-talent::meditacao} is true or {rpg::%{_id}%::class-talent::foco} is true:
+        set {_manaTalent} to false
+        if {rpg::%{_id}%::class-talent::meditacao} is true:
+            set {_manaTalent} to true
+        if {rpg::%{_id}%::class-talent::foco} is true:
+            set {_manaTalent} to true
+        if {_manaTalent} is true:
             if {rpg::%{_id}%::mana} < {rpg::%{_id}%::mana-max}:
                 add 2 to {rpg::%{_id}%::mana}
                 if {rpg::%{_id}%::mana} > {rpg::%{_id}%::mana-max}:
