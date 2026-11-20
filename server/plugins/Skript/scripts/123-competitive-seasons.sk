@@ -181,9 +181,10 @@ command /recompensatemporada:
             set {_xp} to 0
         send "&6&lRECOMPENSAS DE TEMPORADA" to player
         send "&7Moedas pendentes: &e%{_coins}% &8| &7XP pendente: &a%{_xp}%" to player
-        if {_coins} <= 0 and {_xp} <= 0:
-            send "&7Você não tem recompensas para resgatar." to player
-            stop
+        if {_coins} <= 0:
+            if {_xp} <= 0:
+                send "&7Você não tem recompensas para resgatar." to player
+                stop
         add {_coins} to {rpg::%{_id}%::coins}
         delete {rpg::%{_id}%::season-pending-coins}
         delete {rpg::%{_id}%::season-pending-xp}
