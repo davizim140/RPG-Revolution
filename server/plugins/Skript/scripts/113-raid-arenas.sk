@@ -157,7 +157,7 @@ command /raidarena [<text>] [<text>]:
             stop
         if {_count} is 1:
             set {rpg::raidarena::%{_party}%::solo} to true
-            send "{@prefix}&eModo solo ativado: o Titã terá 60% da vida normal." to player
+            send "{@prefix}&eModo solo ativado: a vida do Titã foi reduzida." to player
         else:
             set {rpg::raidarena::%{_party}%::solo} to false
         set {rpg::raidarena::%{_party}%::active} to true
