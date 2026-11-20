@@ -93,8 +93,8 @@ command /rpgtemporada <text> [<text>]:
                 set {rpg::season::%{_next-season}%::name} to "%{rpg::season::auto::name}% %{_next-season}%"
                 set {rpg::season::%{_next-season}%::started} to now
                 set {_nextDuration} to {rpg::season::auto::days}
-                set {rpg::season::%{_next-season}%::ends} to now
-                add {_nextDuration} days to {rpg::season::%{_next-season}%::ends}
+                set {_nextTimespan} to "%{_nextDuration}% days" parsed as timespan
+                set {rpg::season::%{_next-season}%::ends} to {_nextTimespan} after now
                 set {rpg::season::active} to true
                 broadcast "&6&lNOVA TEMPORADA AUTOMÁTICA! &eTemporada %{_next-season}%: &f%{rpg::season::%{_next-season}%::name}%"
                 broadcast "&7Ela termina em %{rpg::season::auto::days}% dia(s). Use /rankingtemporada."
@@ -204,7 +204,7 @@ command /rpgtemporadaauto <text> [<number>]:
                 send "{@prefix}&aRotação automática ativa. Duração: &f%{rpg::season::auto::days}% dia(s)." to sender
                 set {_season} to {rpg::season::current}
                 if {rpg::season::%{_season}%::ends} is set:
-                    send "&7Término previsto: &f%{rpg::season::%{_season}%::ends} formatted as \"dd/MM/yyyy HH:mm\"%" to sender
+                    send "&7Término previsto: &f%{rpg::season::%{_season}%::ends}%" to sender
             else:
                 send "{@prefix}&7Rotação automática desativada." to sender
             stop
@@ -232,8 +232,8 @@ command /rpgtemporadaauto <text> [<number>]:
         set {_season} to {rpg::season::current}
         set {rpg::season::%{_season}%::name} to "Temporada Automática %{_season}%"
         set {rpg::season::%{_season}%::started} to now
-        set {rpg::season::%{_season}%::ends} to now
-        add argument 2 days to {rpg::season::%{_season}%::ends}
+        set {_seasonDuration} to "%argument 2% days" parsed as timespan
+        set {rpg::season::%{_season}%::ends} to {_seasonDuration} after now
         set {rpg::season::active} to true
         broadcast "&6&lTEMPORADA AUTOMÁTICA INICIADA! &eTemporada %{_season}%"
         broadcast "&7Duração: &f%argument 2% dia(s). &7Use /rankingtemporada."
