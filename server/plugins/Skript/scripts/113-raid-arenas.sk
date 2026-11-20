@@ -36,6 +36,8 @@ function raidarena_spawn(party: text, room: number):
             set {_health} to 900
         else if {_difficulty} is "pesadelo":
             set {_health} to 1400
+        if {rpg::raidarena::%{_party}%::solo} is true:
+            set {_health} to round({_health} * 0.6)
         set max health of {_boss} to {_health}
         set health of {_boss} to {_health}
         set {rpg::raidarena::%{_party}%::phase2-threshold} to {_health} * 0.6
@@ -146,10 +148,15 @@ command /raidarena [<text>] [<text>]:
         if {_invalid-level} is true:
             delete {rpg::raidarena::%{_party}%::member::*}
             stop
-        if {_count} < 2:
+        if {_count} < 1:
             delete {rpg::raidarena::%{_party}%::member::*}
-            send "{@prefix}&cSão necessários pelo menos 2 membros online, próximos e no mesmo mundo." to player
+            send "{@prefix}&cNenhum participante válido foi encontrado para a raid." to player
             stop
+        if {_count} is 1:
+            set {rpg::raidarena::%{_party}%::solo} to true
+            send "{@prefix}&eModo solo ativado: o Titã terá 60% da vida normal." to player
+        else:
+            set {rpg::raidarena::%{_party}%::solo} to false
         set {rpg::raidarena::%{_party}%::active} to true
         set {rpg::raidarena::%{_party}%::difficulty} to argument 1
         set {rpg::raidarena::%{_party}%::total-damage} to 0
