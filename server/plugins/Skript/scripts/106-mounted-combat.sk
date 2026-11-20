@@ -29,7 +29,26 @@ on damage:
 
 command /montariacombate [<text>]:
     trigger:
-        if arg-1 is not set or arg-1 is "status":
+        if arg-1 is not set:
+            if vehicle of player is not a horse:
+                send "{@prefix}&cMonte seu próprio cavalo para consultar o combate montado." to player
+                stop
+            set {_horse} to vehicle of player
+            if tamer of {_horse} is not player:
+                send "{@prefix}&cEsta montaria não pertence a você." to player
+                stop
+            set {_level} to {rpg::mount::%uuid of {_horse}%::level}
+            if {_level} is not set:
+                set {_level} to 1
+            set {_kills} to {rpg::mount::%uuid of {_horse}%::combat-kills::%uuid of player%}
+            if {_kills} is not set:
+                set {_kills} to 0
+            send "&6&lCOMBATE MONTADO" to player
+            send "&7Nível da montaria: &e%{_level}% &8| &7Abates montados: &e%{_kills}%" to player
+            send "&7Bônus de dano contra monstros: &e+%{_level} * 0.15% &7(até +3)." to player
+            send "&e/montariacombate habilidade &7- Ativar Investida (nível 5)." to player
+            stop
+        if arg-1 is "status":
             if vehicle of player is not a horse:
                 send "{@prefix}&cMonte seu próprio cavalo para consultar o combate montado." to player
                 stop
