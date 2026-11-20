@@ -204,31 +204,31 @@ on damage:
     if victim is a ravager:
         set {_isRaidMob} to true
     if {_isRaidMob} is true:
-            set {_party} to {rpg::raidarena::mob-owner::%uuid of victim%}
-            if {_party} is set:
-                if attacker is a player:
-                    set {_attacker-id} to "%uuid of attacker%"
-                    if {rpg::raidarena::%{_party}%::member::%{_attacker-id}%} is true:
-                        add damage to {rpg::raidarena::%{_party}%::damage::%{_attacker-id}%}
-                        add damage to {rpg::raidarena::%{_party}%::total-damage}
-                if {rpg::raidarena::mob-room::%uuid of victim%} is 3:
-                    set {_remaining-health} to health of victim - damage
-                    if {_remaining-health} <= {rpg::raidarena::%{_party}%::phase3-threshold}:
-                        if {rpg::raidarena::%{_party}%::boss-phase} < 3:
-                            set {rpg::raidarena::%{_party}%::boss-phase} to 3
-                            apply strength 2 to victim for 999999 seconds
-                            apply speed 1 to victim for 999999 seconds
-                            loop all players:
-                                if {rpg::raidarena::%{_party}%::member::%uuid of loop-player%} is true:
-                                    send "{@prefix}&4&lFASE FINAL! &cO Titã entrou em frenesi!" to loop-player
-                    else if {_remaining-health} <= {rpg::raidarena::%{_party}%::phase2-threshold}:
-                        if {rpg::raidarena::%{_party}%::boss-phase} < 2:
-                            set {rpg::raidarena::%{_party}%::boss-phase} to 2
-                            apply strength 1 to victim for 999999 seconds
-                            apply speed 1 to victim for 999999 seconds
-                            loop all players:
-                                if {rpg::raidarena::%{_party}%::member::%uuid of loop-player%} is true:
-                                    send "{@prefix}&6O Titã entrou na fase 2! &eSeus ataques ficaram mais rápidos." to loop-player
+        set {_party} to {rpg::raidarena::mob-owner::%uuid of victim%}
+        if {_party} is set:
+            if attacker is a player:
+                set {_attacker-id} to "%uuid of attacker%"
+                if {rpg::raidarena::%{_party}%::member::%{_attacker-id}%} is true:
+                    add damage to {rpg::raidarena::%{_party}%::damage::%{_attacker-id}%}
+                    add damage to {rpg::raidarena::%{_party}%::total-damage}
+            if {rpg::raidarena::mob-room::%uuid of victim%} is 3:
+                set {_remaining-health} to health of victim - damage
+                if {_remaining-health} <= {rpg::raidarena::%{_party}%::phase3-threshold}:
+                    if {rpg::raidarena::%{_party}%::boss-phase} < 3:
+                        set {rpg::raidarena::%{_party}%::boss-phase} to 3
+                        apply strength 2 to victim for 999999 seconds
+                        apply speed 1 to victim for 999999 seconds
+                        loop all players:
+                            if {rpg::raidarena::%{_party}%::member::%uuid of loop-player%} is true:
+                                send "{@prefix}&4&lFASE FINAL! &cO Titã entrou em frenesi!" to loop-player
+                else if {_remaining-health} <= {rpg::raidarena::%{_party}%::phase2-threshold}:
+                    if {rpg::raidarena::%{_party}%::boss-phase} < 2:
+                        set {rpg::raidarena::%{_party}%::boss-phase} to 2
+                        apply strength 1 to victim for 999999 seconds
+                        apply speed 1 to victim for 999999 seconds
+                        loop all players:
+                            if {rpg::raidarena::%{_party}%::member::%uuid of loop-player%} is true:
+                                send "{@prefix}&6O Titã entrou na fase 2! &eSeus ataques ficaram mais rápidos." to loop-player
 
 on death:
     set {_isRaidMob} to false
@@ -239,53 +239,53 @@ on death:
     if victim is a ravager:
         set {_isRaidMob} to true
     if {_isRaidMob} is true:
-            set {_entity-id} to "%uuid of victim%"
-            set {_party} to {rpg::raidarena::mob-owner::%{_entity-id}%}
-            if {_party} is set:
-                set {_room} to {rpg::raidarena::mob-room::%{_entity-id}%}
-                delete {rpg::raidarena::mob-owner::%{_entity-id}%}
-                delete {rpg::raidarena::mob-room::%{_entity-id}%}
-                remove 1 from {rpg::raidarena::%{_party}%::remaining}
-                if {rpg::raidarena::%{_party}%::remaining} <= 0:
-                    if {_room} < 3:
-                        loop all players:
-                            set {_member-id} to "%uuid of loop-player%"
-                            if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
+        set {_entity-id} to "%uuid of victim%"
+        set {_party} to {rpg::raidarena::mob-owner::%{_entity-id}%}
+        if {_party} is set:
+            set {_room} to {rpg::raidarena::mob-room::%{_entity-id}%}
+            delete {rpg::raidarena::mob-owner::%{_entity-id}%}
+            delete {rpg::raidarena::mob-room::%{_entity-id}%}
+            remove 1 from {rpg::raidarena::%{_party}%::remaining}
+            if {rpg::raidarena::%{_party}%::remaining} <= 0:
+                if {_room} < 3:
+                    loop all players:
+                        set {_member-id} to "%uuid of loop-player%"
+                        if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
+                            add 1 to {rpg::raidarena::chests::%{_member-id}%}
+                            send "{@prefix}&aSala concluída! Você recebeu um baú de raid. Use /raidbau abrir." to loop-player
+                    set {_next-room} to {_room} + 1
+                    raidarena_spawn({_party}, {_next-room})
+                else:
+                    set {_total} to {rpg::raidarena::%{_party}%::total-damage}
+                    if {_total} <= 0:
+                        set {_total} to 1
+                    set {_coins} to {rpg::raidarena::%{_party}%::coins}
+                    set {_xp} to {rpg::raidarena::%{_party}%::xp}
+                    set {_diamonds} to {rpg::raidarena::%{_party}%::diamonds}
+                    loop all players:
+                        set {_member-id} to "%uuid of loop-player%"
+                        if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
+                            set {_damage} to {rpg::raidarena::%{_party}%::damage::%{_member-id}%}
+                            if {_damage} > 0:
+                                set {_share} to {_damage} / {_total}
+                                set {_earned-coins} to round({_coins} * {_share})
+                                set {_earned-xp} to round({_xp} * {_share})
+                                set {_earned-diamonds} to round({_diamonds} * {_share})
+                                add {_earned-coins} to {rpg::%{_member-id}%::coins}
+                                rpg_add_xp(loop-player, {_earned-xp})
+                                if {_earned-diamonds} > 0:
+                                    give {_earned-diamonds} of diamonds to loop-player
+                                rpg_give_boss_loot(loop-player)
                                 add 1 to {rpg::raidarena::chests::%{_member-id}%}
-                                send "{@prefix}&aSala concluída! Você recebeu um baú de raid. Use /raidbau abrir." to loop-player
-                        set {_next-room} to {_room} + 1
-                        raidarena_spawn({_party}, {_next-room})
-                    else:
-                        set {_total} to {rpg::raidarena::%{_party}%::total-damage}
-                        if {_total} <= 0:
-                            set {_total} to 1
-                        set {_coins} to {rpg::raidarena::%{_party}%::coins}
-                        set {_xp} to {rpg::raidarena::%{_party}%::xp}
-                        set {_diamonds} to {rpg::raidarena::%{_party}%::diamonds}
-                        loop all players:
-                            set {_member-id} to "%uuid of loop-player%"
-                            if {rpg::raidarena::%{_party}%::member::%{_member-id}%} is true:
-                                set {_damage} to {rpg::raidarena::%{_party}%::damage::%{_member-id}%}
-                                if {_damage} > 0:
-                                    set {_share} to {_damage} / {_total}
-                                    set {_earned-coins} to round({_coins} * {_share})
-                                    set {_earned-xp} to round({_xp} * {_share})
-                                    set {_earned-diamonds} to round({_diamonds} * {_share})
-                                    add {_earned-coins} to {rpg::%{_member-id}%::coins}
-                                    rpg_add_xp(loop-player, {_earned-xp})
-                                    if {_earned-diamonds} > 0:
-                                        give {_earned-diamonds} of diamonds to loop-player
-                                    rpg_give_boss_loot(loop-player)
-                                    add 1 to {rpg::raidarena::chests::%{_member-id}%}
-                                    send "{@prefix}&6Titã derrotado! &aVocê recebeu %{_earned-coins}% moedas, %{_earned-xp}% XP, %{_earned-diamonds}% diamantes, 1 item de chefe e 1 baú." to loop-player
-                                else:
-                                    send "{@prefix}&7Você não causou dano e não recebeu a recompensa final." to loop-player
-                        loop all entities:
-                            if {rpg::raidarena::mob-owner::%uuid of loop-entity%} is {_party}:
-                                delete {rpg::raidarena::mob-owner::%uuid of loop-entity%}
-                                delete {rpg::raidarena::mob-room::%uuid of loop-entity%}
-                                kill loop-entity
-                        delete {rpg::raidarena::%{_party}%::*}
+                                send "{@prefix}&6Titã derrotado! &aVocê recebeu %{_earned-coins}% moedas, %{_earned-xp}% XP, %{_earned-diamonds}% diamantes, 1 item de chefe e 1 baú." to loop-player
+                            else:
+                                send "{@prefix}&7Você não causou dano e não recebeu a recompensa final." to loop-player
+                    loop all entities:
+                        if {rpg::raidarena::mob-owner::%uuid of loop-entity%} is {_party}:
+                            delete {rpg::raidarena::mob-owner::%uuid of loop-entity%}
+                            delete {rpg::raidarena::mob-room::%uuid of loop-entity%}
+                            kill loop-entity
+                    delete {rpg::raidarena::%{_party}%::*}
 
 on quit:
     set {_id} to "%uuid of player%"
