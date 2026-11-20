@@ -459,7 +459,14 @@ command /posturasombras <text>:
         if {rpg::%{_id}%::awakening} is not "monarca_sombras":
             send "{@prefix}&cSomente o Monarca pode alterar a postura das sombras." to player
             stop
-        if arg-1 is not "agressiva" and arg-1 is not "defensiva" and arg-1 is not "passiva":
+        set {_validMode} to false
+        if arg-1 is "agressiva":
+            set {_validMode} to true
+        if arg-1 is "defensiva":
+            set {_validMode} to true
+        if arg-1 is "passiva":
+            set {_validMode} to true
+        if {_validMode} is false:
             send "{@prefix}&eUse: /posturasombras <agressiva|defensiva|passiva>" to player
             stop
         set {rpg::%{_id}%::shadow-mode} to arg-1
