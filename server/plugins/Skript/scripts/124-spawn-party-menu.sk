@@ -27,13 +27,6 @@ command /menurpg:
 
 command /menuitem:
     trigger:
-        set {_found} to false
-        loop player's inventory:
-            if name of loop-item is "{@menu-item-name}":
-                set {_found} to true
-        if {_found} is true:
-            send "{@prefix}&eVocê já possui o item do menu." to player
-            stop
         set {_item} to compass named "{@menu-item-name}"
         enchant {_item} with unbreaking 1
         set lore of {_item} to "&7Clique com o botão direito para abrir os atalhos."
