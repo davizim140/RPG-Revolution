@@ -27,7 +27,7 @@ command /menurpg:
 
 command /menuitem:
     trigger:
-        set {_item} to compass named "{@menu-item-name}"
+        set {_item} to clock named "{@menu-item-name}"
         enchant {_item} with unbreaking 1
         set lore of {_item} to "&7Clique com o botão direito para abrir os atalhos."
         give {_item} to player
@@ -41,8 +41,8 @@ on join:
         give {_item} to player
         set {rpg::menu-item-given::%uuid of player%} to true
 
-on right click:
-    if name of player's tool is "{@menu-item-name}":
+on right click with clock:
+    if name of event-item is "{@menu-item-name}":
         cancel event
         rpg_open_menu(player)
 
