@@ -24,7 +24,7 @@ function rpg_livestock_xp(p: player, amount: number):
         else:
             set {rpg::%{_uuid}%::livestock::title} to "Aprendiz de Criador"
         send "{@prefix}&aPecuária subiu para o nível &e%{rpg::%{_uuid}%::livestock::level}%&a! +25 moedas." to {_p}
-        if {rpg::%{_uuid}%::livestock::level} mod 5 is 0:
+        if {_level} = floor({_level} / 5) * 5:
             add 75 to {rpg::%{_uuid}%::coins}
             send "{@prefix}&6Título desbloqueado: &e%{rpg::%{_uuid}%::livestock::title}%&6! Bônus: &e+75 moedas." to {_p}
 
@@ -59,18 +59,19 @@ on right click on living entity:
         if {rpg::territory::%{_territory}%::world} is "%world of {_loc}%":
             set {_dx} to (x-coordinate of {_loc}) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of {_loc}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                if {rpg::territory::%{_territory}%::guild} is {_guild}:
-                    set {_beforeAmount} to amount of player's tool
-                    set {rpg::livestock::feed-cooldown::%{_entityId}%} to true
-                    wait 1 tick
-                    if amount of player's tool < {_beforeAmount}:
-                        add 1 to {rpg::%{_uuid}%::livestock::feedings}
-                        rpg_livestock_xp(player, 2)
-                        send "{@prefix}&aAnimal alimentado! &e+2 XP de pecuária." to player
-                    wait 30 seconds
-                    delete {rpg::livestock::feed-cooldown::%{_entityId}%}
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    if {rpg::territory::%{_territory}%::guild} is {_guild}:
+                        set {_beforeAmount} to amount of player's tool
+                        set {rpg::livestock::feed-cooldown::%{_entityId}%} to true
+                        wait 1 tick
+                        if amount of player's tool < {_beforeAmount}:
+                            add 1 to {rpg::%{_uuid}%::livestock::feedings}
+                            rpg_livestock_xp(player, 2)
+                            send "{@prefix}&aAnimal alimentado! &e+2 XP de pecuária." to player
+                        wait 30 seconds
+                        delete {rpg::livestock::feed-cooldown::%{_entityId}%}
+                    stop
 
 # Reproducao concluida: premia quem alimentou o casal, se ocorrer na propria area da guilda.
 on breeding:
@@ -87,13 +88,14 @@ on breeding:
         if {rpg::territory::%{_territory}%::world} is "%world of {_loc}%":
             set {_dx} to (x-coordinate of {_loc}) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of {_loc}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= {@territory-radius} and abs({_dz}) <= {@territory-radius}:
-                if {rpg::territory::%{_territory}%::guild} is {_guild}:
-                    add 1 to {rpg::%{_uuid}%::livestock::breeds}
-                    add 1 to {rpg::guild::%{_guild}%::livestock::breeds}
-                    rpg_livestock_xp({_p}, 20)
-                    send "{@prefix}&aReprodução registrada! &e+20 XP de pecuária." to {_p}
-                stop
+            if abs({_dx}) <= {@territory-radius}:
+                if abs({_dz}) <= {@territory-radius}:
+                    if {rpg::territory::%{_territory}%::guild} is {_guild}:
+                        add 1 to {rpg::%{_uuid}%::livestock::breeds}
+                        add 1 to {rpg::guild::%{_guild}%::livestock::breeds}
+                        rpg_livestock_xp({_p}, 20)
+                        send "{@prefix}&aReprodução registrada! &e+20 XP de pecuária." to {_p}
+                    stop
 
 command /guildpecuaria:
     trigger:
