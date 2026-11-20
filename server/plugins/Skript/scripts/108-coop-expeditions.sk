@@ -157,7 +157,7 @@ on death of living entity:
                             set {_member-id} to "%uuid of loop-player%"
                             add {_coins} to {rpg::%{_member-id}%::coins}
                             rpg_add_xp(loop-player, {_xp})
-                            give loop-player {_diamonds} diamonds
+                            give {%_diamonds%} of diamonds to loop-player
                             loop {_lootRolls} times:
                                 rpg_give_boss_loot(loop-player)
                             send "{@prefix}&6&lVITÓRIA COOPERATIVA! &a%{_coins}% moedas, %{_xp}% XP, %{_diamonds}% diamantes e %{_lootRolls}% sorteio(s). Dificuldade: %{_difficulty}%." to loop-player
