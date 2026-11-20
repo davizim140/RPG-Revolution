@@ -73,23 +73,24 @@ on breeding:
         if {rpg::territory::%{_territory}%::world} is "%world of {_loc}%":
             set {_dx} to (x-coordinate of {_loc}) - {rpg::territory::%{_territory}%::x}
             set {_dz} to (z-coordinate of {_loc}) - {rpg::territory::%{_territory}%::z}
-            if abs({_dx}) <= 16 and abs({_dz}) <= 16:
-                if {rpg::territory::%{_territory}%::guild} is {_guild}:
-                    if chance of 5%:
-                        set {_foal} to bred offspring
-                        set {_id} to "%uuid of {_foal}%"
-                        set {rpg::mount::%{_id}%::rare} to true
-                        set {rpg::mount::%{_id}%::level} to 1
-                        set {rpg::mount::%{_id}%::xp} to 0
-                        add 0.015 to generic movement speed attribute of {_foal}
-                        add 0.08 to horse jump strength attribute of {_foal}
-                        add 5 to generic max health attribute of {_foal}
-                        set {rpg::mount::%{_id}%::base-speed} to generic movement speed attribute of {_foal}
-                        set {rpg::mount::%{_id}%::base-jump} to horse jump strength attribute of {_foal}
-                        heal {_foal}
-                        set name of {_foal} to "&6✦ Corcel Raro ✦"
-                        send "{@prefix}&6Um &eCorcel Raro &6nasceu em seu território! Chance: 5%." to {_p}
-                stop
+            if abs({_dx}) <= 16:
+                if abs({_dz}) <= 16:
+                    if {rpg::territory::%{_territory}%::guild} is {_guild}:
+                        if chance of 5%:
+                            set {_foal} to bred offspring
+                            set {_id} to "%uuid of {_foal}%"
+                            set {rpg::mount::%{_id}%::rare} to true
+                            set {rpg::mount::%{_id}%::level} to 1
+                            set {rpg::mount::%{_id}%::xp} to 0
+                            add 0.015 to generic movement speed attribute of {_foal}
+                            add 0.08 to horse jump strength attribute of {_foal}
+                            add 5 to generic max health attribute of {_foal}
+                            set {rpg::mount::%{_id}%::base-speed} to generic movement speed attribute of {_foal}
+                            set {rpg::mount::%{_id}%::base-jump} to horse jump strength attribute of {_foal}
+                            heal {_foal}
+                            set name of {_foal} to "&6✦ Corcel Raro ✦"
+                            send "{@prefix}&6Um &eCorcel Raro &6nasceu em seu território! Chance: 5%." to {_p}
+                    stop
 
 command /montaria:
     trigger:
