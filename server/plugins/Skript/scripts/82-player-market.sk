@@ -4,48 +4,56 @@ options:
 # Mercado persistente entre jogadores. O item fica em custódia até compra ou cancelamento.
 command /mercado [<text>] [<integer>]:
     trigger:
-        if arg-1 is not set or arg-1 is "listar":
-            send "&6&lMERCADO DE AVENTUREIROS" to player
-            set {_found} to 0
-            loop {rpg::market::active::*}:
-                set {_listing} to loop-value
-                set {_seller} to {rpg::market::%{_listing}%::seller-name}
-                set {_price} to {rpg::market::%{_listing}%::price}
-                set {_item} to {rpg::market::%{_listing}%::item}
-                send "&e#%{_listing}% &f%type of {_item}% &7x%amount of {_item}% &8- &6%{_price}% moedas &8(vendedor: %{_seller}%)" to player
-                add 1 to {_found}
-            if {_found} is 0:
-                send "&7Não há anúncios ativos." to player
-            send "&7/mercado vender <preço> &8- Anuncia o item na sua mão." to player
-            send "&7/mercado comprar <id> &8- Compra um anúncio." to player
-            send "&7/mercado cancelar <id> &8- Retira seu anúncio." to player
-            stop
+        set {_showListings} to false
+        if argument 1 is not set:
+            set {_showListings} to true
+        if argument 1 is "listar":
+            set {_showListings} to true
+        if {_showListings} is true:
+                send "&6&lMERCADO DE AVENTUREIROS" to player
+                set {_found} to 0
+                loop {rpg::market::active::*}:
+                    set {_listing} to loop-value
+                    set {_seller} to {rpg::market::%{_listing}%::seller-name}
+                    set {_price} to {rpg::market::%{_listing}%::price}
+                    set {_item} to {rpg::market::%{_listing}%::item}
+                    send "&e#%{_listing}% &f%type of {_item}% &7x%amount of {_item}% &8- &6%{_price}% moedas &8(vendedor: %{_seller}%)" to player
+                    add 1 to {_found}
+                if {_found} is 0:
+                    send "&7Não há anúncios ativos." to player
+                send "&7/mercado vender <preço> &8- Anuncia o item na sua mão." to player
+                send "&7/mercado comprar <id> &8- Compra um anúncio." to player
+                send "&7/mercado cancelar <id> &8- Retira seu anúncio." to player
+                stop
         set {_id} to "%uuid of player%"
-        if arg-1 is "vender":
-            if arg-2 is not set or arg-2 <= 0:
+        if argument 1 is "vender":
+            if argument 2 is not set:
+                send "{@prefix}&cUse /mercado vender <preço positivo>." to player
+                stop
+            if argument 2 <= 0:
                 send "{@prefix}&cUse /mercado vender <preço positivo>." to player
                 stop
             if player's tool is air:
                 send "{@prefix}&cSegure o item que deseja anunciar." to player
                 stop
-            if arg-2 > 1000000:
+            if argument 2 > 1000000:
                 send "{@prefix}&cO preço máximo é 1.000.000 moedas." to player
                 stop
             add 1 to {rpg::market::last-id}
             set {_listing} to {rpg::market::last-id}
             set {rpg::market::%{_listing}%::seller} to {_id}
             set {rpg::market::%{_listing}%::seller-name} to name of player
-            set {rpg::market::%{_listing}%::price} to arg-2
+            set {rpg::market::%{_listing}%::price} to argument 2
             set {rpg::market::%{_listing}%::item} to player's tool
             add {_listing} to {rpg::market::active::*}
             set player's tool to air
-            send "{@prefix}&aAnúncio #%{_listing}% publicado por &e%arg-2% moedas&a. O item foi guardado no mercado." to player
+            send "{@prefix}&aAnúncio #%{_listing}% publicado por &e%argument 2% moedas&a. O item foi guardado no mercado." to player
             stop
-        if arg-1 is "comprar":
-            if arg-2 is not set:
+        if argument 1 is "comprar":
+            if argument 2 is not set:
                 send "{@prefix}&cUse /mercado comprar <id>." to player
                 stop
-            set {_listing} to arg-2
+            set {_listing} to argument 2
             if {_listing} is not in {rpg::market::active::*}:
                 send "{@prefix}&cEsse anúncio não está mais disponível." to player
                 stop
@@ -68,11 +76,11 @@ command /mercado [<text>] [<integer>]:
                 if "%uuid of loop-player%" is {_seller}:
                     send "{@prefix}&aSeu anúncio #%{_listing}% foi vendido por &e%{_price}% moedas&a." to loop-player
             stop
-        if arg-1 is "cancelar":
-            if arg-2 is not set:
+        if argument 1 is "cancelar":
+            if argument 2 is not set:
                 send "{@prefix}&cUse /mercado cancelar <id>." to player
                 stop
-            set {_listing} to arg-2
+            set {_listing} to argument 2
             if {_listing} is not in {rpg::market::active::*}:
                 send "{@prefix}&cAnúncio inexistente." to player
                 stop
