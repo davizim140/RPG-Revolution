@@ -89,7 +89,7 @@ on breeding:
                             set {rpg::mount::%{_id}%::base-jump} to horse jump strength attribute of {_foal}
                             heal {_foal}
                             set name of {_foal} to "&6✦ Corcel Raro ✦"
-                            send "{@prefix}&6Um &eCorcel Raro &6nasceu em seu território! Chance: 5%." to {_p}
+                            send "{@prefix}&6Um &eCorcel Raro &6nasceu em seu território! Chance: 5 porcento." to {_p}
                     stop
 
 command /montaria:
