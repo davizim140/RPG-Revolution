@@ -28,22 +28,22 @@ command /rpgtemporada <text> [<text>]:
     permission: rpg.admin
     permission message: &cVocê precisa da permissão rpg.admin.
     trigger:
-        if arg-1 is "iniciar":
+        if argument 1 is "iniciar":
             if {rpg::season::active} is true:
                 send "{@prefix}&cJá existe uma temporada ativa." to sender
                 stop
-            if arg-2 is not set:
+            if argument 2 is not set:
                 send "{@prefix}&cUse: /rpgtemporada iniciar <nome>" to sender
                 stop
             add 1 to {rpg::season::current}
             set {_season} to {rpg::season::current}
-            set {rpg::season::%{_season}%::name} to arg-2
+            set {rpg::season::%{_season}%::name} to argument 2
             set {rpg::season::%{_season}%::started} to now
             set {rpg::season::active} to true
-            broadcast "&6&lNOVA TEMPORADA! &eTemporada %{_season}%: &f%arg-2%"
+            broadcast "&6&lNOVA TEMPORADA! &eTemporada %{_season}%: &f%argument 2%"
             broadcast "&7Pontuação: 25 por vitória PvP e 5 por criatura derrotada. Use /rankingtemporada."
             stop
-        if arg-1 is "encerrar":
+        if argument 1 is "encerrar":
             if {rpg::season::active} is not true:
                 send "{@prefix}&cNão existe temporada ativa." to sender
                 stop
@@ -92,7 +92,9 @@ command /rpgtemporada <text> [<text>]:
                 set {_next-season} to {rpg::season::current}
                 set {rpg::season::%{_next-season}%::name} to "%{rpg::season::auto::name}% %{_next-season}%"
                 set {rpg::season::%{_next-season}%::started} to now
-                set {rpg::season::%{_next-season}%::ends} to {rpg::season::auto::days} days from now
+                set {_nextDuration} to {rpg::season::auto::days}
+                set {rpg::season::%{_next-season}%::ends} to now
+                add {_nextDuration} days to {rpg::season::%{_next-season}%::ends}
                 set {rpg::season::active} to true
                 broadcast "&6&lNOVA TEMPORADA AUTOMÁTICA! &eTemporada %{_next-season}%: &f%{rpg::season::%{_next-season}%::name}%"
                 broadcast "&7Ela termina em %{rpg::season::auto::days}% dia(s). Use /rankingtemporada."
@@ -196,7 +198,7 @@ command /rpgtemporadaauto <text> [<number>]:
     permission: rpg.admin
     permission message: &cVocê precisa da permissão rpg.admin.
     trigger:
-        if arg-1 is "status":
+        if argument 1 is "status":
             if {rpg::season::auto::enabled} is true:
                 send "{@prefix}&aRotação automática ativa. Duração: &f%{rpg::season::auto::days}% dia(s)." to sender
                 set {_season} to {rpg::season::current}
@@ -205,34 +207,35 @@ command /rpgtemporadaauto <text> [<number>]:
             else:
                 send "{@prefix}&7Rotação automática desativada." to sender
             stop
-        if arg-1 is "parar":
+        if argument 1 is "parar":
             set {rpg::season::auto::enabled} to false
             delete {rpg::season::%{rpg::season::current}%::ends}
             send "{@prefix}&eRotação automática desativada. A temporada atual continuará até ser encerrada manualmente." to sender
             stop
-        if arg-1 is not "iniciar":
+        if argument 1 is not "iniciar":
             send "{@prefix}&eUse /rpgtemporadaauto iniciar <dias>, status ou parar." to sender
             stop
-        if arg-2 is not set:
+        if argument 2 is not set:
             send "{@prefix}&cInforme a duração em dias (1 a 90)." to sender
             stop
-        if arg-2 < 1 or arg-2 > 90:
+        if argument 2 < 1 or argument 2 > 90:
             send "{@prefix}&cA duração deve ser de 1 a 90 dias." to sender
             stop
         if {rpg::season::active} is true:
             send "{@prefix}&cEncerre a temporada atual antes de ativar a rotação automática." to sender
             stop
         set {rpg::season::auto::enabled} to true
-        set {rpg::season::auto::days} to arg-2
+        set {rpg::season::auto::days} to argument 2
         set {rpg::season::auto::name} to "Temporada"
         add 1 to {rpg::season::current}
         set {_season} to {rpg::season::current}
         set {rpg::season::%{_season}%::name} to "Temporada Automática %{_season}%"
         set {rpg::season::%{_season}%::started} to now
-        set {rpg::season::%{_season}%::ends} to arg-2 days from now
+        set {rpg::season::%{_season}%::ends} to now
+        add argument 2 days to {rpg::season::%{_season}%::ends}
         set {rpg::season::active} to true
         broadcast "&6&lTEMPORADA AUTOMÁTICA INICIADA! &eTemporada %{_season}%"
-        broadcast "&7Duração: &f%arg-2% dia(s). &7Use /rankingtemporada."
+        broadcast "&7Duração: &f%argument 2% dia(s). &7Use /rankingtemporada."
 
 # Verificação periódica do prazo. O comando de encerramento centraliza o cálculo do campeão e as recompensas.
 every 1 minute:
