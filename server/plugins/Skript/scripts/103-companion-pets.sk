@@ -24,7 +24,14 @@ command /pet [<text>] [<text>]:
             if {rpg::%{_id}%::pet::type} is set:
                 send "{@prefix}&cVocê já possui um companheiro. A adoção é permanente nesta versão." to player
                 stop
-            if argument 2 is not "lobo" and argument 2 is not "gato" and argument 2 is not "papagaio":
+            set {_validPet} to false
+            if argument 2 is "lobo":
+                set {_validPet} to true
+            if argument 2 is "gato":
+                set {_validPet} to true
+            if argument 2 is "papagaio":
+                set {_validPet} to true
+            if {_validPet} is false:
                 send "{@prefix}&cEscolha: lobo, gato ou papagaio." to player
                 stop
             set {rpg::%{_id}%::pet::type} to argument 2
