@@ -25,8 +25,10 @@ function rpg_add_xp(p: player, amount: number):
         set {_prestige} to 0
     set {_bonus} to 1 + ({_prestige} * 0.05)
     add ({_amount} * {_bonus}) to {rpg::%{_id}%::xp}
-    while {rpg::%{_id}%::xp} >= ({rpg::%{_id}%::level} * 100) and {rpg::%{_id}%::level} < 100:
+    while {rpg::%{_id}%::level} < 100:
         set {_needed} to {rpg::%{_id}%::level} * 100
+        if {rpg::%{_id}%::xp} < {_needed}:
+            stop loop
         remove {_needed} from {rpg::%{_id}%::xp}
         add 1 to {rpg::%{_id}%::level}
         add 2 to {rpg::%{_id}%::points}
