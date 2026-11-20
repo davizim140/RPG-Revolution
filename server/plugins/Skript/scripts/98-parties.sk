@@ -2,6 +2,7 @@ options:
     prefix: &8[&6RPG Revolution&8] &r
 
 command /grupo:
+    aliases: /party
     trigger:
         set {_id} to "%uuid of player%"
         set {_party} to {rpg::%{_id}%::party}
