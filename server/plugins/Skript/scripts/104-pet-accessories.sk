@@ -80,9 +80,6 @@ command /petacessorio [<text>] [<text>]:
             if {_valid} is false:
                 send "{@prefix}&cEsse acessório não é compatível com sua espécie de pet." to player
                 stop
-            else:
-                send "{@prefix}&cEsse acessório não corresponde à espécie do seu pet." to player
-                stop
             if {rpg::%{_id}%::pet::accessoryOwned::%argument 2%} is not true:
                 send "{@prefix}&cVocê ainda não comprou esse acessório." to player
                 stop
