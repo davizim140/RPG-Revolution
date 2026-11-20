@@ -24,16 +24,16 @@ command /pet [<text>] [<text>]:
             if {rpg::%{_id}%::pet::type} is set:
                 send "{@prefix}&cVocê já possui um companheiro. A adoção é permanente nesta versão." to player
                 stop
-            if arg-2 is not "lobo" and arg-2 is not "gato" and arg-2 is not "papagaio":
+            if argument 2 is not "lobo" and argument 2 is not "gato" and argument 2 is not "papagaio":
                 send "{@prefix}&cEscolha: lobo, gato ou papagaio." to player
                 stop
-            set {rpg::%{_id}%::pet::type} to arg-2
+            set {rpg::%{_id}%::pet::type} to argument 2
             set {rpg::%{_id}%::pet::level} to 1
             set {rpg::%{_id}%::pet::xp} to 0
             set {rpg::%{_id}%::pet::rarity} to "Comum"
             chance of 5%:
                 set {rpg::%{_id}%::pet::rarity} to "Raro"
-            send "{@prefix}&aVocê adotou um companheiro: &f%arg-2%&a!" to player
+            send "{@prefix}&aVocê adotou um companheiro: &f%argument 2%&a!" to player
             if {rpg::%{_id}%::pet::rarity} is "Raro":
                 send "&6&lRARIDADE RARA! &eSeu companheiro nasceu com uma aura especial." to player
             stop
