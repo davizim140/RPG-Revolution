@@ -79,7 +79,8 @@ command /poderarma:
         set {_cooldown} to 60 - ({_level} * 5)
         if {_cooldown} < 30:
             set {_cooldown} to 30
-        set {rpg::%{_id}%::legendary::%{_type}%::cooldown} to now + ({_cooldown} seconds)
+        set {_cooldownSpan} to "%{_cooldown}% seconds" parsed as timespan
+        set {rpg::%{_id}%::legendary::%{_type}%::cooldown} to {_cooldownSpan} after now
         send "{@prefix}&6%{_power}% &7ativado! Recarga: %{_cooldown}% segundos." to player
 
 on damage of living entity:
