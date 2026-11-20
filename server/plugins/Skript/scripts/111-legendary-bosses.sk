@@ -5,7 +5,14 @@ options:
 # Custos: 8 diamantes, 1 estrela do Nether e 1.000 moedas.
 command /invocarchefe [<text>]:
     trigger:
-        if arg-1 is not "guardiao" and arg-1 is not "lich" and arg-1 is not "draco":
+        set {_validBoss} to false
+        if arg-1 is "guardiao":
+            set {_validBoss} to true
+        if arg-1 is "lich":
+            set {_validBoss} to true
+        if arg-1 is "draco":
+            set {_validBoss} to true
+        if {_validBoss} is false:
             send "{@prefix}&e/invocarchefe guardiao|lich|draco" to player
             send "&7Custo: 8 diamantes, 1 estrela do Nether e 1.000 moedas." to player
             stop
