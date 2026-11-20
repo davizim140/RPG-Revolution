@@ -130,7 +130,7 @@ on death of ravager:
                     if {_earned-xp} > 0:
                         rpg_add_xp(loop-player, {_earned-xp})
                     if {_earned-diamonds} > 0:
-                        give {%_earned-diamonds%} of diamonds to loop-player
+                        give {_earned-diamonds} of diamonds to loop-player
                     rpg_give_boss_loot(loop-player)
                     send "{@prefix}&aSua contribuição: %{_damage}% dano. Recompensa: %{_earned-coins}% moedas, %{_earned-xp}% XP, %{_earned-diamonds}% diamantes e 1 item de chefe." to loop-player
                 else:
