@@ -8,7 +8,10 @@ command /rpgregiao [<text>] [<text>] [<integer>]:
     permission message: &cVocê não tem permissão para configurar regiões.
     trigger:
         if arg-1 is "definir":
-            if argument 2 is not set or argument 3 is not set:
+            if argument 2 is not set:
+                send "{@prefix}&cUse /rpgregiao definir <nome> <nivel-minimo>." to player
+                stop
+            if argument 3 is not set:
                 send "{@prefix}&cUse /rpgregiao definir <nome> <nivel-minimo>." to player
                 stop
             if argument 3 < 1:
