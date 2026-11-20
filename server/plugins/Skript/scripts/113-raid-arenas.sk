@@ -73,8 +73,11 @@ command /raidarena [<text>] [<text>]:
         set {_id} to "%uuid of player%"
         set {_party} to {rpg::%{_id}%::party}
         if {_party} is not set:
-            send "{@prefix}&cVocê precisa estar em um grupo." to player
-            stop
+            set {_party} to {_id}
+            set {rpg::%{_id}%::party} to {_id}
+            set {rpg::party::%{_id}%::leader} to {_id}
+            add {_id} to {rpg::party::%{_id}%::members::*}
+            send "{@prefix}&aParty solo criada automaticamente para sua raid." to player
         if {_party} is not {_id}:
             send "{@prefix}&cSomente o líder do grupo pode iniciar, consultar ou cancelar a arena." to player
             stop
