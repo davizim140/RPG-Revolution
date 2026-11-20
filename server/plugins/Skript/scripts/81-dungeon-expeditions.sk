@@ -69,7 +69,7 @@ on death of living entity:
             if {rpg::expedition::%{_owner}%::remaining} <= 0:
                 set {_wave} to {rpg::expedition::%{_owner}%::wave}
                 loop all players:
-                    if "%uuid of loop-player%" is {_owner}:
+                    if "%uuid of loop-player-2%" is {_owner}:
                         if {_wave} is 1:
                             set {rpg::expedition::%{_owner}%::wave} to 2
                             set {rpg::expedition::%{_owner}%::remaining} to 4
@@ -84,7 +84,7 @@ on death of living entity:
                                 set max health of {_mob} to {_health}
                                 set health of {_mob} to {_health}
                                 set {rpg::expedition::mob-owner::%uuid of {_mob}%} to {_owner}
-                            send "{@prefix}&5Onda 2/3! &7Quatro arqueiros bloquearam seu caminho." to loop-player
+                            send "{@prefix}&5Onda 2/3! &7Quatro arqueiros bloquearam seu caminho." to loop-player-2
                         else if {_wave} is 2:
                             set {rpg::expedition::%{_owner}%::wave} to 3
                             set {rpg::expedition::%{_owner}%::remaining} to 1
@@ -99,7 +99,7 @@ on death of living entity:
                             set health of {_boss} to {_bossHealth}
                             apply resistance 1 to {_boss} for 999999 seconds
                             set {rpg::expedition::mob-owner::%uuid of {_boss}%} to {_owner}
-                            send "{@prefix}&4&lCHEFE FINAL! &cO Devorador das Ruínas apareceu!" to loop-player
+                            send "{@prefix}&4&lCHEFE FINAL! &cO Devorador das Ruínas apareceu!" to loop-player-2
                         else:
                             set {_difficulty} to {rpg::expedition::%{_owner}%::difficulty}
                             set {_coins} to 600
@@ -119,12 +119,12 @@ on death of living entity:
                             delete {rpg::expedition::%{_owner}%::*}
                             add {_coins} to {rpg::%{_owner}%::coins}
                             loop all players:
-                                if "%uuid of loop-player%" is {_owner}:
+                                if "%uuid of loop-player-2%" is {_owner}:
                                     rpg_add_xp(loop-player, {_xp})
                                     give loop-player {_diamonds} diamonds
                                     loop {_lootRolls} times:
-                                        rpg_give_boss_loot(loop-player)
-                                    send "{@prefix}&6&lEXPEDIÇÃO CONCLUÍDA! &a%{_coins}% moedas, %{_xp}% XP e %{_diamonds}% diamantes. Dificuldade: %{_difficulty}%." to loop-player
+                                        rpg_give_boss_loot(loop-player-2)
+                                    send "{@prefix}&6&lEXPEDIÇÃO CONCLUÍDA! &a%{_coins}% moedas, %{_xp}% XP e %{_diamonds}% diamantes. Dificuldade: %{_difficulty}%." to loop-player-2
 
 on quit:
     set {_id} to "%uuid of player%"
