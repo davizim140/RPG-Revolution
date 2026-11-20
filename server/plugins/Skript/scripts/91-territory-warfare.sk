@@ -24,14 +24,15 @@ command /guildterritorioguerra:
             if {rpg::territory::%{_key}%::world} is "%world of player%":
                 set {_dx} to floor(x-coordinate of player) - {rpg::territory::%{_key}%::x}
                 set {_dz} to floor(z-coordinate of player) - {rpg::territory::%{_key}%::z}
-                if abs({_dx}) <= 16 and abs({_dz}) <= 16:
-                    set {_owner} to {rpg::territory::%{_key}%::guild}
-                    set {_progress} to {rpg::territory::%{_key}%::war-progress}
-                    if {_progress} is not set:
-                        set {_progress} to 0
-                    send "{@prefix}&eDono: &6%{_owner}% &7| Progresso de captura: &c%{_progress}%/{@capture-kills}" to player
-                    set {_found} to true
-                    stop
+                if abs({_dx}) <= 16:
+                    if abs({_dz}) <= 16:
+                        set {_owner} to {rpg::territory::%{_key}%::guild}
+                        set {_progress} to {rpg::territory::%{_key}%::war-progress}
+                        if {_progress} is not set:
+                            set {_progress} to 0
+                        send "{@prefix}&eDono: &6%{_owner}% &7| Progresso de captura: &c%{_progress}%/{@capture-kills}" to player
+                        set {_found} to true
+                        stop
         if {_found} is false:
             send "{@prefix}&cVocê não está dentro de um território reivindicado." to player
 
@@ -43,13 +44,25 @@ on death of player:
     set {_victim} to victim
     set {_killerGuild} to {rpg::%uuid of {_killer}%::guild}
     set {_victimGuild} to {rpg::%uuid of {_victim}%::guild}
-    if {_killerGuild} is not set or {_victimGuild} is not set:
+    if {_killerGuild} is not set:
+        stop
+    if {_victimGuild} is not set:
         stop
     if {_killerGuild} is {_victimGuild}:
         stop
-    if {_killerGuild} is not {rpg::guildwar::challenger} and {_killerGuild} is not {rpg::guildwar::defender}:
+    set {_killerInWar} to false
+    if {_killerGuild} is {rpg::guildwar::challenger}:
+        set {_killerInWar} to true
+    if {_killerGuild} is {rpg::guildwar::defender}:
+        set {_killerInWar} to true
+    if {_killerInWar} is false:
         stop
-    if {_victimGuild} is not {rpg::guildwar::challenger} and {_victimGuild} is not {rpg::guildwar::defender}:
+    set {_victimInWar} to false
+    if {_victimGuild} is {rpg::guildwar::challenger}:
+        set {_victimInWar} to true
+    if {_victimGuild} is {rpg::guildwar::defender}:
+        set {_victimInWar} to true
+    if {_victimInWar} is false:
         stop
 
     loop {rpg::territories::*}:
@@ -57,29 +70,30 @@ on death of player:
         if {rpg::territory::%{_key}%::world} is "%world of {_victim}%":
             set {_dx} to floor(x-coordinate of {_victim}) - {rpg::territory::%{_key}%::x}
             set {_dz} to floor(z-coordinate of {_victim}) - {rpg::territory::%{_key}%::z}
-            if abs({_dx}) <= 16 and abs({_dz}) <= 16:
-                set {_owner} to {rpg::territory::%{_key}%::guild}
-                if {_owner} is {_killerGuild}:
-                    remove 1 from {rpg::territory::%{_key}%::war-progress}
-                    if {rpg::territory::%{_key}%::war-progress} < 0:
-                        set {rpg::territory::%{_key}%::war-progress} to 0
-                    broadcast "{@prefix}&a%{_killer}% defendeu território de %{_owner}%. &7Progresso de invasão: %{rpg::territory::%{_key}%::war-progress}%/{@capture-kills}."
-                else if {_owner} is {_victimGuild}:
-                    if size of {rpg::guild::%{_killerGuild}%::territories::*} >= 3:
-                        send "{@prefix}&cSua guilda já possui três territórios; não pode conquistar outro." to {_killer}
-                        stop
-                    add 1 to {rpg::territory::%{_key}%::war-progress}
-                    set {rpg::territory::%{_key}%::war-attacker} to {_killerGuild}
-                    broadcast "{@prefix}&c%{_killerGuild}% avançou na captura de um território de %{_owner}%! &7Progresso: %{rpg::territory::%{_key}%::war-progress}%/{@capture-kills}."
-                    if {rpg::territory::%{_key}%::war-progress} >= {@capture-kills}:
-                        remove {_key} from {rpg::guild::%{_owner}%::territories::*}
-                        set {rpg::territory::%{_key}%::guild} to {_killerGuild}
-                        add {_key} to {rpg::guild::%{_killerGuild}%::territories::*}
-                        add {@capture-reward} to {rpg::guild::%{_killerGuild}%::bank}
-                        delete {rpg::territory::%{_key}%::war-progress}
-                        delete {rpg::territory::%{_key}%::war-attacker}
-                        broadcast "{@prefix}&6&lTERRITÓRIO CONQUISTADO! &e%{_killerGuild}% tomou uma área de %{_owner}% e recebeu {@capture-reward} moedas no banco."
-                stop
+            if abs({_dx}) <= 16:
+                    if abs({_dz}) <= 16:
+                        set {_owner} to {rpg::territory::%{_key}%::guild}
+                    if {_owner} is {_killerGuild}:
+                        remove 1 from {rpg::territory::%{_key}%::war-progress}
+                        if {rpg::territory::%{_key}%::war-progress} < 0:
+                            set {rpg::territory::%{_key}%::war-progress} to 0
+                        broadcast "{@prefix}&a%{_killer}% defendeu território de %{_owner}%. &7Progresso de invasão: %{rpg::territory::%{_key}%::war-progress}%/{@capture-kills}."
+                    else if {_owner} is {_victimGuild}:
+                        if size of {rpg::guild::%{_killerGuild}%::territories::*} >= 3:
+                            send "{@prefix}&cSua guilda já possui três territórios; não pode conquistar outro." to {_killer}
+                            stop
+                        add 1 to {rpg::territory::%{_key}%::war-progress}
+                        set {rpg::territory::%{_key}%::war-attacker} to {_killerGuild}
+                        broadcast "{@prefix}&c%{_killerGuild}% avançou na captura de um território de %{_owner}%! &7Progresso: %{rpg::territory::%{_key}%::war-progress}%/{@capture-kills}."
+                        if {rpg::territory::%{_key}%::war-progress} >= {@capture-kills}:
+                            remove {_key} from {rpg::guild::%{_owner}%::territories::*}
+                            set {rpg::territory::%{_key}%::guild} to {_killerGuild}
+                            add {_key} to {rpg::guild::%{_killerGuild}%::territories::*}
+                            add {@capture-reward} to {rpg::guild::%{_killerGuild}%::bank}
+                            delete {rpg::territory::%{_key}%::war-progress}
+                            delete {rpg::territory::%{_key}%::war-attacker}
+                            broadcast "{@prefix}&6&lTERRITÓRIO CONQUISTADO! &e%{_killerGuild}% tomou uma área de %{_owner}% e recebeu {@capture-reward} moedas no banco."
+                    stop
 
 on load:
     loop {rpg::territories::*}:
