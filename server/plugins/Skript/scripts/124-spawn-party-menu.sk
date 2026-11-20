@@ -1,0 +1,81 @@
+options:
+    prefix: &8[&6RPG Revolution&8] &r
+    menu-name: &8Menu RPG
+    menu-item-name: &6&lMENU RPG
+
+function rpg_open_menu(p: player):
+    set {_menu} to chest inventory with 3 rows named "{@menu-name}"
+    set slot 10 of {_menu} to compass named "&e&lSpawn" with lore "&7Voltar ao ponto inicial."
+    set slot 11 of {_menu} to book named "&a&lPerfil" with lore "&7Ver seu personagem."
+    set slot 12 of {_menu} to iron_sword named "&c&lRaid Arena" with lore "&7Iniciar raid normal." and "&7Também funciona em modo solo."
+    set slot 13 of {_menu} to shield named "&6&lParty" with lore "&7Ver ou criar seu grupo."
+    set slot 14 of {_menu} to chest named "&d&lBaú de Raid" with lore "&7Abrir um baú de raid."
+    set slot 15 of {_menu} to emerald named "&b&lAtributos" with lore "&7Consultar seus atributos."
+    set slot 16 of {_menu} to nether_star named "&5&lAjuda RPG" with lore "&7Ver todos os comandos."
+    set slot 22 of {_menu} to barrier named "&cFechar" with lore "&7Fechar este menu."
+    open {_menu} to {_p}
+
+command /spawn:
+    trigger:
+        teleport player to spawn point of world of player
+        send "{@prefix}&aVocê voltou ao spawn." to player
+
+command /menurpg:
+    aliases: /menu
+    trigger:
+        rpg_open_menu(player)
+
+command /menuitem:
+    trigger:
+        set {_found} to false
+        loop player's inventory:
+            if name of loop-item is "{@menu-item-name}":
+                set {_found} to true
+        if {_found} is true:
+            send "{@prefix}&eVocê já possui o item do menu." to player
+            stop
+        set {_item} to compass named "{@menu-item-name}"
+        enchant {_item} with unbreaking 1
+        set lore of {_item} to "&7Clique com o botão direito para abrir os atalhos."
+        give {_item} to player
+        send "{@prefix}&aItem do menu entregue." to player
+
+on join:
+    if {rpg::menu-item-given::%uuid of player%} is not set:
+        set {_item} to compass named "{@menu-item-name}"
+        enchant {_item} with unbreaking 1
+        set lore of {_item} to "&7Clique com o botão direito para abrir os atalhos."
+        give {_item} to player
+        set {rpg::menu-item-given::%uuid of player%} to true
+
+on right click:
+    if name of player's tool is "{@menu-item-name}":
+        cancel event
+        rpg_open_menu(player)
+
+on inventory click:
+    if name of event-inventory is "{@menu-name}":
+        cancel event
+        if clicked slot is 10:
+            close player's inventory
+            make player execute command "spawn"
+        else if clicked slot is 11:
+            close player's inventory
+            make player execute command "perfil"
+        else if clicked slot is 12:
+            close player's inventory
+            make player execute command "raidarena normal"
+        else if clicked slot is 13:
+            close player's inventory
+            make player execute command "party"
+        else if clicked slot is 14:
+            close player's inventory
+            make player execute command "raidbau abrir"
+        else if clicked slot is 15:
+            close player's inventory
+            make player execute command "atributos"
+        else if clicked slot is 16:
+            close player's inventory
+            make player execute command "rpgajuda"
+        else if clicked slot is 22:
+            close player's inventory
